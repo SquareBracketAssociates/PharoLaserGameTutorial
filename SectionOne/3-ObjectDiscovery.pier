@@ -1,0 +1,47 @@
+! Game Overview
+
+We're going to write a new game for Pharo. The following ideas should be represented in our game.
+
+The game will be played on a grid. We will imagine to have a laser beam that can be activated by the user. It will fire inside this grid from a specific location. The laser beam will always fire from the bottom edge underneath the first column of cells. As the laser beam traverses inside our grid it can hit deflecting mirrors. These mirrors will divert the laser beam's direction as it travels. Ultimately the beam should hit a target location inside our grid as shown by Figure *GameOne*.
+
++Starting from its origin, the laser beam should reach the destination.>file://figures/021.jpg|width=30|label=GameOne+
+
+
+
+
+The cells of our grid will either be blank, have a target (shown as a circle here) or a deflecting mirror. The mirrors may be oriented in either of two ways, leaning left or right.
+
+Once the laser is fired we can see how the cells guide the laser to a destination. In this case the laser correctly goes to the target cell.
+
+%+ >file://figures/021.jpg|width=30|label=GameOne+
+
+
+Initial locations and orientations of the mirror cells will be randomly controlled by the game. In the example the mirrors yield a correct result. However, the user has control over mirror rotation and position (to a certain amount). The user can click on a mirror cell and cause the mirror cell to rotate 90 degrees. This would alter the laser's direction as shown by Figures *RotationOne* and *RotationTwo*. Note that if the laser hits a grid wall, it ends its path.
+
+Then by rotating another mirror, get another result.
+
++We will rotate this mirror.>file://figures/024.jpg|width=30|label=RotationOne+
+
++Once rotated>file://figures/025.jpg|width=30|label=RotationTwo+
+
+
+The user may also click on a mirror cell and cause it to slide 1 grid-cell in a vertical or horizontal direction. Note that a mirror cell cannot move through the grid walls nor through another mirror cell nor the target cell. In this way the user can adjust the mirror cells to get a desired result as shown by Figures *SlideOne* and *SlideTwo*.
+
++Selecting the mirror that will be slided.>file://figures/022.jpg|width=30|label=SlideOne+
+
++Once slided>file://figures/023.jpg|width=30|label=SlideTwo+
+
+
+Since, initially, this is a solitaire game, it becomes more interesting to have the user manipulate the mirrors to still have the laser complete its path by hitting the target but also by finding the longest path possible.
+
+For example, the user could move the mirror cell shown, one cell to its left and cause the laser to take an alternate path.
+
+
+
+As a last step, move one more mirror and get the laser to go back to the target cell as shown by Figures ** and **. This time the path of the laser is longer than before. And of course it was strictly a random coincidence that the initial cells configuration already provided a correct path for the laser.
+
++Selecting the last mirror to move.>file://figures/026.jpg|width=30|label=FinalOne+
+
++Once moved.>file://figures/027.jpg|width=30|label=FinalTwo+
+
+That's the general idea. We can add laser cell-path counters and other game instrumentation as we develop.
