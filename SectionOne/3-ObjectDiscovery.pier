@@ -1,47 +1,202 @@
-! Game Overview
+! Object Discovery
 
-We're going to write a new game for Pharo. The following ideas should be represented in our game.
+When we look over the game drawings and think about what objects our game may need, a few come immediately to mind. There must be some kind of Grid and several Cells. There are different kinds of Cells too.
 
-The game will be played on a grid. We will imagine to have a laser beam that can be activated by the user. It will fire inside this grid from a specific location. The laser beam will always fire from the bottom edge underneath the first column of cells. As the laser beam traverses inside our grid it can hit deflecting mirrors. These mirrors will divert the laser beam's direction as it travels. Ultimately the beam should hit a target location inside our grid as shown by Figure *GameOne*.
+Cells and a Grid are obvious objects of the game and we'll probably discover other objects as we explore a little. It's perfectly fine to explore and then throw code away if we later learn we're not heading in the right direction.
 
-+Starting from its origin, the laser beam should reach the destination.>file://figures/021.jpg|width=30|label=GameOne+
+Exploring with objects is easy to do with Pharo. We very much enjoy spending time thinking about designs but we've also learned you need to ''dive in'' sometimes to better understand the objects needed in your design.
 
+As we once heard someone say, ''You can read about swimming all you want. But, you'll never learn about swimming until you actually dive in the water.''
 
+Of course we believe the water here is safe. The worst we could do is write some code and throw it away. And that's nothing to worry about. You have a backup copy and can easily begin again if needed. Development in Pharo encourages experimentation and quick idea exploration.
 
+Let's have a look at the objects.
 
-The cells of our grid will either be blank, have a target (shown as a circle here) or a deflecting mirror. The mirrors may be oriented in either of two ways, leaning left or right.
+!! Grid
 
-Once the laser is fired we can see how the cells guide the laser to a destination. In this case the laser correctly goes to the target cell.
-
-%+ >file://figures/021.jpg|width=30|label=GameOne+
-
-
-Initial locations and orientations of the mirror cells will be randomly controlled by the game. In the example the mirrors yield a correct result. However, the user has control over mirror rotation and position (to a certain amount). The user can click on a mirror cell and cause the mirror cell to rotate 90 degrees. This would alter the laser's direction as shown by Figures *RotationOne* and *RotationTwo*. Note that if the laser hits a grid wall, it ends its path.
-
-Then by rotating another mirror, get another result.
-
-+We will rotate this mirror.>file://figures/024.jpg|width=30|label=RotationOne+
-
-+Once rotated>file://figures/025.jpg|width=30|label=RotationTwo+
+The Grid holds our Cells. It also contains the source of our laser beam. Let's go with the idea that the user will ask the Grid to fire our laser beam.
 
 
-The user may also click on a mirror cell and cause it to slide 1 grid-cell in a vertical or horizontal direction. Note that a mirror cell cannot move through the grid walls nor through another mirror cell nor the target cell. In this way the user can adjust the mirror cells to get a desired result as shown by Figures *SlideOne* and *SlideTwo*.
+!! Cells
 
-+Selecting the mirror that will be slided.>file://figures/022.jpg|width=30|label=SlideOne+
+We identify three kinds of Cells.
 
-+Once slided>file://figures/023.jpg|width=30|label=SlideTwo+
+- Blank, or empty
+- Target
+- Mirror
+
+The basic responsibility of a Cell concerns what happens to the laser beam when it enters the Cell. Also, the Mirror Cells need to know something about their orientation. A Mirror Cells can be thought of as leaning left or leaning right.
+
+If we dig a little deeper into our understanding of these Cells we can imagine that each Cell has 4 internal line-segments. Something like an LED clock. We'll use these segments to indicate the path of the laser beam. Let's explore how that would work with our different Cell types.
 
 
-Since, initially, this is a solitaire game, it becomes more interesting to have the user manipulate the mirrors to still have the laser complete its path by hitting the target but also by finding the longest path possible.
+!!! The Blank Cell
 
-For example, the user could move the mirror cell shown, one cell to its left and cause the laser to take an alternate path.
+We label the 4 segments north, east, south, and west. If the laser beam enters the west segment then we know the east segment will light-up. If the laser beam enters south then the north segment would also light-up as shown by Figure *BlankCell*
+
++Blank Cell.>file://figures/3-028.jpg|width=25|label=BlankCell+
+
+!!! The Mirror Cell
+
+Depending on the orientation of the mirror we can also determine the path of the laser beam through the Cell. We identify the corresponding segments using the same technique.
+
++Left Leaning Mirror Cell.>file://figures/3-029.jpg|width=25|label=MirrorCellOne+
++Right Leaning Mirror Cell.>file://figures/3-030.jpg|width=25|label=MirrorCellTwo+
+
+For the left leaning Mirror Cell, if the laser beam enters the west segment we know the south segment will also light-up (See Figure *MirrorCellOne*). If the laser beam enters the right leaning Mirror Cell from the west it will exit by the north segment (See Figure *MirrorCellTwo*).
+
+!!!The Target Cell
+
+In the case of the Target Cell no other segment will light-up. The laser beam ends its path here (see Figure *TargetCell*).
++Target Cell.>file://figures/3-031.jpg|width=25|label=TargetCell+
 
 
 
-As a last step, move one more mirror and get the laser to go back to the target cell as shown by Figures ** and **. This time the path of the laser is longer than before. And of course it was strictly a random coincidence that the initial cells configuration already provided a correct path for the laser.
 
-+Selecting the last mirror to move.>file://figures/026.jpg|width=30|label=FinalOne+
 
-+Once moved.>file://figures/027.jpg|width=30|label=FinalTwo+
 
-That's the general idea. We can add laser cell-path counters and other game instrumentation as we develop.
+
+
+
+
+!! Identifying Classes
+
+Visually, each of the three Cell types would render differently. So they can be seen to have some things in common and some things that are unique to each. Let's define our initial classes to be:
+
+- ==Grid==
+- ==BlankCell==
+- ==MirrorCell==
+- ==TargetCell==
+
+We suspect that there may an abstract class that will unify common behavior between the classes. For now, let's not do that and just stick with these classes until the need to create other classes actually exists.
+
+Instances of ==Grid== will be responsible for our grid and overall management of the cells.
+
+Instances of ==BlankCell== will be the default condition in our grid. ==MirrorCell== instances will not be as frequent and will also be contained in our grid. The ==TargetCell== will have one instance in our grid.
+
+
+!! Defining a Package
+Before defining a class we should define a package. A package is a class container. When we will save a package all the classes will be saved together. It is a good practice to group together classes working together. 
+
+In the package list of the code browser, choose SD "add item" to add a new package. Use the name "Laser-Game-Model". You should get a system as shown in Figure **
+
+SD: Add a screenshot of nautilus
+
+Since we will define tests and also graphical element of the game, created two other SD: tags named tests and graphics. Note that we'll concern ourselves with the actual presentation layer of our game (the graphics) later in the development process.
+
+
+!! Create Some Model Classes
+
+Now we are ready to define the first class of our model. Make sure that you selected the Laser-Game-Model item and define the 4 model classes we identified before: ==Grid==, ==BlankCell==, ==MirrorCell== and ==TargetCell==. Be sure to select "Laser-Game-Model" in the system category first. For now each new class will be a subclass of ==Object==.
+
+When you select the Laser-Game-Model item, you see a class creation template on the bottom pane of the Browser. Fill it out as shown, then right-click and press "accept" (or press the keystroke alt-s or cmd-s depending on platform). 
+
+For now we will define any instance variables, just plain empty classes.
+SD
+
+
+[[[
+Object subclass: Grid
+   
+
+]]]
+
+[[[
+Object subclass: BlankCell
+   
+]]]
+
+[[[
+Object subclass: MirrorCell
+   
+]]]
+
+[[[
+Object subclass: TargetCell
+   
+]]]
+
+
+
+
+
+!! Test Driven Development
+
+As much as practical, we should use the SUnit unit testing framework to implement the game model (Have a look at the Pharo by Example SUnit Chapter for a deeper discussion). More than likely we'll not concern ourselves with writing unit tests for the actual behavior of the GUI because it is tedious. But there's plenty we can accomplish by driving our development of the game model from unit tests.
+
+We are not too attached to how we code the very first few lines of code. An approach we've seen used by many people is to begin with the Unit Tests, even to the point of not having any objects to test before the first test is written. Another approach is to implement some basic model and then drive from that point forward using Unit Tests.
+
+Now what is important to understand is that Unit tests will help us accomplish several things:
+
+- Help us to develop our objects because the tests will exercise the api of our newly created objects.
+- Provide a consistency check as we continue to add code. This helps us to identify really fast when we break existing code and where. This will tremendously help us to stay on track.
+
+Good unit tests capture your requirements and help you as you implement design. Often, when you write a unit test you are forced to think about your design as if it were finished.
+
+!! Unit Test the Initial Model
+
+The Blank Cell is an excellent place to begin writing our unit tests. Select the "Laser-Game-Tests" item in your class browser. We want to create a new test case for testing our ==BlankCell== class.
+
+Create a subclass of ==TestCase== named ==BlankCellTestCase==.
+
+[[[
+TestCase subclass: BlankCellTestCase
+]]]
+
+@@note Pay attention to the class definition for your new ==BlankCellTestCase==. It must be a subclass of the class ==TestCase==. This is easy to overlook. If you did it wrong already, no problem, just go back and correct it now and then save the code again.
+
+To help keep methods organized within a class, Pharo provides method protocol for each class. 
+Click on the protocol list menu and create a new protocol called "tests". Be sure that your browser is showing "instance" methods when you add this new method protocol.
+
+
+SD: Picture
+
+Now, select the protocol named ==tests== and create a method called ==testCellStateShouldBeOff==. Like with class creation and editing, we do this by editing the code in the lower pane. Note that if you did not select any protocol, the new method is added to a special protocol named 'as yet unclassified'. You can use the menu item to automatically categorize common methods. 
+
+SD: Picture
+@@note You can modify the code of an existing method and each time you will compile, the method with the same name will be replaced by the new one. 
+
+
+Our first test will be a simple check to see if the cell is "off" or "on" by default. We expect it to be "off" and should test for that.
+
+[[[
+testCellStateShouldBeOff
+	| cell |
+	cell := BlankCell new.
+	self assert: cell isOff.
+	self deny: cell isOn
+]]]
+
+Now of course we know this test will fail before we even run it because we haven't written the ==isOff== nor ==isOn== instance methods yet. For us to know if a cell is on we will have to examine its 4 internal line segments. You may remember the LED clock analogy. If any of the 4 internal segments are lit-up then the cell can be thought of as ''on''.
+
+However, before we can write the ==isOn== or ==isOff== methods we will need to define the line segments on our class. Select ==BlankCell== class and add an instance variable ==activeSegments==. Note that we do not have to define an instance variable this way, we could simply type a method using it and the system will prompt us 
+to know how to declare the variable (either as an instance variable or a local variable). 
+
+
+[[[
+Object subclass: BlankCell
+   instanceVariableNames: 'activeSegments'
+]]]
+
+We will use Pharo's built-in tools to create accessors for this new instance variable. SD: With the class selected, click on the menu button in the classes list pane and choose "more...".
+
+This will create automatically the following methods
+[[[
+BlankCell>>activeSegments
+	^ activeSegments
+]]]
+
+[[[
+BlankCell>>activeSegments: anObject
+	activeSegments := anObject
+]]]
+
+Since we will store a dictionary inside the activeSegments variable we will rename its argument as
+[[[
+BlankCell>>activeSegments: aDictionary
+	activeSegments := aDictionary
+]]]
+
+@@note Creating accessors is not mandatory, especially for private state, in which case instance variables can be only accessed directly from within the methods. Different schools propose different practices with different pros and cons. We created here to provide uniformity during the complete book. 
+
+
