@@ -62,7 +62,7 @@ function compile_latex_book() {
        echo COMPILING Book
        echo =========================================================
 
-       produce_pdf . EnterprisePharo
+       produce_pdf . LaserGame
 }
 
 if [[ $# -eq 1 ]]; then
