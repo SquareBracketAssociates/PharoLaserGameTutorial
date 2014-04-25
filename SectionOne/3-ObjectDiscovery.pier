@@ -75,128 +75,60 @@ Instances of ==Grid== will be responsible for our grid and overall management of
 Instances of ==BlankCell== will be the default condition in our grid. ==MirrorCell== instances will not be as frequent and will also be contained in our grid. The ==TargetCell== will have one instance in our grid.
 
 
-!! Defining a Package
+!! Package Definition
 Before defining a class we should define a package. A package is a class container. When we will save a package all the classes will be saved together. It is a good practice to group together classes working together. 
 
-In the package list of the code browser, choose SD "add item" to add a new package. Use the name "Laser-Game-Model". You should get a system as shown in Figure **
+In the package list of the code browser, choose "add package" to add a new package. Use the name "LaserGame-Model". You should get a system as shown in Figure *CreatedPackage*.
 
-SD: Add a screenshot of nautilus
++The class browser showing a newly created package>file://figures/3-PackageCreated.pdf|width=60|label=CreatedPackage+
 
-Since we will define tests and also graphical element of the game, created two other SD: tags named tests and graphics. Note that we'll concern ourselves with the actual presentation layer of our game (the graphics) later in the development process.
+Since we will define tests and also graphical element of the game, we will create two other packages for the tests and graphics. Note that we'll concern ourselves with the actual presentation layer of our game (the graphics) later in the development process.
 
 
-!! Create Some Model Classes
+!! Some Model Classes Creation
 
-Now we are ready to define the first class of our model. Make sure that you selected the Laser-Game-Model item and define the 4 model classes we identified before: ==Grid==, ==BlankCell==, ==MirrorCell== and ==TargetCell==. Be sure to select "Laser-Game-Model" in the system category first. For now each new class will be a subclass of ==Object==.
+Now we are ready to define the first class of our model. Make sure that you selected the LaserGame-Model package and define the 4 model classes we identified before: ==Grid==, ==BlankCell==, ==MirrorCell== and ==TargetCell==. Be sure to select "LaserGame-Model" package. For now each new class will be a subclass of ==Object==.
 
-When you select the Laser-Game-Model item, you see a class creation template on the bottom pane of the Browser. Fill it out as shown, then right-click and press "accept" (or press the keystroke alt-s or cmd-s depending on platform). 
++The class browser showing a newly created Grid class>file://figures/3-GridCreated.pdf|width=60|label=GridCreated+
 
-For now we will define any instance variables, just plain empty classes.
-SD
+When you select the LaserGame-Model item, you see a class creation template on the bottom pane of the Browser. Fill it out as shown, then right-click and press "accept" (or press the keystroke alt-s or cmd-s depending on platform). 
+
+For now we will define any instance variables, just plain empty classes (as shown in Figure *GridCreated*).
+
 
 
 [[[
-Object subclass: Grid
-   
-
+Object subclass: #Grid
+	instanceVariableNames: ''
+	classVariableNames: ''
+	category: 'LaserGame-Model'
 ]]]
 
 [[[
-Object subclass: BlankCell
-   
+Object subclass: #BlankCell
+	instanceVariableNames: ''
+	classVariableNames: ''
+	category: 'LaserGame-Model'
 ]]]
 
 [[[
-Object subclass: MirrorCell
-   
+Object subclass: #MirrorCell
+	instanceVariableNames: ''
+	classVariableNames: ''
+	category: 'LaserGame-Model' 
 ]]]
 
 [[[
-Object subclass: TargetCell
-   
+Object subclass: #TargetCell
+	instanceVariableNames: ''
+	classVariableNames: ''
+	category: 'LaserGame-Model'
 ]]]
 
+Once you are done you should get a system similar to the one shown in Figure *FourClassesCreated*
++The class browser showing a newly created Grid class>file://figures/3-FourClassesCreated.pdf|width=60|label=FourClassesCreated+
 
 
-
-
-!! Test Driven Development
-
-As much as practical, we should use the SUnit unit testing framework to implement the game model (Have a look at the Pharo by Example SUnit Chapter for a deeper discussion). More than likely we'll not concern ourselves with writing unit tests for the actual behavior of the GUI because it is tedious. But there's plenty we can accomplish by driving our development of the game model from unit tests.
-
-We are not too attached to how we code the very first few lines of code. An approach we've seen used by many people is to begin with the Unit Tests, even to the point of not having any objects to test before the first test is written. Another approach is to implement some basic model and then drive from that point forward using Unit Tests.
-
-Now what is important to understand is that Unit tests will help us accomplish several things:
-
-- Help us to develop our objects because the tests will exercise the api of our newly created objects.
-- Provide a consistency check as we continue to add code. This helps us to identify really fast when we break existing code and where. This will tremendously help us to stay on track.
-
-Good unit tests capture your requirements and help you as you implement design. Often, when you write a unit test you are forced to think about your design as if it were finished.
-
-!! Unit Test the Initial Model
-
-The Blank Cell is an excellent place to begin writing our unit tests. Select the "Laser-Game-Tests" item in your class browser. We want to create a new test case for testing our ==BlankCell== class.
-
-Create a subclass of ==TestCase== named ==BlankCellTestCase==.
-
-[[[
-TestCase subclass: BlankCellTestCase
-]]]
-
-@@note Pay attention to the class definition for your new ==BlankCellTestCase==. It must be a subclass of the class ==TestCase==. This is easy to overlook. If you did it wrong already, no problem, just go back and correct it now and then save the code again.
-
-To help keep methods organized within a class, Pharo provides method protocol for each class. 
-Click on the protocol list menu and create a new protocol called "tests". Be sure that your browser is showing "instance" methods when you add this new method protocol.
-
-
-SD: Picture
-
-Now, select the protocol named ==tests== and create a method called ==testCellStateShouldBeOff==. Like with class creation and editing, we do this by editing the code in the lower pane. Note that if you did not select any protocol, the new method is added to a special protocol named 'as yet unclassified'. You can use the menu item to automatically categorize common methods. 
-
-SD: Picture
-@@note You can modify the code of an existing method and each time you will compile, the method with the same name will be replaced by the new one. 
-
-
-Our first test will be a simple check to see if the cell is "off" or "on" by default. We expect it to be "off" and should test for that.
-
-[[[
-testCellStateShouldBeOff
-	| cell |
-	cell := BlankCell new.
-	self assert: cell isOff.
-	self deny: cell isOn
-]]]
-
-Now of course we know this test will fail before we even run it because we haven't written the ==isOff== nor ==isOn== instance methods yet. For us to know if a cell is on we will have to examine its 4 internal line segments. You may remember the LED clock analogy. If any of the 4 internal segments are lit-up then the cell can be thought of as ''on''.
-
-However, before we can write the ==isOn== or ==isOff== methods we will need to define the line segments on our class. Select ==BlankCell== class and add an instance variable ==activeSegments==. Note that we do not have to define an instance variable this way, we could simply type a method using it and the system will prompt us 
-to know how to declare the variable (either as an instance variable or a local variable). 
-
-
-[[[
-Object subclass: BlankCell
-   instanceVariableNames: 'activeSegments'
-]]]
-
-We will use Pharo's built-in tools to create accessors for this new instance variable. SD: With the class selected, click on the menu button in the classes list pane and choose "more...".
-
-This will create automatically the following methods
-[[[
-BlankCell>>activeSegments
-	^ activeSegments
-]]]
-
-[[[
-BlankCell>>activeSegments: anObject
-	activeSegments := anObject
-]]]
-
-Since we will store a dictionary inside the activeSegments variable we will rename its argument as
-[[[
-BlankCell>>activeSegments: aDictionary
-	activeSegments := aDictionary
-]]]
-
-@@note Creating accessors is not mandatory, especially for private state, in which case instance variables can be only accessed directly from within the methods. Different schools propose different practices with different pros and cons. We created here to provide uniformity during the complete book. 
-
-
+Before continuing to define the behavior of our model, we will start to define tests to capture
+such behavior. It will help us to make sure that our model is correct, it will document its behavior 
+in a way that can be automatically checked. 

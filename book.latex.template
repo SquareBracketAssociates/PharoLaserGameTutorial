@@ -13,32 +13,7 @@
 % Add the path for the figures of each chapter here:
 \graphicspath{
         {figures/}
-        {Athens/}
-        {BabyMock/}
-        {BioPharo/}
-        {CalculatorTutorial/}
-        {ComparingSolutions/}
-        {ConcurrencyBasics/}
-        {DSL/}
-        {WebSockets/}
-        {Deltawerken/}
-        {Fuel/}
-        {Installation/}
-        {KeyMapping/}
-        {Lint/}
-        {MetacelloIntro/}
-        {NativeBoost/}
-        {NeoCSV/}
-        {ParseTreeRewriter/}
-        {Reddit/}
-        {NeoCSV/}
-        {ODE/}
-        {STON/}
-        {ST99/}
-        {Spec/}
-        {RenoirST/}
-        {Voyage/}
-        {Zinc/}
+        {SectionOne/}
 }
 %=================================================================
 \let\wholebook=\relax
@@ -54,10 +29,9 @@
 \pagestyle{headings}
 %=================================================================
 \author{
-        Damien Cassou\quad \\
-        St\'ephane Ducasse\quad \\
-        ... and Many More :)}
-\title{\Huge\bf Pharo for the Enterprise}
+        Steven Wessels (for the original version) \quad \\
+        St\'ephane Ducasse (for the Pharo adaptation)}
+\title{\Huge\bf Laser Game Tutorial: A Development Example for Pharo}
 \isodate
 \date{\emph{Version of \today}}
 \maketitle

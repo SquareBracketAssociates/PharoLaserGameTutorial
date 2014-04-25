@@ -1,0 +1,129 @@
+! Test Driven Development
+
+We will use the SUnit unit testing framework to implement the game model (have a look at the Pharo by Example SUnit Chapter for a deeper discussion). More than likely we'll not concern ourselves with writing unit tests for the actual behavior of the GUI because it is tedious. But there's plenty we can accomplish by driving our development of the game model from unit tests.
+
+We are not too attached to how we code the very first few lines of code. An approach we've seen used by many people is to begin with the Unit Tests, even to the point of not having any objects to test before the first test is written. Another approach is to implement some basic model and then drive from that point forward using Unit Tests.
+
+Now what is important to understand is that Unit tests will help us accomplish several things:
+
+- Help us to develop our objects because the tests will exercise the api of our newly created objects.
+- Provide a consistency check as we continue to add code. This helps us to identify really fast when we break existing code and where. This will tremendously help us to stay on track.
+
+Good unit tests capture your requirements and help you as you implement design. Often, when you write a unit test you are forced to think about your design as if it were finished.
+
+!! Unit Test the Initial Model
+
+The Blank Cell is an excellent place to begin writing our unit tests. Define a new package named "LaserGame-Tests" and select it. We want to create a new test case for testing our ==BlankCell== class.
+
+Create a subclass of ==TestCase== named ==BlankCellTestCase== as follows:
+
+[[[
+TestCase subclass: #BlankCellTestCase
+	instanceVariableNames: ''
+	classVariableNames: ''
+	category: 'LaserGame-Tests'
+]]]
+
+@@note Pay attention to the class definition for your new ==BlankCellTestCase==. It must be a subclass of the class ==TestCase==. This is easy to overlook. If you did it wrong already, no problem, just go back and correct it now and then save the code again.
+
+To help keep methods organized within a class, Pharo provides method protocol for each class. 
+Click on the protocol list menu and create a new protocol called "tests". Be sure that your browser is showing "instance" methods when you add this new method protocol.
+
+
++An empty test method.>file://figures/3-testCellStateShouldBeOff-Empty.pdf|width=60|label=testCellStateShouldBeOffEmpty+
+
+Now, select the protocol named ==tests== and create a method called ==testCellStateShouldBeOff== with an empty body. Like with class creation and editing, we do this by editing the code in the lower pane (as shown in Figure *testCellStateShouldBeOffEmpty*). Note that if you did not select any protocol, the new method is added to a special protocol named 'as yet unclassified'. You can use the menu item to automatically categorize common methods. 
+
+
+@@note You can modify the code of an existing method and each time you will compile, the method with the same name will be replaced by the new one. 
+
+
+Our first test will be a simple check to see if the cell is "off" or "on" by default. We expect it to be "off" and should test for that (See Figure *testCellStateShouldBeOffFull*).
+
+[[[
+testCellStateShouldBeOff
+	| cell |
+	cell := BlankCell new.
+	self assert: cell isOff.
+	self deny: cell isOn
+]]]
+
++Fully defined test method.>file://figures/3-testCellStateShouldBeOff-Full.pdf|width=60|label=testCellStateShouldBeOffFull+
+
+
+Now of course we know this test will fail before we even run it because we haven't written the ==isOff== nor ==isOn== instance methods yet. For us to know if a cell is on we will have to examine its 4 internal line segments. You may remember the LED clock analogy. If any of the 4 internal segments are lit-up then the cell can be thought of as ''on''.
+
+We can define now two simple methods ==isOn== and ==isOff== with a default definition. To do so we add a protocol named 'testing' l in the class ==BlankCell== class and the two methods as follows:
+
+[[[
+BlankCell>>isOff
+	^ false
+]]]
+
+[[[
+BlankCell>>isOn
+	^ false
+]]]
+
+
+!! Saving a Milestone on SmalltalkHub
+
+Saving packages is a nice way to be able to reload your work in another image and to go back in the past of your project. We show you now how to proceed. We suggest you to create an account on smalltalkHub (*http://www.smalltalkhub.com*) and a project. We created the project LaserGame in our account as shown in Figure *SmalltalkHub*. 
+
++Defining a project on SmalltalkHub>file://figures/3-Smalltalkhub.pdf|width=60|label=SmalltalkHub+
+
+Using the Monticello browser that you can open using the world menu: (1) select the LaserGame-Model package and press the '\+Repository' button to add the location of your SmalltalkHub project, choose an HTTP repository. Do the same with the LaserGame-Tests package. In our case we added the following repository to our packages.
+
+[[[
+MCHttpRepository
+	location: 'http://smalltalkhub.com/mc/StephaneDucasse/LaserGame/main'
+	user: ''
+	password: ''
+]]]
+
+You should get a situation similar to the one depicted by Figure *MCDirty*. Note that the star in front of your package means that there are changes in the system that do not have been saved in the code repository.
+
++Defining a project on SmalltalkHub>file://figures/3-MCDirty.pdf|width=60|label=MCDirty+
+
+Select each of the package on the right list and press the button 'Save'. Fill up the form with some useful information (for example, 'first version with dummy testing methods'). You should get the situation in the Monticello browser as depicted by Figure *MCSaved*. 
+
++Saved packages>file://figures/3-MCSaved.pdf|width=60|label=MCSaved+
+
+
+
+Now we are ready to define methods and make our tests passed.
+
+
+!! 
+
+
+However, before we can write the ==isOn== or ==isOff== methods we will need to define the line segments on our class. Select ==BlankCell== class and add an instance variable ==activeSegments==. Note that we do not have to define an instance variable this way, we could simply type a method using it and compile the method, at that time the system will prompt us to know how to declare the variable (either as an instance variable or a local variable). 
+
+
+[[[
+Object subclass: BlankCell
+   instanceVariableNames: 'activeSegments'
+]]]
+
+We will use Pharo's built-in tools to create accessors for this new instance variable. SD: With the class selected, click on the menu button in the classes list pane and choose "more...".
+
+This will create automatically the following methods
+[[[
+BlankCell>>activeSegments
+	^ activeSegments
+]]]
+
+[[[
+BlankCell>>activeSegments: anObject
+	activeSegments := anObject
+]]]
+
+Since we will store a dictionary inside the activeSegments variable we will rename its argument as
+[[[
+BlankCell>>activeSegments: aDictionary
+	activeSegments := aDictionary
+]]]
+
+@@note Creating accessors is not mandatory, especially for private state, in which case instance variables can be only accessed directly from within the methods. Different schools propose different practices with different pros and cons. We created here to provide uniformity during the complete book. 
+
+
