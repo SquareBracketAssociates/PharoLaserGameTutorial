@@ -1,2 +1,42 @@
 ! Introduction
+
 This book is an adaptation for Pharo of the tutorial written originally by Stephan Wessels for Squeak and available at http://squeak.preeminent.org/tut2007/.
+
+
+Stéphane Ducasse adapted this tutorial to Pharo (3.0). Here is a list of changes:
+- The reader should read Pharo by Example **http://www.pharobyexample.com* for the installation of Pharo.
+- The flow of the tutorial has been adapted from places to places.
+- Less screenshots have been used to avoid the obsolescence when the IDE will changed.
+- All the code has been typed and shown in the text.
+- Any figure is now cross referenced.
+- All the code has been adapted to Pharo and is available from SmalltalkHub in the LaserGame project under StephaneDucasse account ( ==http://smalltalkhub.com/#!/~StephaneDucasse/LaserGame== ).
+
+Stéphane really wants to thank Steven for his gift to the Pharo and Smalltalk community.
+
+!! License
+This book is available as a free download from: *http://laserGame.pharo.org*
+Copyright 2007 by Steven Wessels. 2014 Steven Wessels and Stéphane Ducasse.
+
+
+The contents of this book are protected under Creative Commons Attribution-ShareAlike 3.0 Unported license.
+
+You are free:
+
+- to Share: to copy, distribute and transmit the work
+- to Remix: to adapt the work
+
+''Under the following conditions:''
+- Attribution. You must attribute the work in the manner specified by the author or licensor (but not in any way that suggests that they endorse you or your use of the work).
+- Share Alike. If you alter, transform, or build upon this work, you may distribute the resulting work only under the same, similar or a compatible license.
+
+
+For any reuse or distribution, you must make clear to others the license terms of this work. The best way to do this is with a link to this web page: *http://creativecommons.org/licenses/by-sa/3.0/*
+- Any of the above conditions can be waived if you get permission from the copyright holder.
+- Nothing in this license impairs or restricts the author's moral rights.
+
++Book License>file://figures/CreativeCommons-BY-SA.png|width=30|label=Commons+
+
+
+
+
+
