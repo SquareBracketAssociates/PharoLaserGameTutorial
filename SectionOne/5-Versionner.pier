@@ -1,0 +1,77 @@
+! Using Versionner
+
+When you save several packages you would like that when you reload them you get the correct versions of each packages. In addition, you want to make sure that the dependencies between packages are well defined. For example, it does not make sense to load LaserGame-Tests without LaserGame-Model. We say that LaserGame-Tests depends on LaserGame-Model. Pharo uses Metacello (explained in depth in Deep into Pharo *http://www.deepintopharo.org*) to manage dependencies within and between projects. The key concept with Metacello is the notion of configuration of a project. Here we will show how to use Versionner a new tool to define a configuration for the laser game.
+
+!!! First Steps: Adding and Naming a New Project
+
+- Open Versionner using the Tools Menu available in the World menu.
+
+
+- Add a New Project by pressing the New Project button. Name the new project 'LaserGame'. You should get a window similar to one shown by Figure *EmptyConfig*.
+
++An empty configuration.>file://figures/5-EmptyConfig.pdf|width=50|label=EmptyConfig+
+
+
+
+!!! Adding Packages
+Now we will list the packages that should be managed by the configuration.
+
+- On the left list, select the development item
+- In package pane press add package button
+- Once prompted, pick up the package LaserGame-Model
+- Add the package LaserGame-Tests
+
+You should get two packages in the package list.
+
+!!! Declaring Package Dependencies
+
+Now we are ready to declare package dependencies: we want to express that Tests depends on Model. 
+
++Ready to add required package.>file://figures/5-ToAddDependent.pdf|width=60|label=ToAddDependent+
+
+- Select laserGame-Tests package and edit the requirement (pen icon) (See Figure *ToAddDependent*). 
+- Press the '\+' button and select the LaserGame-Model (this means that LaserGame-Model is required to load LaserGame-Tests), you should now get a system similar to the one shown in Figure *WithDependent*.
+
++With Dependent Package.>file://figures/5-WithDependent.pdf|width=60|label=WithDependent+
+
+!!! Save to Development
+
+Being in development means that the configuration when requested to load the package will load the latest version of the package. This is not exactly what we want for now but we should save to development first. So we do it.  
+
+- Press the button Save to development. Pay attention the configuration is not committed to your remote server - smalltalkHub here yet. The configuration is created inside Pharo. 
+
+!!! Adding a repository and Committing
+Now we should be able to save a development configuration. We just need to add the repository of our project (as shown in Figure *WithRepo*).
+
+- Add a repository by pressing the little cylinder icon and select the one of your project
+
++With our repository.>file://figures/5-WithRepo.pdf|width=60|label=WithRepo+
+
+Now we can commit (i.e., save the configuration to a remote server such as your smalltalkHub project).
+
+- Press the button 'Commit the project'. It will bring a new window showing the changes your did. It should look similar to Figure *commited*. Press the 'Ok' Button and your configuration will be saved (currently only the development one).
+
++With our repository.>file://figures/5-commited.pdf|width=60|label=commited+
+
+!!! Releasing a version
+
+Now we are ready to commit versions of our projects. 
+
+- Press the button 'Release version'. It will update the configuration with a new milestone representing the fact that this milestone is composed of the two specific version of our two packages. Pay attention once again the configuration is defined in Pharo but not save in the repository. Therefore we should commit it.
+
+- Commit again the configuration by pressing the button 'Commit the project'. You should obtain a configuration state as shown in Figure *Released*. You should see that the package list now also shows you the exact version of the packages.
+
++The project now has a stable version and a development one.>file://figures/5-Released.pdf|width=60|label=Released+
+
+
+Each time you commit a configuration, the system produces a log of the commit for you as shown in Figure *logConfirmation*.
++A Configuration Commit Log.>file://figures/5-logConfirmation.pdf|width=60|label=logConfirmation+
+
+
+!!! Ready to Continue
+
+Now each time you want to save your work you can either select the development and commit or release a version and commit it. 
+
+
+
+
