@@ -1,0 +1,27 @@
+! Coding in the debugger
+
+Certain agile developers like to define tests first, make sure that the test failed, and define the methods within the debugger. Why? Because inside the debugger you can access live objects. We want to show you that we can code in the debugger. Since you save your code you will be able to continue without losing anything. 
+So let us start.
+
+- Redefine the methods ==isOn== and ==isOff== as follows
+
+
+[[[
+BlankCell>>isOn
+	"dummy definition"
+	^ self halt.
+]]]
+
+
+[[[
+BlankCell>>isOn
+	"dummy definition"
+	^ self halt.
+]]]
+
+- Run the tests and bring the debugger. You should obtain the following debugger **.
+
+The ==self halt== expression will raise a debugger when the methods will be executed. This is not mandatory to do that. Here this is just to get an error and show how to fix it hot.
+
+@@note This is not mandatory nor a pattern. When methods are not defined, sending a message that would lead to their execution will raise an error and bring a debugger.  
+
