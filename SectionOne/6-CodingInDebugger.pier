@@ -1,11 +1,13 @@
 ! Coding in the debugger
 
-Certain agile developers like to define tests first, make sure that the test failed, and define the methods within the debugger. Why? Because inside the debugger you can access live objects. We want to show you that we can code in the debugger. Since you save your code you will be able to continue without losing anything. 
+Certain agile developers like to define tests first, make sure that the test fails, and define the methods within the debugger. Why? Because inside the debugger you can access ''live'' objects. We want to show you that we can code in the debugger. Since you save your code you will be able to continue without losing anything. 
+
+
+!! Setting up the context
 So let us start.
 
 - Redefine the methods ==isOn== and ==isOff== as follows
 
-
 [[[
 BlankCell>>isOn
 	"dummy definition"
@@ -18,25 +20,37 @@ BlankCell>>isOn
 	"dummy definition"
 	^ self halt.
 ]]]
-
-The ==self halt== expression will raise a debugger when the methods will be executed. Here this is just to get an error and show how to fix it hot.
 
 +Getting the preview debugger.>file://figures/5-HaltPreview.pdf|width=60|label=HaltPreview+
 
+The ==self halt== expression will raise an error when the methods will be executed. Here this is just to get an error and show how to fix it hot.
 
-- Press the 'Preview' button, you should obtain the following debugger *HaltDebugger*.
+!! Coding in the debugger
+
+- Execute the test ==testCellStateShouldBeOff==, it will bring the preview debugger as shown in Figure *HaltPreview*. 
+
+
+
+- Press the 'Proceed' button, you should obtain the following debugger *HaltDebugger*. You can navigate the stack and find the method raising the error, usually it is on the top of the list.
 
 
 +Getting the stack debugger.>file://figures/5-HaltDebugger.pdf|width=60|label=HaltDebugger+
 
 @@note  When methods are not defined, sending a message that would lead to their execution will raise an error and bring a debugger.  
 
+Now we redefine the method ==isOn== directly in the debugger as shown in Figure *RecompiledOne*. Don't forget to compile (using Command-s).
 
-+Recompiler.>file://figures/6-Recompiled.pdf|width=60|label=RecompiledOne+
++The method isOn directly in the debugger.>file://figures/6-Recompiled.pdf|width=60|label=RecompiledOne+
+
+- Then we can press the button 'Proceed' and this will bring you to the next method ==isOff== (See Figure *RecompilePreview*) that we can then defined as shown in Figure *RecompileSecond*
+
++Getting to the method isOff.>file://figures/6-RecompiledPreview.pdf|width=60|label=RecompilePreview+
+
++Now we can redefine the other method.>file://figures/6-RecompileSecond.pdf|width=60|label=RecompileSecond+
+
+- Press proceed and you will see that the test gets green.
 
 
-+Recompiler.>file://figures/6-RecompiledPreview.pdf|width=60|label=RecompilePreview+
-
-
-
-+Recompiler.>file://figures/6-RecompileSecond.pdf|width=60|label=RecompileSecond+
+!! Conclusion
+We will not repeat this process further in the tutorial but we use it daily in our development.
+We can only encourage you to try this great way of developing software.

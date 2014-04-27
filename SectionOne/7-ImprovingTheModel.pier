@@ -54,6 +54,65 @@ BlankCellTest>>testNewCellDoesNotHaveSegmentOn
 	self deny: (cell isSegmentOnFor: #east).
 ]]]
 
+Execute the tests to verify that everything is working. Your three tests should be green.
+It is a good occasion to save your code.
 
 
+!! Handling Beam Exist Path
 
+We've written methods to check the state of individual segments within our cell. Now we also need methods to answer the output direction for a given laser beam input direction. The ==BlankCell== class needs another instance variable that will encode the path of a beam: i.e., for an input direction provides an output direction.
+
+[[[
+Object subclass: #BlankCell
+	instanceVariableNames: 'activeSegments exitSides'
+	classVariableNames: ''
+	category: 'LaserGame-Model'
+
+]]]
+
+As before, create accessors and we will define another initialization method to define the beam path in a cell. But let us write first a test method.
+
+[[[
+BlankCellTest>>testCellExit
+	| cell |
+	cell := BlankCell new.
+	self assert: (cell exitFor:  #north) = #south.
+	self assert: (cell exitFor:  #south) = #north.
+	self assert: (cell exitFor:  #west) = #east.
+	self assert: (cell exitFor:  #east) = #west.
+]]]	
+
+Now define the method  ==initializeExitSides== to initialize the path.
+
+[[[
+BlankCell>>initializeExitSides
+
+	self exitSides: Dictionary new.
+	self exitSides at: #north put: #south.
+	self exitSides at: #south put: #north.
+	self exitSides at: #east put: #west.
+	self exitSides at: #west put: #east.
+]]]
+
+And modify the ==initialize== method to call it. 
+
+[[[
+BlankCell>>initialize
+
+	super initialize.
+	self initializeActiveSegments.
+	self initializeExitSides
+]]]
+
+Now we can define the method ==exitFor:== which given a direction returns the exit that the laser beam will follow.
+
+[[[
+BlankCell>>exitFor: aSymbol
+
+    ^ self exitSides at: aSymbol
+]]]
+
+Run your tests and once they are green this is a good occasion to commit your work.
+
+
+!! Beam Entering Side
