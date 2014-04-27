@@ -6,17 +6,19 @@ This book is an adaptation for Pharo of the tutorial written originally by Steph
 Stéphane Ducasse adapted this tutorial to Pharo (3.0). Here is a list of changes:
 - The reader should read Pharo by Example *http://www.pharobyexample.com* for the installation of Pharo.
 - The flow of the tutorial has been adapted from places to places.
-- Less screenshots have been used to avoid the obsolescence when the IDE will changed.
-- All the code has been typed and shown in the text.
+- New material and more explanation has been added. 
+- Less screenshots have been used to avoid the obsolescence when the IDE will change.
+- All the code has been typed and shown in the text because different outputs may place pictures in differetnt places. 
 - Any figure is now cross referenced.
+- A package management chapter as well as a coding in the debugger have been added.
 - All the code has been adapted to Pharo and is available from SmalltalkHub in the LaserGame project under StephaneDucasse account ( ==http://smalltalkhub.com/#!/~StephaneDucasse/LaserGame== ).
 
 Stéphane really wants to thank Steven for his gift to the Pharo and Smalltalk community.
 
+
 !! License
 This book is available as a free download from: *http://laserGame.pharo.org*
-Copyright 2007 by Steven Wessels. 2014 Steven Wessels and Stéphane Ducasse.
-
+Copyright 2007 by Steven Wessels. Copyright 2014 Steven Wessels and Stéphane Ducasse.
 
 The contents of this book are protected under Creative Commons Attribution-ShareAlike 3.0 Unported license.
 
