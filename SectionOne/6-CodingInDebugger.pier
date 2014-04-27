@@ -19,9 +19,24 @@ BlankCell>>isOn
 	^ self halt.
 ]]]
 
-- Run the tests and bring the debugger. You should obtain the following debugger **.
+The ==self halt== expression will raise a debugger when the methods will be executed. Here this is just to get an error and show how to fix it hot.
 
-The ==self halt== expression will raise a debugger when the methods will be executed. This is not mandatory to do that. Here this is just to get an error and show how to fix it hot.
++Getting the preview debugger.>file://figures/5-HaltPreview.pdf|width=60|label=HaltPreview+
 
-@@note This is not mandatory nor a pattern. When methods are not defined, sending a message that would lead to their execution will raise an error and bring a debugger.  
 
+- Press the 'Preview' button, you should obtain the following debugger *HaltDebugger*.
+
+
++Getting the stack debugger.>file://figures/5-HaltDebugger.pdf|width=60|label=HaltDebugger+
+
+@@note  When methods are not defined, sending a message that would lead to their execution will raise an error and bring a debugger.  
+
+
++Recompiler.>file://figures/6-Recompiled.pdf|width=60|label=RecompiledOne+
+
+
++Recompiler.>file://figures/6-RecompiledPreview.pdf|width=60|label=RecompilePreview+
+
+
+
++Recompiler.>file://figures/6-RecompileSecond.pdf|width=60|label=RecompileSecond+
