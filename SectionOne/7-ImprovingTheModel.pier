@@ -1,0 +1,59 @@
+! Improving our Model
+
+Now that we saved our previous version with green tests, we can add new behavior to our model.
+We will do it test first. 
+
+
+!! Adding a new method
+
+We want to add a new method named ==isSegmentOnFor:== which will tell us whether a segment for a giving direction is on. Let us define first a simple test named ==testIsSegmentOn== defined as follow.
+
+[[[
+BlankCellTest>>testIsSegmentOn
+	| cell |
+	cell := BlankCell new.
+	self deny: (cell isSegmentOnFor: #north).
+]]]
+
+Note that the message will be displayed with a different indicating that the messsage does not already exist in the system. Proceed and compile the method. Pharo will prompt you, so confirm that you are defining a new method.
+
+Then execute the new test, and open the debugger, you should get a debugger as the one shown in Figure *IsSegmentOne*. The debugger shows you that the message ==isSegmentOn:== not understood by the receiver. 
+
+
++Debugger opened for a message not understood.>file://figures/7-isSegmentOnOne.pdf|width=50|label=IsSegmentOne+
+
+Click on the 'Create' button, you will get prompt to know on which class you want to define the method ==isSegmentOn:==. Pick ==BlankCell== as shown in Figure *IsSegmentOnTwo*.
+
++Selecting the class to create the new method>file://figures/7-isSegmentOnTwo.pdf|width=50|label=IsSegmentOnTwo+
+
+You should get now a debugger on the method automatically created by the debugger as shown in Figure *IsSegmentOnThree*.
+
++An automatically created method>file://figures/7-isSegmentOnTwo.pdf|width=50|label=IsSegmentOnThree+
+
+
+Now we can define inside the debugger the method ==isSegmentOnFor:==. 
+
+[[[
+BlankCell>>isSegmentOnFor: aSymbol
+	^ self activeSegments at: aSymbol
+]]]
+
+And when we press proceed, the test is run. 
+
+!!! Defining another test
+
+Now we can define a test testing all the directions.
+
+[[[
+BlankCellTest>>testNewCellDoesNotHaveSegmentOn
+	| cell |
+	cell := BlankCell new.
+	self deny: (cell isSegmentOnFor: #north).
+	self deny: (cell isSegmentOnFor: #south).
+	self deny: (cell isSegmentOnFor: #west).
+	self deny: (cell isSegmentOnFor: #east).
+]]]
+
+
+
+
