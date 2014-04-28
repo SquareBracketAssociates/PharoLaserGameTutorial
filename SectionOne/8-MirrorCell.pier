@@ -285,7 +285,7 @@ MirrorCellTest>>testCellExitSidesForRightMirror
 
 	| cell |
 	cell := MirrorCell new.
-	cell leanLeft.
+	cell leanRight.
 	self assert: (cell exitFor: #north) = #west.
 	self assert: (cell exitFor: #south) = #east.
 	self assert: (cell exitFor: #east) = #south.
@@ -325,14 +325,41 @@ Obviously the four last test methods should fail, since we did not implement yet
 But now we are ready to do so.
 
 
+[[[
+MirrorCell>>initializeExitSides
+	self exitSides: Dictionary new.
+]]]
+
+[[[
+MirrorCell>>initialize
+	super initialize.
+    self initializeExitSides.
+	self leanLeft.
+]]]
+
+[[[
+MirrorCell>>leanRight
+	
+	self leansLeft: false.
+	self exitSides at: #north put: #west.
+	self exitSides at: #east put: #south.
+	self exitSides at: #south put: #east.
+	self exitSides at: #west put: #north.
+]]]
+
+[[[
+MirrorCell>>leanLeft
+
+	self leansLeft: true.
+	self exitSides at: #north put: #east.
+	self exitSides at: #east put: #north.
+	self exitSides at: #south put: #west.
+	self exitSides at: #west put: #south.
+]]]
 
 
-
-SD: here!
-
-
-
-
+Run your tests and they should pass, else fix your code and rerun your tests.
+Then this is a good moment to save your work.
 
 
 
