@@ -15,16 +15,16 @@ Good unit tests capture your requirements and help you as you implement design. 
 
 The Blank Cell is an excellent place to begin writing our unit tests. Define a new package named "LaserGame-Tests" and select it. We want to create a new test case for testing our ==BlankCell== class.
 
-Create a subclass of ==TestCase== named ==BlankCellTestCase== as follows:
+Create a subclass of ==TestCase== named ==BlankCellTest== as follows:
 
 [[[
-TestCase subclass: #BlankCellTestCase
+TestCase subclass: #BlankCellTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	category: 'LaserGame-Tests'
 ]]]
 
-@@note Pay attention to the class definition for your new ==BlankCellTestCase==. It must be a subclass of the class ==TestCase==. This is easy to overlook. If you did it wrong already, no problem, just go back and correct it now and then save the code again.
+@@note Pay attention to the class definition for your new ==BlankCellTest==. It must be a subclass of the class ==TestCase==. This is easy to overlook. If you did it wrong already, no problem, just go back and correct it now and then save the code again.
 
 To help keep methods organized within a class, Pharo provides method protocols for each class. 
 Click on the protocol list menu and create a new protocol called "tests". We will group our tests inside this protocol. Be sure that your browser is showing "instance" methods when you add this new method protocol and further methods - because the methods will be define for now will correspond to messages send to instances and not their classes.
@@ -51,7 +51,7 @@ testCellStateShouldBeOff
 
 
 
-@@note Pay attention to the class definition for your new ==BlankCellTestCase==. It must be a subclass of the class ==TestCase==. This is easy to overlook. If you did it wrong already, no problem, just go back and correct it now and then save the code again.
+@@note Pay attention to the class definition for your new ==BlankCellTest==. It must be a subclass of the class ==TestCase==. This is easy to overlook. If you did it wrong already, no problem, just go back and correct it now and then save the code again.
 
 
 We define now two simple methods ==isOn== and ==isOff== with a default definition, just to make sure that the methods used in the test exist. 
@@ -96,10 +96,10 @@ In Pharo, there are two ways to execute tests: either using the class browser an
 - Open the TestRunner using the world Menu
 - Type in the left input field 'Laser' to only select the test from the package
 - Select the package LaserGame-Tests
-- Then select the class ==BlankCellTestCase==
+- Then select the class ==BlankCellTest==
 - Then press the button 'Run Selected', you should get a situation shown in Figure *TestRunnerYellow*.
 
-@@note If you do not see ''LaserGame-Tests'' in the list pane of the Test Runner, you probably made a mistake creating the test case class. The class ==BlankCellTestCase== must be a subclass of ==TestCase==. You may want to go back and check your work.
+@@note If you do not see ''LaserGame-Tests'' in the list pane of the Test Runner, you probably made a mistake creating the test case class. The class ==BlankCellTest== must be a subclass of ==TestCase==. You may want to go back and check your work.
 
 +The Debugger preview.>file://figures/4-DebuggerPreview.pdf|width=60|label=DebuggerPreview+
 

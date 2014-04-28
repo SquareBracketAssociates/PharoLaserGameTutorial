@@ -6,7 +6,7 @@ This book is an adaptation for Pharo of the tutorial written originally by Steph
 Stéphane Ducasse adapted this tutorial to Pharo (3.0). Here is a list of changes:
 - The reader should read Pharo by Example *http://www.pharobyexample.com* for the installation of Pharo.
 - The flow of the tutorial has been adapted from places to places.
-- New material and more explanation has been added. 
+- New material and more explanation has been added such as design discussions, use of refactorings...
 - Less screenshots have been used to avoid the obsolescence when the IDE will change.
 - All the code has been typed and shown in the text because different outputs may place pictures in differetnt places. 
 - Any figure is now cross referenced.
