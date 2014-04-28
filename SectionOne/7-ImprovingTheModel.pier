@@ -116,3 +116,85 @@ Run your tests and once they are green this is a good occasion to commit your wo
 
 
 !! Beam Entering Side
+
+Another behavior we need, is to tell the cell that the laser beam has entered the cell. We will need to specify which side the laser beam entered by. Then our new test should check that the expected line segments in the cell are lit-up when the method completes. Just add the test in the test case class. We already know the new method ==laserEntersFrom:== does not exist yet.
+
+
+[[[
+BlankCellTest>>testLaserEntersNorthShouldLitUpSouth
+	| cell |
+	cell := BlankCell new.
+	cell laserEntersFrom: #north.
+	self assert: ( cell isOn ).
+	self assert: (cell isSegmentOnFor: #north).
+	self assert: (cell isSegmentOnFor: #south).
+	self deny: (cell isSegmentOnFor: #west).
+	self deny: (cell isSegmentOnFor: #east).
+]]]
+
+
+Execute the test and it should failed as expected. Now define the method ==laserEntersFrom:== in the class ==BlankCell==.
+
+[[[
+BlankCell>>laserEntersFrom: aSymbolDirection
+
+    | exit |
+    self activeSegments at: aSymbolDirection put: true.
+    exit := self exitSideFor: aSymbol.
+	self activeSegments at: exit put: true.
+]]]
+
+
+Run your tests. They should all be green. 
+
+
+Note that we could provide methods to set or toggle the state of a direction, instead of exposing the fact that 
+we manipulate a dictionary. It could be ==setOnSegmentFor:== and ==setOffSegmentFor:==. 
+
+[[[
+BlankCell>>setSegmentOnFor: aSymbolDirection
+    self activeSegments at: aSymbolDirection put: true
+
+BlankCell>>setOffSegmentOffFor: aSymbolDirection
+    self activeSegments at: aSymbolDirection put: false
+
+
+BlankCell>>laserEntersFrom: aSymbolDirection
+
+    self setSegmentOnFor: aSymbolDirection.
+	self setSegmentOnFor: (self exitFor: aSymbol)
+]]]
+
+
+Add a new test to cover ==setOnSegmentFor:== and ==setOffSegmentFor:==. For example a good test is the following one.
+
+[[[
+BlankCellTest>>testSetSegment
+	| cell |
+	cell := BlankCell new.
+	self deny: (cell isSegmentOnFor: #north).
+	cell setSegmentOnFor: #north.
+	self assert: (cell isSegmentOnFor: #north).
+	cell setSegmentOffFor: #north.
+	self deny: (cell isSegmentOnFor: #north).
+]]]
+
+Run your tests. They should all be green. 
+
+
+
+
+
+
+
+
+
+!! A Discussion About Directions
+
+The design we proposed to you use symbols to represent direction. It is ok now there are still some place for improvements that you could do. Carrying around symbol in all the code is prone to errors. Imagine that you mistype west as vest then your system will not work well anymore. 
+A way to improve is to define class methods (==north==, ==south==, ==west==, ==east==) on the class ==Cell== and to use them in place of symbol. We could also use class variables or a pool dictionary to hold such values (Read the model chapter of Pharo by Example to know more). 
+
+A good acid test is that we can replace the symbol ==\#north== in the method ==north== by a number such as 0 and the system should continue to work. 
+
+Another way to improve could be to represent direction as real objects. We let you experiment with such design. 
+
