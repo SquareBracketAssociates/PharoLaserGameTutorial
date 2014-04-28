@@ -1,0 +1,405 @@
+! Defining MirrorCell
+
+
+This cell is different from the Blank Cell because it has a mirror and the mirror can be oriented. The output direction of the entering laser beam is also different because of the mirror. 
+
+!! Adding a class comment
+
+Let us start to add a class comment. We propose something like the following.
+
+[[[
+A mirror is a cell that reflects beam based on its orientation. 
+There are two main orientation: towards left and towards right.
+
+With left, a beam coming from the south will exit left.
+With right, a beam coming from the south will exit left.
+]]]
+
+!! Capturing Mirror Orientation
+Then we need a way to define the orientation of the mirror. We can begin by adding the instance variable "leansLeft" to the class and creating the accessors too.
+
+
+[[[ 
+Object subclass: #MirrorCell
+	instanceVariableNames: 'leansLeft'
+	classVariableNames: ''
+	category: 'LaserGame-Model'
+]]]
+
+
+Add some initialization code. Let the default condition be that the mirror leans left unless otherwise specified.
+
+[[[
+MirrorCell>>initialize
+   super initialize.
+   self leansLeft: true
+]]]
+
+Add testing methods for ==isLeft== and ==isRight==. These methods should be defined with the protocol 'testing'.
+
+
+
+
+
+
+
+
+
+
+!! Introducing a Common Ancestor
+
+
+This was all straight-forward. But what about the behavior that is similar to the Blank Cell such as ==isSegmentOn:== or ==laserEntersFrom:== or simply encoding the output direction of a beam? If we follow the way we defined this behavior in ==BlankCell==. We'll need the same instance variables 'activeSegments' and 'exitSides'. The behavior of how these values are set will be different. Having to define nearly the same behavior and state in two different classes is a sign that we can do better. We want to re-use the code as much as possible. This is a good case for an abstract class that would define what the two cells have in common. 
+
+Let's create an abstract class called ==Cell==.
+
+[[[
+Object subclass: #Cell
+	instanceVariableNames: ''
+	classVariableNames: ''
+	category: 'LaserGame-Model'
+]]]
+
+Pharo comes with a powerful tool to manipulate code (moving methods between classes, moving instance variables within a hierarchy...). A refactoring is a behavior preserving operation. This means that the behavior of a program should not change when applying a refactoring. This tools is called the RefactoringEngine (and it was the first fully working refactoring engine available for a programming language). The refactogin engine is available in the default class browser under the Refactoring menu item. 
+
+!!! Inheriting from Cell
+
+First let redefine ==MirrorCell== as a subclass of ==Cell==.
+
+[[[
+Cell subclass: #MirrorCell
+	instanceVariableNames: 'leansLeft'
+	classVariableNames: ''
+	category: 'LaserGame-Model'
+]]]
+
+And ==BlankCell== as a subclass of ==Cell==
+[[[
+Cell subclass: #BlankCell
+	instanceVariableNames: 'activeSegments exitSides'
+	classVariableNames: ''
+	category: 'LaserGame-Model'
+]]]
+
+You can run the tests and they should pass.
+
+!!! Moving up Segment and Exit to Cell
+
+
+Since a ==BlankCell== and a ==MirrorCell== have to manage which segments are on and how a beam cross them, we will move the instance variable ==activeSegments== and ==exitSides== to the superclass. 
+
+Let us start to pull up the instance variable using the refactoring engine. Click on the class ==BlankCell== and bring the menu and select 'Refactoring', then 'Inst Var Refactoring' and finally 'pull up'. Select the activeSegments instance variable. Do the same for the 'exitSide' instance variables. 
+
+You should get now your classes as follows:
+
+[[[
+Object subclass: #Cell
+	instanceVariableNames: 'activeSegments exitSides'
+	classVariableNames: ''
+	category: 'LaserGame-Model'
+]]]
+
+[[[
+Cell subclass: #BlankCell
+	instanceVariableNames: ''
+	classVariableNames: ''
+	category: 'LaserGame-Model'
+]]]
+
+Your tests should still be passing.
+
+What is nice with refactorings is that they verify a lot of possible mistakes for example a subclass of Cell could have already an instance variable with the same name and this would be problem. Note that refactorings are good also for more complex situations involving multiple classes.
+
+
+!!! Moving up Methods to Cell
+
+Now we can do the same to move up the following methods:
+- The accessors ==activeSegments==, ==activeSegments:==, ==exitSides==, ==exitSides:==,
+- the testing methods ==isSegmentOnFor:==, ==isOn==, ==isOff==, and
+- some operations such as ==setSegmentOffFor:==, ==setSegmentOnFor:==, ==laserEntersFrom:== and ==exitFor:==.
+
+Select these methods, bring the menu, and select the 'Refactoring' submenu and from this one the 'Push up' submenu item.
+You will move all the methods at once to the superclass. 
+
+Your tests should still be passing.
+
+!!! Splitting object initialization
+
+The ==initialize== methods need to be integrated into the new class. 
+
+- The ==initializeActiveSegments== method will work for any of these cells because they all have 4 segments with a default condition of false. This method clearly belongs on the superclass. So push it up to the superclass as we did before. 
+
+- The ==initializeExitSides== does not because it defines part of what makes the ==BlankCell== unique from the other cells. 
+
+Here's how the ==initialize== methods turn out for ==Cell==.
+
+[[[
+Cell>>initializeActiveSegments
+
+	self activeSegments: Dictionary new.
+	self activeSegments at: #north put: false.
+	self activeSegments at: #south put: false.
+	self activeSegments at: #west put: false.
+	self activeSegments at: #east put: false.
+]]]
+
+We could use the method ==setSegmentOffFor:==
+
+[[[
+Cell>>initializeActiveSegments
+
+	self activeSegments: Dictionary new.
+	self setSegmentOffFor: #north.
+	self setSegmentOffFor: #south.
+	self setSegmentOffFor: #west.
+	self setSegmentOffFor: #east.
+]]]
+
+
+[[[
+Cell>>initialize
+
+	super initialize.
+	self initializeActiveSegments.
+]]]
+
+Here's how the ==initialize== methods turn out for ==Cell==.
+
+[[[
+BlankCell>>initializeExitSides
+
+	self exitSides: Dictionary new.
+	self exitSides at: #north put: #south.
+	self exitSides at: #south put: #north.
+	self exitSides at: #east put: #west.
+	self exitSides at: #west put: #east.
+]]]
+
+[[[
+BlankCell>>initialize
+
+	super initialize.
+	self initializeExitSides
+]]]
+
+
+Run the tests they should pass.
+
+!!! Alternate Design
+
+For the initialization we could also define the ==initialize== method as follows:
+
+[[[
+Cell>>initialize
+
+	super initialize.
+	self initializeActiveSegments.
+	self exitSides: Dictionary new.
+	self initializeExitSides
+]]]
+
+And define only one method ==initializeExitSides== in ==BlankCell== and each future subclasses of ==Cell==.
+
+[[[
+BlankCell>>initializeExitSides
+
+	self exitSides at: #north put: #south.
+	self exitSides at: #south put: #north.
+	self exitSides at: #east put: #west.
+	self exitSides at: #west put: #east.
+]]]
+
+
+!! Coming back to MirrorCell
+
+Now the class ==MirrorCell== can be also a subclass of ==Cell==.
+
+[[[
+Cell subclass: #MirrorCell
+	instanceVariableNames: 'leansLeft'
+	classVariableNames: ''
+	category: 'LaserGame-Model'
+]]]
+
+When we left off coding the ==MirrorCell== we realized that there were a lot of similarities with ==BlankCell== and a few differences. 
+
+Let us write a couple of tests to specify the behavior we expect. Add a new test class named ==MirrorCellTest== subclass of ==TestCase==. 
+
+[[[
+TestCase subclass: #MirrorCellTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	category: 'LaserGame-Tests'
+]]]
+
+First create a simple test to check that a newly created instance is off.
+
+[[[
+MirrorCellTest>>testCellAtCreationShouldBeOff
+
+	| cell |
+	cell := MirrorCell new.
+	self assert: cell isOff.
+	self deny: cell isOn.
+]]]
+
+
+
+
+[[[
+MirrorCellTest>>testSegmentAtCreationShouldBeOff
+
+	| cell |
+	cell := MirrorCell new.
+	self deny: (cell isSegmentOnFor: #north).
+	self deny: (cell isSegmentOnFor: #south).
+	self deny: (cell isSegmentOnFor: #west).
+	self deny: (cell isSegmentOnFor: #east).
+]]]
+
+Up to now all the tests should pass. 
+
+!!! Handling orientation. 
+
+We know we will have to set the orientation for the mirror both when the cell is first instantiated as well as on-the-fly if the user decides to rotate the cell. Therefore we need methods to handle those requests, but first let us write two nice tests to make sure that we will be sure that our methods are correct.
+
+
+
+The ==testCellExitSides== method should be different, and should depend on orientation of the mirror. Use 2 new method names to show testing for each orientation.
+
+[[[
+MirrorCellTest>>testCellExitSidesForLeftMirror
+
+	| cell |
+	cell := MirrorCell new.
+	cell leanLeft.
+	self assert: (cell exitFor: #north) = #east.
+	self assert: (cell exitFor: #south) = #west.
+	self assert: (cell exitFor: #east) = #north.
+	self assert: (cell exitFor: #west) = #south.
+]]]
+
+
+[[[
+MirrorCellTest>>testCellExitSidesForRightMirror
+
+	| cell |
+	cell := MirrorCell new.
+	cell leanLeft.
+	self assert: (cell exitFor: #north) = #west.
+	self assert: (cell exitFor: #south) = #east.
+	self assert: (cell exitFor: #east) = #south.
+	self assert: (cell exitFor: #west) = #north.
+]]]
+
+
+Now we have to write two test methods to specify the activity of the cell when the beam pass through it.
+
+[[[
+MirrorCellTest>>testLaserEntersNorthShouldLitUpEast
+	| cell |
+	cell := MirrorCell new.
+	cell leanLeft.
+	cell laserEntersFrom: #north.
+	self assert: ( cell isOn ).
+	self assert: ( cell isSegmentOnFor: #north).
+	self assert: ( cell isSegmentOnFor: #east).
+	self deny: ( cell isSegmentOnFor: #south).
+	self deny: ( cell isSegmentOnFor: #west).
+]]]
+
+[[[
+MirrorCellTest>>testLaserEntersNorthShouldLitUpWest
+	| cell |
+	cell := MirrorCell new.
+	cell leanRight.
+	cell laserEntersFrom: #north.
+	self assert: ( cell isOn ).
+	self assert: ( cell isSegmentOnFor: #north).
+	self assert: ( cell isSegmentOnFor: #west).
+	self deny: ( cell isSegmentOnFor: #south).
+	self deny: ( cell isSegmentOnFor: #east).
+]]]
+
+Obviously the four last test methods should fail, since we did not implement yet the correct behavior.
+But now we are ready to do so.
+
+
+
+
+
+SD: here!
+
+
+
+
+
+
+
+
+
+
+
+
+!! Instance Creation Methods
+
+Whenever we instantiate cells from the ==MirrorCell== we need to take an extra step of orienting the mirror. As a practical matter, the ==MirrorCell== must always have one orientation, left or right. We can streamline this behavior with a few new ''class'' methods on ==MirrorCell==.
+
+A class method is a method that will be executed when we send a message to a ''class'', while an instance method is a method that will be executed when we send a message to an ''instance'' of this class. Here we want to write ==MirrorCell leanLeft==  therefore we should define a class method ==leanLeft==. We are sorted the new class methods in a protocol called "instance creation" as shown in Figure *InstanceCreation*. Noticed how the browser shows us that we are editing a class method: the ''Class side'' radio button is set.
+
++Defining a class method: the ''Class side'' button is set.>file://figures/8-InstanceCreation.pdf|width=50|label=InstanceCreation+
+
+
+
+[[[
+MirrorCell class>>leanLeft
+    ^ self new leanLeft
+]]]
+
+[[[
+MirrorCell class>>leanRight
+    ^ self new leanRight
+]]]
+
+@@note Important note! In the browser above we just created a new ''Class'' method. Not an ''Instance'' method. Make sure you have the "class" button clicked before creating the leanLeft method. A number of students learning from this tutorial have made this mistake. If you do too, just delete the instance method you created by mistake, click on the "class" button and create a new class method instead.
+
+
+
+We add these new methods in our unit tests -- in a few places only so that the old technique is still tested too.
+
+
+!! About MirrorCell Design
+
+Instead of having to test all the time state using ==isLeft== and ==isRight==, a better design is to 
+define two subclasses to ==MirrorCell== one for each of the case and define specific methods in each. 
+What is important to see is that each time we send a message, the correct method based on the receiver is automatically selected and executed. This mechanism acts as a systematic conditionals, therefore each time we explicitly test we do not take advantage of this build-in mechanism that the center of object-oriented programming. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
