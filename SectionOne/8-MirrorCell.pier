@@ -390,9 +390,10 @@ MirrorCell class>>leanRight
 
 @@note Important note! In the browser above we just created a new ''Class'' method. Not an ''Instance'' method. Make sure you have the "class" button clicked before creating the leanLeft method. A number of students learning from this tutorial have made this mistake. If you do too, just delete the instance method you created by mistake, click on the "class" button and create a new class method instead.
 
+Add these new methods in our unit tests in a few places only so that the old technique is still tested too.
 
 
-We add these new methods in our unit tests -- in a few places only so that the old technique is still tested too.
+
 
 
 !! About MirrorCell Design
