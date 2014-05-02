@@ -1,17 +1,84 @@
-! Enhancing MirrorCell
+! Enhancing TargetCell
 
-A mirror cell is a cell which reflects the beam in a different direction. This cell is different from the Blank Cell because it has a mirror and the mirror can be oriented. The output direction of the entering laser beam is also different because of the mirror. 
+Target Cell is the last one of our cells. It is unique because it does not have exit. Once the laser beam enters a TargetCell it does not leave.
+ A design choice we made here is to set the exit values to be nil. But let us start by writing some tests to clarify what we mean.
+
+
+
 
 !! Adding a class comment
 
 Let us start to add a class comment. We propose something like the following.
 
 [[[
-A mirror is a cell that reflects beam based on its orientation. 
-There are two main orientation: towards left and towards right.
+A target cell is a cell does not let the beam leave once entered. Once a target is reached the game is finished. 
+]]]
 
-With left, a beam coming from the south will exit left.
-With right, a beam coming from the south will exit left.
+
+!! Adding Some Tests
+Let us follow our good practices and add some tests.
+
+We add a new test class named ==TargetCellTest==
+
+[[[
+TestCase subclass: #TargetCellTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	category: 'LaserGame-Tests'
+]]]
+
+At creation time the cell should be off.
+
+[[[
+TargetCellTest>>testCellStateShouldBeOff
+	| cell |
+	cell := TargetCell new.
+	self assert: cell isOff.
+	self deny: cell isOn
+]]]
+
+All its segments should be off too. 
+
+[[[
+TargetCellTest>>testSegmentAtCreationShouldBeOff
+
+	| cell |
+	cell := TargetCell new.
+	self deny: (cell isSegmentOnFor: #north).
+	self deny: (cell isSegmentOnFor: #south).
+	self deny: (cell isSegmentOnFor: #west).
+	self deny: (cell isSegmentOnFor: #east).
+]]]
+
+
+ The ==testCellLaserActivitytestLaserEntersNorthShouldNotLitUpSouth== 
+method should only find one segment lit-up when the laser beam enters.
+
+
+[[[
+TargetCellTest>>testLaserEntersNorthShouldNotLitUpSouth
+
+	| cell |
+	cell := TargetCell new.
+	cell laserEntersFrom: #north.
+	self assert: ( cell isOn ).
+	self assert: (cell isSegmentOnFor: #north).
+	self deny: (cell isSegmentOnFor: #south).
+	self deny: (cell isSegmentOnFor: #west).
+	self deny: (cell isSegmentOnFor: #east).
+]]]
+
+
+
+Now we express that all the exit sides of a target will be nil. 
+
+[[[
+TargetCellTest>>testCellExitsAreNil
+
+	| cell |
+	cell := TargetCell new.
+	#(north #east #south #west)
+		do: [ :inputSide | self assert: (cell exitFor: inputSide) isNil ]
 ]]]
 
 !! Capturing Mirror Orientation
@@ -403,13 +470,12 @@ MirrorCellTest>>testMirrorCreationWithClassAPI
 
 
 
-!! About MirrorCell Design
+!! About TargetCell Design
 
-Instead of having to test all the time state using ==isLeft== and ==isRight==, a better design is to 
-define two subclasses to ==MirrorCell== one for each of the case and define specific methods in each. 
-What is important to see is that each time we send a message, the correct method based on the receiver is automatically selected and executed. This mechanism acts as a systematic conditionals, therefore each time we explicitly test we do not take advantage of this build-in mechanism that the center of object-oriented programming. 
+Using ==nil== to encode that there is no value for the exitSide is not an optimal way. Why? because it may force the client code to always check 
+if it gets true, false or nil. Good object-oriented design is often to have an object accepting the same messages but doing nothing. It is called the ==NullObject== design pattern. What is nice is that it eliminates all the ==ifNil:== tests and follow the "tell don't ask" way of really thinking object-oriented programming. 
 
-
+We will let the use of ==nil== right now but remember it in the future and a good exercise is to propose a new version without this encoding.
 
 
 
