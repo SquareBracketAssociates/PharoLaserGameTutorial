@@ -231,7 +231,7 @@ Grid class>>numberOfColumns: colInteger numberOfRows: rowInteger
 	^ instance 
 ]]]
 
-Run your tests and they should be green this time.
+
 
 
 
@@ -240,6 +240,19 @@ What is the difference between ==new== and ==basicNew==?
 - ==basicNew== just create the instance and return it. It is a primitive creation message and it should never be redefined else you could not build such solution. Note that ==new== in fact uses ==basicNew==. 
 
 
+Now we can also rewrite our second test to use the new class creation method.
+
+[[[
+testGridSizeLargerThanDefaultInitialConditions
+	| grid |
+	grid := Grid numberOfColumns: 15 numberOfRows: 15.
+	self deny: grid laserIsActive.
+	self assert: (grid at: 1@1) class = BlankCell.
+	self assert: (grid at: 12@13) class = BlankCell.
+	self assert: (grid at: 12@13) isOff.
+]]]
+
+Run your tests and they should be green this time.
 
 
 !!! Understanding yourself
@@ -250,9 +263,10 @@ The previous (suboptimal) method ==numberOfColumns:numberOfRows:== (we put back 
 Grid class>>numberOfColumns: colInteger numberOfRows: rowInteger
 
 	| instance |
-	instance := self new. 
+	instance := self basicNew. 
 	instance numberOfColumns: colInteger.
 	instance numberOfRows: rowInteger.
+	instance initialize.
 	^ instance 
 ]]]
 
@@ -261,15 +275,16 @@ The following method is strictly the same but its uses cascade (==;==) to send m
 [[[
 Grid class>>numberOfColumns: colInteger numberOfRows: rowInteger
 
-	^ self new 
+	^ self basicNew 
 		numberOfColumns: colInteger;
 		numberOfRows: rowInteger; 
+		initialize; 
 		yourself.
 ]]]
 
 How does it work?
 
- ==yourself== is a message returning the receiver of the message. Here the result of the self new expression. We use ==yourself== to write more compact code. Note that the use of ==yourself== ensures the method will really return the receiver of the message (here the new instance of grid) and not the result of the last method as this would be the case with the following potentially buggy method. Why? What if ==numberOfRows:== returns 42 instead of the ==self== default value?
+ ==yourself== is a message returning the receiver of the message. Here the result of the self new expression. We use ==yourself== to write more compact code. Note that the use of ==yourself== ensures the method will really return the receiver of the message (here the new instance of grid) and not the result of the last method as this would be the case with the following potentially buggy method. Why? What if ==initialize== returns 42 instead of the ==self== default value?
 Then ==potentiallySuspectNumberOfColumns:numberOfRows:== will return 42 and not the newly created grid instance.
 
 
@@ -278,13 +293,51 @@ Grid class>>potentiallySuspectNumberOfColumns: colInteger numberOfRows: rowInteg
 
 	^ self new 
 		numberOfColumns: colInteger;
-		numberOfRows: rowInteger
+		numberOfRows: rowInteger;
+		initialize
 ]]]
 
 
 
+!! Building a better test context
+
+With the basics on the cells working, and a minimal test for Grid, we can start to write a much deeper unit test for the ==Grid== class, using broader parts of the overall design. Remember the original diagram used to introduce the game idea? Let's use that for our unit test. Here's the empty diagram and the diagram with the laser firing (see Figure *DoubleSetup*).
 
 
+
++A nice context for future tests.>file://figures/10-DoubleSetup.pdf|width=60|label=DoubleSetup+
+
+Define the following method and add a new protocol ''private'' or ''grids''.
+[[[
+GridTest>>generateDemoGrid
+
+	| grid |
+	grid := Grid numberOfColumns: 5 numberOfRows: 5.
+	grid at: 5@1 put: TargetCell new.
+	
+	grid at: 4@1 put: MirrorCell leanRight.
+	grid at: 1@2 put: MirrorCell leanRight.  
+	grid at: 3@3 put: MirrorCell leanRight.  
+	grid at: 1@5 put: MirrorCell leanRight.  
+	grid at: 4@5 put: MirrorCell leanRight.  
+	
+	grid at: 5@2 put: MirrorCell leanLeft.  
+	grid at: 2@3 put: MirrorCell leanLeft.  
+	grid at: 5@3 put: MirrorCell leanLeft.  
+	grid at: 2@4 put: MirrorCell leanLeft.  
+	grid at: 3@4 put: MirrorCell leanLeft.  
+	^ grid
+]]]
+
+While writing the generator method we found myself getting confused about which part of the ==x\@y== notation to use for rows and columns. That's a tip-off that we should rewrite some of our methods to make this task easier. Maybe we should have written this test before we even wrote the ==at:== and ==at:put:== methods on Grid? Indeed this is a clear advantage of writing test first: they act as the first client of the code and give you a quality control on it. 
+We'll have to remember to go back and fix these names to be more intention revealing.
+
+In the future we should provide a way to print a grid in ascii to debug it and create a grid based on an ascii representation. 
+
+It is a good point to save your work. 
+
+!! Conclusion 
+Now all the structure elements of a game are in place and tested so we will be able to start working on the beam computation. 
 
 
 
