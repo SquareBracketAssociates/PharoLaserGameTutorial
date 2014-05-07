@@ -329,6 +329,14 @@ GridTest>>generateDemoGrid
 	^ grid
 ]]]
 
+We can now add a new test method. A simple check that the target cell is currently off will be fine for now.
+[[[
+GridTest>>testCellInteractions
+
+	self assert: (self generateDemoGrid at: 5@1) isOff
+]]]
+
+
 While writing the generator method we found myself getting confused about which part of the ==x\@y== notation to use for rows and columns. That's a tip-off that we should rewrite some of our methods to make this task easier. Maybe we should have written this test before we even wrote the ==at:== and ==at:put:== methods on Grid? Indeed this is a clear advantage of writing test first: they act as the first client of the code and give you a quality control on it. 
 We'll have to remember to go back and fix these names to be more intention revealing.
 
