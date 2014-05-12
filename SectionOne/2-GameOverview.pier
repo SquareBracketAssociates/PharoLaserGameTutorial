@@ -10,20 +10,20 @@ The cells of our grid will either be blank, have a target (shown as a circle her
 
 Initial locations and orientations of the mirror cells will be randomly controlled by the game. In *GameOne*(a) the mirrors yield a correct result. However, the user has control over mirror rotation and position (to a certain amount). The user can click on a mirror cell and cause the mirror cell to rotate 90 degrees. This could alter the laser's direction as shown by Figure *GameOne*(b). When the laser hits a grid wall, its path ends.
 
-Since, initially, this is a solitaire game, it becomes more interesting to have the user manipulate the mirrors to still have the laser complete its path by hitting the target but also by finding the longest path possible.
+Since, initially, this is a solitaire game, it becomes more interesting to have the user manipulate the mirrors to find the longest possible path to the target.  
 
 The user may click on a mirror cell and cause it to slide one grid-cell in a vertical or horizontal direction. Note that a mirror cell cannot move through the grid walls nor through another mirror cell nor the target cell. In this way the user can adjust the mirror cells to get an intermediate result as shown by Figure *LongerPathOne*.
 
-+Finding a longer path, first move, slide.>file://figures/2-LongerPath1-Slide.png|width=60|label=LongerPathOne+
++Finding a longer path, first move, slide mirror.>file://figures/2-LongerPath1-Slide.png|width=60|label=LongerPathOne+
 
-Then rotating the mirror shown in Figure *LongerPathTwo* produces a further intermediate result.
+A further intermediate result is produced by rotating the mirror shown in Figure *LongerPathTwo*.
 
-+Finding a longer path, second move, rotate.>file://figures/2-LongerPath2-Rotate.png|width=60|label=LongerPathTwo+
++Finding a longer path, second move, rotate mirror.>file://figures/2-LongerPath2-Rotate.png|width=60|label=LongerPathTwo+
 
-As a last step, one more mirror is moved to get the laser back to the target cell as shown by Figure *LongerPathThree*. This time the path of the laser is longer than before. And of course it was strictly a random coincidence that the initial cells configuration already provided a correct path for the laser.
+As a last step, one more mirror is moved to get the laser back to the target cell as shown in Figure *LongerPathThree*. This time the path of the laser is longer than before. And of course it was strictly a random coincidence that the initial cells configuration already provided a correct path for the laser.
 
 That's the general idea. We can add laser cell-path counters and other game instrumentation as we develop.
 
-+Finding a longer path, last move, rotate.>file://figures/2-LongerPath3-Slide.png|width=60|label=LongerPathThree+
++Finding a longer path, last move, rotate mirror.>file://figures/2-LongerPath3-Slide.png|width=60|label=LongerPathThree+
 
 
