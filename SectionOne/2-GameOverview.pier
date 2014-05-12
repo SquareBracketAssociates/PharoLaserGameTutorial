@@ -20,10 +20,12 @@ A further intermediate result is produced by rotating the mirror shown in Figure
 
 +Finding a longer path, second move, rotate mirror.>file://figures/2-LongerPath2-Rotate.png|width=60|label=LongerPathTwo+
 
++Finding a longer path, last move, rotate mirror.>file://figures/2-LongerPath3-Slide.png|width=60|label=LongerPathThree+
+
 As a last step, one more mirror is moved to get the laser back to the target cell as shown in Figure *LongerPathThree*. This time the path of the laser is longer than before. And of course it was strictly a random coincidence that the initial cells configuration already provided a correct path for the laser.
 
 That's the general idea. We can add laser cell-path counters and other game instrumentation as we develop.
 
-+Finding a longer path, last move, rotate mirror.>file://figures/2-LongerPath3-Slide.png|width=60|label=LongerPathThree+
+
 
 
