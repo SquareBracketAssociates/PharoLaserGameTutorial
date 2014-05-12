@@ -1,4 +1,4 @@
-! Object Discovery
+! Discovery of Objects
 
 When we look over the game drawings and think about what objects our game may need, a few come immediately to mind. There must be some kind of Grid and several Cells. There are different kinds of Cells too.
 
@@ -8,7 +8,7 @@ Exploring with objects is easy to do with Pharo. We very much enjoy spending tim
 
 As we once heard someone say, ''You can read about swimming all you want. But, you'll never learn about swimming until you actually dive in the water.''
 
-Of course we believe the water here is safe. The worst we could do is write some code and throw it away. And that's nothing to worry about. You have a backup copy and can easily begin again if needed. Development in Pharo encourages experimentation and quick idea exploration.
+Of course we believe the water here is safe. The worst we could do is write some code and throw it away. And that's nothing to worry about. A per method version history in maintained you to quickly review and restore previous code.  Development in Pharo encourages experimentation and quick idea exploration.
 
 Let's have a look at the objects.
 
@@ -25,14 +25,14 @@ We identify three kinds of Cells.
 - Target
 - Mirror
 
-The basic responsibility of a Cell concerns what happens to the laser beam when it enters the Cell. Also, the Mirror Cells need to know something about their orientation. A Mirror Cells can be thought of as leaning left or leaning right.
+The basic responsibility of a Cell concerns what happens to the laser beam when it enters the Cell. Also, the Mirror Cells need to know something about their orientation. A Mirror Cells can be thought of as leaning “left” or leaning “right”.
 
-If we dig a little deeper into our understanding of these Cells we can imagine that each Cell has 4 internal line-segments. Something like an LED clock. We'll use these segments to indicate the path of the laser beam. Let's explore how that would work with our different Cell types.
+If we dig a little deeper into our understanding of these Cells we can imagine that each Cell has four internal line-segments. Something like an LED clock. We'll use these segments to indicate the path of the laser beam. Let's explore how that would work with our different Cell types.
 
 
 !!! The Blank Cell
 
-We label the 4 segments north, east, south, and west. If the laser beam enters the west segment then we know the east segment will light-up. If the laser beam enters south then the north segment would also light-up as shown by Figure *BlankCell*
+We label the four segments ""==north, east, south=="", and ""==west=="". If the laser beam enters the ""==west=="" segment then we know the east segment will light-up. If the laser beam enters south then the ""==north=="" segment would also light-up as shown by Figure *BlankCell*
 
 +Blank Cell.>file://figures/3-028.jpg|width=25|label=BlankCell+
 
@@ -43,7 +43,7 @@ Depending on the orientation of the mirror we can also determine the path of the
 +Left Leaning Mirror Cell.>file://figures/3-029.jpg|width=25|label=MirrorCellOne+
 +Right Leaning Mirror Cell.>file://figures/3-030.jpg|width=25|label=MirrorCellTwo+
 
-For the left leaning Mirror Cell, if the laser beam enters the west segment we know the south segment will also light-up (See Figure *MirrorCellOne*). If the laser beam enters the right leaning Mirror Cell from the west it will exit by the north segment (See Figure *MirrorCellTwo*).
+For the left leaning Mirror Cell, if the laser beam enters the ""==west=="" segment we know the ""==south=="" segment will also light-up (See Figure *MirrorCellOne*). If the laser beam enters the right leaning Mirror Cell from the ""==west=="" it will exit by the ""==north=="" segment (See Figure *MirrorCellTwo*).
 
 !!!The Target Cell
 
@@ -63,39 +63,43 @@ In the case of the Target Cell no other segment will light-up. The laser beam en
 
 Visually, each of the three Cell types would render differently. So they can be seen to have some things in common and some things that are unique to each. Let's define our initial classes to be:
 
-- ==Grid==
-- ==BlankCell==
-- ==MirrorCell==
-- ==TargetCell==
+- ""==Grid==""
+- ""==BlankCell==""
+- ""==MirrorCell==""
+- ""==TargetCell==""
 
 We suspect that there may an abstract class that will unify common behavior between the classes. For now, let's not do that and just stick with these classes until the need to create other classes actually exists.
 
-Instances of ==Grid== will be responsible for our grid and overall management of the cells.
+Instances of ""==Grid=="" will be responsible for our grid and overall management of the cells.
 
-Instances of ==BlankCell== will be the default condition in our grid. ==MirrorCell== instances will not be as frequent and will also be contained in our grid. The ==TargetCell== will have one instance in our grid.
+Instances of ""==BlankCell=="" will be the default condition in our grid. ""==MirrorCell=="" instances will not be as frequent and will also be contained in our grid. The ""==TargetCell=="" will have one instance in our grid.
 
 
 !! Package Definition
-Before defining a class we should define a package. A package is a class container. When we will save a package all the classes will be saved together. It is a good practice to group together classes working together. 
+Before defining a class we should define a package to contain our classes. When we save a package all the classes will be saved together. It is a good practice to group together classes that work together. 
 
-In the package list of the code browser, choose "add package" to add a new package. Use the name "LaserGame-Model". You should get a system as shown in Figure *CreatedPackage*.
+{{{latex: 
+\dothis{Right-click on the background and open a System Browser.}
+\dothis{In the package list of the System Browser, choose "add package" to add a new package. Use the name "LaserGame-Model". }
+}}}
+You should get a system as shown in Figure *CreatedPackage*. Later we'll define two other packages to hold the tests and graphical elements of the game. We'll work out the presentation layer of our game (the graphics) later in the development process. For now we'll concern ourselves with the model. 
 
 +The class browser showing a newly created package>file://figures/3-PackageCreated.pdf|width=60|label=CreatedPackage+
 
-Since we will define tests and also graphical element of the game, we will create two other packages for the tests and graphics. Note that we'll concern ourselves with the actual presentation layer of our game (the graphics) later in the development process.
+
 
 
 !! Some Model Classes Creation
 
-Now we are ready to define the first class of our model. Make sure that you selected the LaserGame-Model package and define the 4 model classes we identified before: ==Grid==, ==BlankCell==, ==MirrorCell== and ==TargetCell==. Be sure to select "LaserGame-Model" package. For now each new class will be a subclass of ==Object==.
+Now we are ready to define the first class of our model. Make sure that you selected the "LaserGame-Model" package where we want to define the four model classes we identified before: ""==Grid=="", ""==BlankCell=="", ""==MirrorCell=="" and ""==TargetCell=="". 
 
-+The class browser showing a newly created Grid class>file://figures/3-GridCreated.pdf|width=60|label=GridCreated+
+Figure *CreatedPackage* shows a class creation template in the bottom pane of the Browser. Each class is required to have a superclass.  For now the "easiest thing to do" for now is just subclass from ""==Object=="".  This will refactor later as the design structure is fleshed out.
 
-When you select the LaserGame-Model item, you see a class creation template on the bottom pane of the Browser. Fill it out as shown, then right-click and press "accept" (or press the keystroke alt-s or cmd-s depending on platform). 
+{{{latex: 
+\dothis{Fill out the template as below, then right-click and choose to "accept" the class definition (or alternatively use the keystroke alt-s or cmd-s, depending on platform).}
+}}} 
 
-For now we will define any instance variables, just plain empty classes (as shown in Figure *GridCreated*).
-
-
++The class browser showing a newly created ""==Grid=="" class>file://figures/3-GridCreated.pdf|width=60|label=GridCreated+
 
 [[[
 Object subclass: #Grid
@@ -103,6 +107,12 @@ Object subclass: #Grid
 	classVariableNames: ''
 	category: 'LaserGame-Model'
 ]]]
+
+You result should be Figure *GridCreated*.  Note that for now we don't define any instance variables, just plain empty classes. 
+
+{{{latex: 
+\dothis{Then similarly define the following three classes.}
+}}} 
 
 [[[
 Object subclass: #BlankCell
