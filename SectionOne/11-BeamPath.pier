@@ -257,11 +257,41 @@ GridDirectionTest>>testDirectionSelection
 Once all the tests pass, it is a good time to publish your code.
 
 
+!! Back to the Laser Beam Path
+
+
+Now we are read to work on laser path elements. Let us start to define a new class method that eases to instantiate ==LaserPathElement== objects. Do you have any idea how to proceed? When we create a ==LaserPathElement== we should mention the cell it is acting on and also the side of the cells we are talking. 
+
+[[[
+LaserPathElement  class>>cell: aCell entrySide: aDirectionSymbol 
+
+	| element |
+	element := self basicNew.
+	element 
+		cell: aCell;
+		entrySide: aDirectionSymbol.
+	^ element
+]]]
+
+
+
+A key functionality that we need is a method that given a path element answers the next cell on grid. Here we will clearly see the importance of direction. Let us think a bit, as input we have an path element (which is linked to a cell and direction), a cell that know how the beam exits and a grid which contains all the cells. 
 
 
 
 
-!!! About Shared Pools
+
+
+
+
+
+
+
+
+
+
+
+!! About Encodings Default Values and Shared Pools
 
 Note that there are other ways in Pharo to define constant: Shared pools 
 
