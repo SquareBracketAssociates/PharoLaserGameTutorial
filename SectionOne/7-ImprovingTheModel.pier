@@ -6,6 +6,8 @@ We will do it test first.
 
 !! Adding a new method
 
+% http://squeak.preeminent.org/tut2007/html/020.html (bottom)
+
 We want to add a new method named ==isSegmentOnFor:== which will tell us whether a segment for a giving direction is on. Let us define first a simple test named ==testIsSegmentOn== defined as follow.
 
 [[[
@@ -59,6 +61,8 @@ It is a good occasion to save your code.
 
 
 !! Handling Beam Exist Path
+
+% http://squeak.preeminent.org/tut2007/html/021.html
 
 We've written methods to check the state of individual segments within our cell. Now we also need methods to answer the output direction for a given laser beam input direction. The ==BlankCell== class needs another instance variable that will encode the path of a beam: i.e., for an input direction provides an output direction.
 
@@ -117,6 +121,8 @@ Run your tests and once they are green this is a good occasion to commit your wo
 
 !! Beam Entering Side
 
+% http://squeak.preeminent.org/tut2007/html/022.html
+
 Another behavior we need, is to tell the cell that the laser beam has entered the cell. We will need to specify which side the laser beam entered by. Then our new test should check that the expected line segments in the cell are lit-up when the method completes. Just add the test in the test case class. We already know the new method ==laserEntersFrom:== does not exist yet.
 
 
@@ -134,6 +140,8 @@ BlankCellTest>>testLaserEntersNorthShouldLitUpSouth
 
 
 Execute the test and it should failed as expected. Now define the method ==laserEntersFrom:== in the class ==BlankCell==.
+
+http://squeak.preeminent.org/tut2007/html/023.html
 
 [[[
 BlankCell>>laserEntersFrom: aSymbolDirection

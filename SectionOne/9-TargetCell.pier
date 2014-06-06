@@ -1,5 +1,7 @@
 ! Enhancing TargetCell
 
+% http://squeak.preeminent.org/tut2007/html/029.html
+
 A target cell is the last one of our cells. It is unique because it does not have exit. Once the laser beam enters a target cell it does not leave and propagate anymore. A design choice we made here is to set the exit values to be nil. But let us start by writing some tests to clarify what we mean.
 
 
@@ -13,6 +15,9 @@ A target cell is a cell does not let the beam leave once entered. Once a target 
 
 
 !! Adding Some Tests
+
+% http://squeak.preeminent.org/tut2007/html/030.html
+
 Let us follow our good practices and add some tests.
 
 We add a new test class named ==TargetCellTest==
