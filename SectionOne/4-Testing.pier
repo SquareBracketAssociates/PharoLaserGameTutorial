@@ -1,21 +1,29 @@
 ! Test Driven Development
 
-We will use the SUnit unit testing framework to implement the game model (have a look at the Pharo by Example SUnit Chapter for a deeper discussion). More than likely we'll not concern ourselves with writing unit tests for the actual behavior of the GUI because it is tedious. But there's plenty we can accomplish by driving our development of the game model from unit tests.
+% http://squeak.preeminent.org/tut2007/html/011.html
+
+We will use the SUnit unit testing framework to implement the game model (have a look at the Pharo by Example SUnit Chapter for a deeper discussion). More than likely we'll not concern ourselves with writing unit tests for the actual behavior of the GUI because it is tedious. But there's plenty we can accomplish by unit test driving our development of the game model.
 
 We are not too attached to how we code the very first few lines of code. An approach we've seen used by many people is to begin with the Unit Tests, even to the point of not having any objects to test before the first test is written. Another approach is to implement some basic model and then drive from that point forward using Unit Tests.
 
-Now what is important to understand is that Unit tests will help us accomplish several things:
+Now what is important to understand is that Unit tests accomplish several things:
 
-- Help us to develop our objects because the tests will exercise the api of our newly created objects.
-- Provide a consistency check as we continue to add code. This helps us to identify really fast when we break existing code and where. This will tremendously help us to stay on track.
+- They help us to develop our objects because creating tests to exercise an object's api makes us consider how our objects will be used.
+- They provide a consistency check as we continue to add and evolve code. This helps us to quickly identify when and where we break existing code, which is a tremendous help to stay on track.
 
 Good unit tests capture your requirements and help you as you implement design. Often, when you write a unit test you are forced to think about your design as if it were finished.
 
 !! Unit Test the Initial Model
 
-The Blank Cell is an excellent place to begin writing our unit tests. Define a new package named "LaserGame-Tests" and select it. We want to create a new test case for testing our ==BlankCell== class.
+% http://squeak.preeminent.org/tut2007/html/015A.html
 
-Create a subclass of ==TestCase== named ==BlankCellTest== as follows:
+The ""==BlankCell=="" is an excellent place to begin writing our unit tests. We want a new package to hold our test classes, which in turn will hold the methods defining our test cases.  By convention the test classes will have "Test" appended to the name of the class being tested. So we'll define a new package ''LaserGame-Tests'' and inside it a new class ""==BlankCellTest=="".
+
+@@dothis Right-click on the packages list and choose "Add package…", type the package name "LaserGame-Tests" and click "OK".  
+
+The newly created package is automatically selected, and a class definition template displayed in the code-pane at the bottom of the System Browser.  
+
+@@dothis Edit the class definition template as follows, then right-click and choose "Accept it". This causes the class definition to be compiled, creating a subclass of ""==TestCase=="" named ""==BlankCellTest=="" in the running image.
 
 [[[
 TestCase subclass: #BlankCellTest
@@ -24,56 +32,67 @@ TestCase subclass: #BlankCellTest
 	category: 'LaserGame-Tests'
 ]]]
 
-@@note Pay attention to the class definition for your new ==BlankCellTest==. It must be a subclass of the class ==TestCase==. This is easy to overlook. If you did it wrong already, no problem, just go back and correct it now and then save the code again.
+@@note Pay attention to the class definition for your new ""==BlankCellTest=="". It must be a subclass of the class ""==TestCase=="". This is easy to overlook. If you did it wrong already, no problem, just go back and correct it now and then save (accept) the code again.
 
-To help keep methods organized within a class, Pharo provides method protocols for each class. 
-Click on the protocol list menu and create a new protocol called "tests". We will group our tests inside this protocol. Be sure that your browser is showing "instance" methods when you add this new method protocol and further methods - because the methods will be define for now will correspond to messages send to instances and not their classes.
+Within a class, methods are organised into "protocols" that are shown in the third browser pane from the left of Figure *testCellStateShouldBeOffEmpty*.  We will group our "tests" inside a protocol of the same name. 
+
++An empty test method>file://figures/3-testCellStateShouldBeOff-Empty.pdf|width=60|label=testCellStateShouldBeOffEmpty+
+
+@@dothis Ensure that class ""==BlankCellTest=="" is selected then right-click the protocol list, choose "Add protocol…" from the menu. Type "tests" and click "OK".
+
+@@note Be sure that your browser is showing "instance" methods when you add this new method protocol and further methods - because the methods we define for now will correspond to messages sent to instances and not their classes.  This is done by observing the "Class side" check-box (beneath the second browser pane) is unselected, as shown in Figure *testCellStateShouldBeOffEmpty*. 
+
+@@note BTC-2014-05-24 The selected class BlankCellTestCase in Figure *testCellStateShouldBeOffEmpty* doesn't match BlankCellTest used in the narrative.
+
+@@dothis Select the protocol named ""==tests=="". 
+
+A method template is displayed in the "code pane" at the bottom of the browser. Our first test will be a simple check to see if the cell is "off" or "on" by default. We expect it to be "off" and should test for that. Just to start simple, we'll create a method with an empty body. 
+
+@@dothis Clear the method template and type just the method name ""==testCellStateShouldBeOff=="",  then "Accept it". 
+
+The browser should now look like Figure *testCellStateShouldBeOffEmpty*. Now if no protocol was selected when you created the method it would be placed in a special protocol named 'as yet unclassified'. If that occurs, just drag the method from the method list onto the ""==tests=="" protocol. 
 
 
-+An empty test method.>file://figures/3-testCellStateShouldBeOff-Empty.pdf|width=60|label=testCellStateShouldBeOffEmpty+
+@@dothis Update method ""==testCellStateShouldBeOff=="" as follows, which results in Figure *testCellStateShouldBeOffFull*.)
 
-Now, select the protocol named ==tests== and create a method called ==testCellStateShouldBeOff== with an empty body. Like with class creation and editing, we do this by editing the code in the lower pane (as shown in Figure *testCellStateShouldBeOffEmpty*). Note that if you did not select any protocol, the new method is added to a special protocol named 'as yet unclassified'. You can use the menu item to automatically categorize common methods. 
-
-@@note You can modify the code of an existing method and each time you will compile, the method with the same name will be replaced by the new one. 
-
-
-Our first test will be a simple check to see if the cell is "off" or "on" by default. We expect it to be "off" and should test for that (See Figure *testCellStateShouldBeOffFull*).
++Fully defined test method.>file://figures/3-testCellStateShouldBeOff-Full.pdf|width=60|label=testCellStateShouldBeOffFull+
 
 [[[
-testCellStateShouldBeOff
+BlankCellTest>>testCellStateShouldBeOff
 	| cell |
 	cell := BlankCell new.
 	self assert: cell isOff.
 	self deny: cell isOn
 ]]]
 
-+Fully defined test method.>file://figures/3-testCellStateShouldBeOff-Full.pdf|width=60|label=testCellStateShouldBeOffFull+
+
+@@note To efficiently select a piece of text just, place the cursor before the beginning or after the end of the text then click again, and the complete text is selected. 
 
 
+Before we run this test we need simple dummy definitions of methods ""==isOn=="" and ""==isOff=="" - so the methods exist before they are used by the test. (However later you will see how you don't necessarily need to define methods before they are used, they can be created "on the fly".) For now, we do the following the steps:
 
-@@note Pay attention to the class definition for your new ==BlankCellTest==. It must be a subclass of the class ==TestCase==. This is easy to overlook. If you did it wrong already, no problem, just go back and correct it now and then save the code again.
+@@dothis Select the class ""==BlankCell=="" in the LaserGame-Model package.
 
+@@dothis Add a protocol named 'testing' to class ""==BlankCell=="", and ensure this protocol is selected.
 
-We define now two simple methods ==isOn== and ==isOff== with a default definition, just to make sure that the methods used in the test exist. 
-
-
-To do so follow the steps:
-
-- Add a protocol named 'testing' in the class ==BlankCell== class 
-- Select the newly created protocol
-- Select the method template shown and start to type (it will remove the template)
-- Type the following method name ==isOff==, bring the menu and select the accept item or to go faster press command-S. You should see that the text is not compiled (accepted) if you see an orange colored corner on the right top corner of the text pane. Once you compile the method, the corner gets white. 
+@@dothis Replace the method template with the following code for ""==isOff=="", bring up the context menu and "Accept it" (or use shortcut command-S). 
 
 [[[
-isOff
+BlankCellTest>>isOff
 	"dummy definition"
 	^ false.
 ]]]
 
+Observe that while you are typing, the top right corner of the code pane is tinged with orange, indicating that the edit of the method has not been compiled. Once you compile the method with "Accept it", the orange tinge goes away.   
 
-@@note To select efficiently a piece of text just place the cursor before the beginning or at after the end of the text and click: the complete text is selected. 
+@@note Each time you modify the code of an existing method and you "Accept It", the named method will be replaced by the new code. 
 
-- Proceed the same with the following method ==isOn==. 
+@@note An efficient way of creating methods with similar code is to just change the method name in the code pane, and "Accept it".
+
+
+@@dothis Proceed with defining the following similar method ""==isOn=="". 
+
+
 
 [[[
 BlankCell>>isOn
@@ -81,80 +100,105 @@ BlankCell>>isOn
 	^ false.
 ]]]
 
-Note that here we prefixed the method ==isOn== with the class name ==BlankCell== so that you do not get lost when reading this book. This convention is used in all the Pharo books and documentation. 
+
 
 
 
 !! Run Our First Unit Test
 
-Even though we know the answers will be wrong for the ==isOn== and ==isOff== instance methods, because we haven't made them do anything but raising an error, we should go back and run the unit test. Enough code has been written on this class already that we want to be sure we created the object we expected and get results expected even when they are wrong.
+% http://squeak.preeminent.org/tut2007/html/018.html
+
+Even though we know the ""==isOn=="" and ""==isOff=="" methods are wrong (since we hard-coded both to answer ""==false=="") we should run the ""==testCellStateShouldBeOff=="" test. Enough code has been written already that we want to be sure that ""==BlankCell=="" objects are created correctly and the test produces the "wrong" result we are expecting. Lets do that now.
+
+@@note BTC-2015-05-21 Rather than give two ways to do this, we mention just one we a demonstrating.  I moved the mention of the second to later.  Also, note I'm just using the "dothis" Pharo icons for code changes, and not here.
+
+- Open the Test Runner from the world Menu.
+- Filter the listed packages by typing 'Laser' in the top left input field as shown in Figure *TestRunnerYellow*.
+- Select the package LaserGame-Tests.
+- Select the class ""==BlankCellTest=="".
+- Press the button 'Run Selected', and you should get the situation shown in Figure *TestRunnerYellow*.
 
 +Running a test that does not pass.>file://figures/4-TestRunnerYellow.pdf|width=60|label=TestRunnerYellow+
 
-In Pharo, there are two ways to execute tests: either using the class browser and pressing the little icon close to the method or class name or to use the test runner. Let us have a look with the TestRunner.
+@@note If you do not see ''LaserGame-Tests'' in the list pane of the Test Runner, you probably made a mistake creating the test case class. The class ""==BlankCellTest=="" must be a subclass of ""==TestCase=="". You may want to go back and check your work.
 
-- Open the TestRunner using the world Menu
-- Type in the left input field 'Laser' to only select the test from the package
-- Select the package LaserGame-Tests
-- Then select the class ==BlankCellTest==
-- Then press the button 'Run Selected', you should get a situation shown in Figure *TestRunnerYellow*.
-
-@@note If you do not see ''LaserGame-Tests'' in the list pane of the Test Runner, you probably made a mistake creating the test case class. The class ==BlankCellTest== must be a subclass of ==TestCase==. You may want to go back and check your work.
-
-+The Debugger preview.>file://figures/4-DebuggerPreview.pdf|width=60|label=DebuggerPreview+
 
 !!! Getting to the Error
 
-When we want to understand where the problem comes from we can simply get access to it from the test runner.
+% http://squeak.preeminent.org/tut2007/html/019.html
 
-- Click once on the yellow failed test in the test runner (or on the icon of the method in the class browser) and a debugger preview window will open as shown in Figure *DebuggerPreview*. 
+In the yellow pane Test Runner shows "1 failure". Beneath that the failing test methods are listed. We can open a debugger to investigate where the problem comes as follows:
+
+- In Test Runner, click once on the failed test.  A Debugger Preview window opens displaying the call stack as shown in Figure *DebuggerPreview*. 
+
++The Debugger preview.>file://figures/4-DebuggerPreview.pdf|width=60|label=DebuggerPreview+
 
 +Navigating the stack of the debugger.>file://figures/5-DebuggerStack.pdf|width=60|label=DebuggerStack+
 
-- Click the debug button and select the instance method name from the call-stack in the debugger to see where it actually failed as shown by Figure *DebuggerStack*.
+- Click the ''Debug'' button and select the test method named ""==testCellStateShouldBeOff=="" from the call-stack to see where it actually failed. You should see something like Figure *DebuggerStack*.
+
+@@note BTC-2014-05-24 The activeSegments instance variable in Figure *DebuggerStack* has not been created yet.  Can probably just edit the bitmap to fix.
+
+When we navigate the stack (by clicking on different lines in the top pane), the variables listed down below change. We can inspect objects held by these variables by choosing ''Inspect it'' from their context menu. You can also select any part of the code to evaluate and inspect. Figure *DebuggerInspector* shows the Inspector that appeared after selecting the text "cell" and from its context menu, choosing to ''Inspect it''. Later we will show that we can also change the method definition and proceed on the fly.
 
 +You can inspect arguments or receiver. Here the cell is ok.>file://figures/5-DebuggerInspector.pdf|width=60|label=DebuggerInspector+
 
-We can navigate the stack and inspect objects as shown by Figure *DebuggerInspector*. You can select an expression and print it or inspect it. Later we will show that we can also change the method definition 
-and proceed on the fly.
 
 
+That looks great. Okay. Let's go back and make our model pass the tests. Close the debugger and inspector we opened. You can leave the Test Runner open for later. Go back to the class browser.
 
 
-That looks great. Okay. Let's go back and make our model pass the tests. Close the debugger and inspector we opened. You can leave the test runner open for later. Go back to the class browser.
+!! An alternative way to run tests
 
+In Pharo there are two ways to execute tests. You've seen one already, using Test Runner.  The other is from the System Browser. Next to each method and class is a small circle icon that indicates the success/failure status of the last test run.  Clicking on the icon next to a method runs just that test, while clicking on one next to a class runs all the tests for that class.  For now, we will continue to use Test Runner.
 
 
 !! Saving a Milestone on SmalltalkHub
 
-Saving packages is a nice way to be able to reload your work in another image and to go back in the past of your project. We show you now how to proceed. We suggest you to create an account on smalltalkHub (*http://www.smalltalkhub.com*) and a project to save your version of this tutorial. 
+Saving packages is a nice way to be able to reload your work in another image and to go back in the past of your project. We show you now how to proceed. We suggest you to create an account on SmalltalkHub (*http://www.smalltalkhub.com*) then create a project to save your version of this tutorial. 
 
-To illustrate the process, we created the project LaserGame in our account as shown in Figure *SmalltalkHub*. 
+Assuming you've signed up and created a "LaserGame" project similar to that shown in Figure *SmalltalkHub*, we can illustrate the process of saving to that project repository. 
 
 +Defining a project on SmalltalkHub>file://figures/3-Smalltalkhub.pdf|width=60|label=SmalltalkHub+
 
-Using the Monticello browser that you can open using the World menu: (1) select the LaserGame-Model package and press the '\+Repository' button to add the location of your SmalltalkHub project, choose an HTTP repository and paste the information given by smalltalkHub. Do the same with the LaserGame-Tests package. In our case we added the following repository to our packages.
+- Open the Monticello Browser from the World menu,
+- On the left, select the LaserGame-Model package.
+- Press the '\+Repository' button to add the location of your SmalltalkHub project.
+- Choose an HTTP repository.
+- Paste your "Monticello registration" information from SmalltalkHub (similar to that highlighted in Figure *SmalltalkHub*) 
+- Click the 'Open' button to check the repository opens without error, though it is likely empty.
+- Repeat the same steps for the 'LaserGame-Tests' package.
+ 
+We added the following repository to both our packages, but yours will differ slightly.
 
 [[[
 MCHttpRepository
 	location: 'http://smalltalkhub.com/mc/StephaneDucasse/LaserGame/main'
-	user: ''
-	password: ''
+	user: 'mylogin'
+	password: 'mysecret'
 ]]]
 
-You should get a situation similar to the one depicted by Figure *MCDirty*. Note that the star in front of your package means that there are changes in the system that do not have been saved in the code repository.
+You should get a situation similar to the one depicted by Figure *MCDirty*. Note that the star appearing in front of your packages means that there are changes in the system that have not been saved in the code repository. Dirty packages are sorted to the top of the list. 
 
 +Defining a project on SmalltalkHub>file://figures/3-MCDirty.pdf|width=60|label=MCDirty+
 
-Select each of the package on the right list and press the button 'Save'. Fill up the form with some useful information (for example, 'first version with dummy testing methods'). You should get the situation in the Monticello browser as depicted by Figure *MCSaved*. 
++Monticello Browser with saved packages>file://figures/3-MCSaved.pdf|width=60|label=MCSaved+
+
++Monticello packages saved in the SmalltalHub repository>file://figures/4-RepositorySaved.png|width=60|label=RepositorySaved+
+
+- Select one of the dirty packages and press the 'Save' button. Fill out the form with some useful information (e.g. 'first version with dummy testing methods'), after which you will observe the start is removed from the package, which is now resorted down with the rest of the clean packages. You should get the situation in the Monticello browser as depicted by Figure *MCSaved*. 
+
+- Scroll back up to the other dirty package and save that also.  You can reuse the previous log message by clicking 'Old log messages'. 
+
+- Now ''Refresh'' your SmalltalkHub repository (or open it again) and you should see something like Figure *RepositorySaved*.
+
+
 
 @@note We like to save code with green tests. This way we can load the code and continue from a stable milestone. We suggest you to do the same. We will indicate possible saving points in the course of this tutorial. 
 
-+Monticello Browser with saved packages>file://figures/3-MCSaved.pdf|width=60|label=MCSaved+
-
-Now we are ready to define methods and make our tests passed.
 
 
+Now we are ready to refine our methods to make our tests passed.
 
 
 
@@ -165,15 +209,23 @@ Now we are ready to define methods and make our tests passed.
 
 ! Getting our first test to pass
 
-Of course we know our first test ==testCellStateShouldBeOff== will fail before we even run it because we haven't fully defined the ==isOff== nor ==isOn== instance methods. To know if a cell is on we will have to examine its 4 internal line segments. You may remember the LED clock analogy we presented previously. If any of the 4 internal segments are lit-up then the cell can be thought of as ''on''.
+% http://squeak.preeminent.org/tut2007/html/016.html
 
-However, before we can define the ==isOn== or ==isOff== methods we will need to define the line segments on our class. We will use a dictionary to store pair directions and their associated values.
+Remember our first test ""==testCellStateShouldBeOff=="" which was defined as:
 
-Select ==BlankCell== class and add an instance variable ==activeSegments==. Note that we do not have to define an instance variable this way, we could simply type a method using it and compile the method, at that time the system will prompt us to know how to declare the variable (either as an instance variable or a local variable). 
+[[[
+BlankCellTest>>testCellStateShouldBeOff
+	| cell |
+	cell := BlankCell new.
+	self assert: cell isOff.
+	self deny: cell isOn
+]]]
 
+Of course we know this will fail before we even run it because we haven't fully defined either the ""==isOff=="" or ""==isOn=="" instance methods. Following on from the LED clock analogy presented earlier, to know if a cell is "on" we need to examine its four internal line segments. If any of the four internal segments are lit-up then the cell can be thought of as ''on''.
 
-+Accessors are now created and sorted in the 'accessing' protocol.>file://figures/4-WithAccessors.pdf|width=60|label=WithAccessors+
+However, before we can finish our ""==isOn=="" or ""==isOff=="" methods we need to define the line segments on our class. We need an instance variable to hold the active segments, using a dictionary to store pair directions and their associated values.
 
+@@dothis In the ''LaserGame-Model'' package, select the ""==BlankCell=="" class. Edit the class definition to add the instance variable  ""==activeSegments=="" and then 'Accept it'.  
 
 [[[
 Object subclass: #BlankCell
@@ -182,14 +234,23 @@ Object subclass: #BlankCell
 	category: 'LaserGame-Model'
 ]]]
 
-We will use Pharo's built-in tools to create accessors for this new instance variable. 
-- Select the class
-- Select the Refactorings sub menu item
-- Select the Inst Var Refactoring sub menu item and the menu item named 'Accessors'
-- The list of instance variable will be shown, right now it only contain the activeSegments instance variable. 
-- Select it. The system will show you a new window with the list of operations it will perform. Press 'Ok'.
+This modifies the class definition such that, as well as newly created ""==BlankCell=="" objects having that instance variable, any existing ""==BlankCell=="" objects within Pharo's live environment will also have the instance variable added to them.   
 
-This will create automatically the following methods categorized in the 'accessing' protocol as shown in Figure *WithAccessors*.
+@@note BTC-2014-05-30 The follow text is just a distraction here. There should be opportunity to demonstrate this soon. Fit it in somewhere later... "Note that we do not have to define an instance variable this way, we could simply type a method using it and compile the method, at that time the system will prompt us to know how to declare the variable (either as an instance variable or a local variable)." 
+
+We will then use Pharo's built-in refactoring tools to create accessors for this new instance variable. 
+
+@@dothis Select the ""==BlankCell=="" class. From its context menu select Refactoring > Inst Var Refactoring > Accessors. 
+
+@@dothis From the instance variable list, select ""==activeSegments=="". 
+
+@@dothis Review the list of proposed changes, then 'Accept' them. 
+
+This will automatically create the following methods categorized in the 'accessing' protocol as shown in Figure *WithAccessors*.
+
++Accessors are now created and sorted in the 'accessing' protocol.>file://figures/4-WithAccessors.pdf|width=60|label=WithAccessors+
+
+@@note BTC-2014-05-30 The (C) icon next to BlankCell in Figure *WithAccessors* indicates its been commented already. Was that done yet?
 
 [[[
 BlankCell>>activeSegments
@@ -201,23 +262,26 @@ BlankCell>>activeSegments: anObject
 	activeSegments := anObject
 ]]]
 
-Since we will store a dictionary inside the activeSegments variable we will rename its argument as
+@@dothis Now since we will store a Dictionary object inside the ""==activeSegments=="" variable we will rename its argument of its setter from anObject to aDictionary.  Note this is just for convenience as a form of documentation.  It does not affect compilation or operation of code.
+
 [[[
 BlankCell>>activeSegments: aDictionary
 	activeSegments := aDictionary
 ]]]
 
-@@note Creating accessors is not mandatory, especially for private state, in which case instance variables can be only accessed directly from within the methods. Different schools propose different practices with different pros and cons. We created here to provide uniformity during the complete book. 
+@@note Creating accessors is not mandatory, especially for private state, so that instance variables can be only accessed directly from within the methods of the class. Different schools propose different practices with different pros and cons. We created here to provide uniformity during the complete book. 
 
 
 
 
 !! Initializing Instances
 
-We need to initialize the new ==activeSegments== variable. Let us proceed.
+% http://squeak.preeminent.org/tut2007/html/017.html
 
-- Add a protocol 'initialize' in the class.
-- Define the following new instance method named ==initializeActiveSegments==. The default condition for these should all be false therefore it should look like the following one:
+We need to initialize the new ""==activeSegments=="" variable. Let us proceed.
+
+@@dothis Add a protocol 'initialize' to the ""==BlankCell=="" class.
+@@dothis Define the following new instance method named ""==initializeActiveSegments=="". The default condition for these should all be false therefore it should look like the following one:
 
 [[[
 BlankCell>>initializeActiveSegments
@@ -229,9 +293,9 @@ BlankCell>>initializeActiveSegments
 	self activeSegments at: #east put: false.
 ]]]
 
-- The method ==initializeActiveSegments== needs to be activated appropriately. There are several ways to do so: (1) specialize the default ==initialize== method or (2) use a lazy initialization. Let's implement and explain the first approach. 
+The method ""==initializeActiveSegments=="" needs to be activated appropriately. There are several ways to do so: (1) specialize the default ""==initialize=="" method or (2) use a lazy initialization. Let's implement and explain the first approach. 
 
-- Define the method ==initialize== as follows to send the message ==initializeSegments== we previously defined.
+@@dothis Define the method ""==initialize=="" as follows to send the message ""==initializeSegments=="" we previously defined.
 
 [[[
 BlankCell>>initialize
@@ -240,29 +304,38 @@ BlankCell>>initialize
 	self initializeActiveSegments
 ]]]
 
-@@note In Pharo, when we create a new instance sending the message ==new== to a class, the newly created instance receives the message ==initialize==. Therefore we get a chance to customize the default initialization.
+@@note In Pharo, when we create a new instance by sending the message ""==new=="" to a class, the newly created instance receives the message ""==initialize=="". Therefore we get a chance to customize the default initialization.
 
 
-The first thing we do in our ==initialize== method is to call ==super initialize==. This is a good practice to remember. Since we are implementing an ==initialize== method on our new class it is conceivable that we are overriding an important ==initialize== operation somewhere in our superclass hierarchy. By calling ==super initialize== we give the superclasses in our hierarchy the opportunity to complete their initialization steps first.
+The first thing we do in our ""==initialize=="" method is to call ""==super initialize=="". This is a good practice to remember. Since we are implementing an ""==initialize=="" method on our new class it is conceivable that we are overriding an important ""==initialize=="" operation somewhere in our superclass hierarchy. By calling ""==super initialize=="" we give the superclasses in our hierarchy the opportunity to complete their initialization steps first.
 
 !!! Alternate Approach: Lazy Initialization.
 
-Another approach is to use lazy-initialization, i.e., initialize the variable the first time the method is executed. Therefore we check if the variable has been already initialized (uninitialized instance variables points to ==nil==).
+Another approach is to use lazy-initialization, which initialises the variable the first time it is used. We first need check whether the variable has already been initialized (uninitialized instance variables points to ""==nil=="") so that we don't do this twice.  Usually this is done in one location in the getter method, to be called by other methods of the class instead of them accessing the instance variable directly.
 
-In such alternative, the getter method should be redefined as follow and uses systematically in the complete class.
-
+The getter method would be redefined as follows:
 
 [[[
 BlankCell>>activeSegments
 	^ activeSegments ifNil: [ self initializeActiveSegments ]
 ]]]
 
-Lazy-initialization is useful when systematically initializing an instance (i.e., when it is created) takes too much time. Lazy-initialization trades initialization time with a little extra cost (the one of the ==ifNil:==) to delay the initialization at the moment where it is really necessary.
+Lazy initialization is useful in a live programming environment where new instance variables are added to existing objects.  The ""==initialize=="" method of those objects would already been run once, and running it again would be awkward.  Also, when systematically initializing an instance at creation takes too much time, lazy initialization delays initialization until the the moment where it is really necessary.  This effectively trades creation time with a little extra cost (the ""==ifNil:=="" check) for each access to the variable.  The effectiveness of either approach is influence by application, which would be determined by performance profiling.
 
 
 !! Getting our Test Green
 
-We define the method ==isOn== as follows: it returns 
+% http://squeak.preeminent.org/tut2007/html/020.html (top part only, bottom part in 7-ImprovingTheModel.pier)
+
+@@dothis We redefine the method ""==isOn=="" as follows: 
+
+[[[
+BlankCell>>isOn
+
+	^ self activeSegments values anySatisfy: [ :each | each = true ]
+]]]
+
+Here ""==activeSegment=="" returns the dictionary whose ""==values==" are booleans indicating which segments are on, ""==anySatisfy=="" returns true as soon as one element is true. Now since ""==each==" will hold booleans, you could equivalently write:
 
 [[[
 BlankCell>>isOn
@@ -270,15 +343,7 @@ BlankCell>>isOn
 	^ self activeSegments values anySatisfy: [ :each | each ]
 ]]]
 
-Note that this definition means that we return true as soon as one element is true and is equivalent to 
-
-[[[
-BlankCell>>isOn
-
-	^ self activeSegments values anySatisfy: [ :each | each = true]
-]]]
-
-Once the method ==isOn== is defined, ==isOff== naturally follows as: 
+@@dothis Once the method ""==isOn=="" is defined, ""==isOff=="" naturally follows as: 
 
 [[[
 BlankCell>>isOff
@@ -293,18 +358,22 @@ Now if you rerun the test, it passes as shown by Figure *GreenTest*.
 
 !!! Adding a class comment
 
-It is not a good practice to let our classes undocumented as shown by the alert exclamation mark. 
-- Press the 'Comment' button
-- Add a comment as the following one for example
-
+It is not a good practice to leave our classes undocumented.  The Browser  alerts this condition as shown by the exclamation mark against a class. 
+- Ensure the ""==BLankCell=="" class is selected.
+- Press the ''Comment'' button.
+- Add a comment like the following one for example:
 
 [[[
-An empty cell. A beam entering west will exit east and inverse, south it will exit north and inverse.
+An empty cell. A beam entering the west will exit east and the same in reverse. A beam entering the south will exit north and same in reverse.
 ]]]
 
 - Accept the contents. The red exclamation mark should be gone.
 
 
 !! Save your packages
-Now that our tests are green we suggest to save a new configuration of our project following the process explain in the following chapter.
+Now that our tests are green we suggest to save a new configuration of our project following the process explained in the following chapter.
+
+@@note BTC-2014-05-30 Might be better to leave Versioneer to later on, when they've got something graphical to share.
+
+
 
