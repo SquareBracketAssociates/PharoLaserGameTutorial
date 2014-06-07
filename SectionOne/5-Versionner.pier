@@ -1,6 +1,8 @@
 ! Using Versionner
 
-When you save several packages you would like that when you reload them you get the correct versions of each packages. In addition, you want to make sure that the dependencies between packages are well defined. For example, it does not make sense to load LaserGame-Tests without LaserGame-Model. We say that LaserGame-Tests depends on LaserGame-Model. Pharo uses Metacello (explained in depth in Deep into Pharo *http://www.deepintopharo.org*) to manage dependencies within and between projects. The key concept with Metacello is the notion of configuration of a project. Here we will show how to use Versionner a new tool to define a configuration for the laser game.
+When you save several packages you would like that when you reload them you get the correct versions of each packages. In addition, you want to make sure that the dependencies between packages are well defined. For example, it does not make sense to load LaserGame-Tests without LaserGame-Model. We say that LaserGame-Tests depends on LaserGame-Model. Pharo uses Metacello (explained in depth in Deep into Pharo *http://www.deepintopharo.org*) to manage dependencies within and between projects. The key concept with Metacello is the notion of configuration of a project. Here we will show how to use Versionner a new tool to define a configuration for the laser game. Versionner allows you to save a new development structure (package structure and dependencies) and from there to release and commit specific versions of your packages.
+
+Let us see how we do that for our project.
 
 !!! First Steps: Adding and Naming a New Project
 
@@ -36,11 +38,11 @@ Now we are ready to declare package dependencies: we want to express that Tests 
 
 !!! Save to Development
 
-Being in development means that the configuration when requested to load the package will load the latest version of the package. This is not exactly what we want for now but we should save to development first. So we do it.  
+The button 'Save to Development' is meant to save each time you are changing the structure of your project i.e., if you add a package or add or change a dependency. Note that loading a development version means that the system will load the latest version of a package found in the project repository. This is not exactly what we want for now but we should save to development to save the structure of our project first. So we do it.  
 
-- Press the button Save to development. Pay attention the configuration is not committed to your remote server - smalltalkHub here yet. The configuration is created inside Pharo. 
+- Press the button 'Save to development'. Pay attention the configuration is not committed to your remote server - smalltalkHub here yet. The configuration is created inside Pharo. 
 
-!!! Adding a repository and Committing
+!!! Adding a Repository and Committing
 Now we should be able to save a development configuration. We just need to add the repository of our project (as shown in Figure *WithRepo*).
 
 - Add a repository by pressing the little cylinder icon and select the one of your project
@@ -49,13 +51,13 @@ Now we should be able to save a development configuration. We just need to add t
 
 Now we can commit (i.e., save the configuration to a remote server such as your smalltalkHub project).
 
-- Press the button 'Commit the project'. It will bring a new window showing the changes your did. It should look similar to Figure *commited*. Press the 'Ok' Button and your configuration will be saved (currently only the development one).
+- Press the button 'Commit the project'. It will bring a new window showing the changes your did. It should look similar to Figure *commited*. Press the 'Ok' Button and your configuration will be saved (currently only the development one). Now our the server we saved a first configuration defining the packages and dependencies of our project. 
 
 +With our repository.>file://figures/5-commited.pdf|width=60|label=commited+
 
 !!! Releasing a version
 
-Now we are ready to commit versions of our projects. 
+Now we are ready to release commit versions of our projects. 
 
 - Press the button 'Release version'. It will update the configuration with a new milestone representing the fact that this milestone is composed of the two specific version of our two packages. Pay attention once again the configuration is defined in Pharo but not save in the repository. Therefore we should commit it.
 

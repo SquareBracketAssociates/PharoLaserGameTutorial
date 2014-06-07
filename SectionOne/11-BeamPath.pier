@@ -1,0 +1,90 @@
+! Laser Beam Path 
+
+We are ready to work on the way to represent the laser beam and its path through the cells. Before jumping in the code let us think a bit about what we will need. We need to have a collection of elements describing the beam (probably such elements will be the basis to represent visually the beam when 
+we will start adding visual elements). When the beam will exist to the east of a given cell we will need to know to which other cell it will enter.
+This means that we will need a way to handle the cell locations and the interpretation of the direction based on such location. 
+
+
+
+
+!! Laser Path Element 
+When we consider the path of the laser beam through the grid, it's pretty easy to imagine the path as an ordered collection. The elements in the path may not be strictly cells since we will need to be aware how the laser is entering each cell. Let us get started by defining a new class named ==LaserPathElement== to represent path element. 
+
+Such element is bound to a given cell and an entry side, therefore we add the following instance variables to fully characterize an element. 
+
+[[[
+Object subclass: #LaserPathElement
+	instanceVariableNames: 'cell entrySide'
+	classVariableNames: ''
+	category: 'LaserGame-Model'
+]]]
+
+Add the corresponding accessors. 
+
+
+!! Adding a Class Comment
+
+So let us first add a class comment, for example as follows
+
+[[[
+I represent the part of a laser beam that is associated with a cell and with an entry side. 
+]]]
+
+!! Back to the Grid
+
+Go back to the Grid and add an instance variable for the laser beam path and then add its accessors. We'll work out initialization in a few minutes.
+
+[[[
+Object subclass: #Grid
+	instanceVariableNames: 'cells laserIsActive numberOfRows numberOfColumns laserBeamPath'
+	classVariableNames: ''
+	category: 'LaserGame-Model'
+]]]
+
+We also need a method to answer the starting cell when the laser is activated. This will always be the cell in the bottom left corner.
+
+[[[
+Grid>startingCell
+
+	^ self at: (1@ self numberOfRows)
+]]]
+
+
+!! Adding Location to Cell
+
+To be able to compute from a cell and a direction its neighbouring cell we will enhance the cells. Each cell should store its own grid location. This will make navigation and position calculations easier. Without the stored location, we can still find specific cell locations within the grid by scanning through all the cells until we find the identical one we are looking for, then we would answer that cell's key (a position) in the cell dictionary. Holding the location within the cell is easier and much faster. 
+
+
+Add the ==gridLocation== instance variable and its accessors.
+
+[[[
+Object subclass: #Cell
+	instanceVariableNames: 'activeSegments exitSides gridLocation'
+	classVariableNames: ''
+	category: 'LaserGame-Model'
+]]]
+
+
+We should not forget to set the grid location to the cells when the grid adds the cell to its own structure.
+
+[[[
+Grid>>at: aPoint put: aCell
+
+	aCell gridLocation: aPoint.
+	 self cells at: aPoint put: aCell.
+]]]
+
+
+
+
+
+
+
+
+
+
+
+
+
++Running the test brings the preview debugger.>file://figures/10-RowDebugPreview.pdf|width=60|label=RowDebugPreview+
+
