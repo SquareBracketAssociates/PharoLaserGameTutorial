@@ -1,3 +1,136 @@
+! Improving Our Debugging Context
+
+
+Dealing with the grid is a bit a pain because we do not have a graphical representation. But wait we can produce a textual representation of the grid and its elements to help us debug it and understand how it is working. 
+
+
+Here is a test showing the behavior that we want to start with. Here we test the output for an empty grid. We use ' x ' to make sure that we will print 
+the character cell well centered.
+
+
+[[[
+GridTest>>testEmptyGridTextualRepresentation
+
+	self assert: Grid new printString = '
+| x | x | x | x | x | 
+| x | x | x | x | x | 
+| x | x | x | x | x | 
+| x | x | x | x | x | 
+| x | x | x | x | x | 
+' 
+]]]
+
+
+On the class ==Grid== define the method ==printOn:==. Here is a possible implementation, again try to define it alone and follow our definition if you encounter difficulties.
+
+[[[
+Grid>>printOn: aStream	
+	aStream cr.
+	1 to: self numberOfRows do: [ :aRow |
+		aStream nextPutAll:  '| '.
+		1 to: self numberOfColumns do: [ :aCol |
+			aStream
+				nextPutAll: 'x';
+				nextPutAll: ' | '.
+			 ].
+		aStream cr.
+		 ]
+]]]
+
+Now we would like that the grid displays correctly its cells. Do you have an idea how we could do that?
+May be we could ask each cell its visual representation character instead of printing =='x'==. So what should we do? Just define three new methods
+on the class ==Cell==, ==Mirrorr==, and ==Target==.  Define a method named ==stringRepresentation== to the classes. We decided to use a string and not a character to be able to change fast the representation of a cell. Using a string implies that the representation can have a variable length.
+
+We can write the following tests. Now pay attention that the space representation is different between texteditors. Therefore you may have a different look.
+
+[[[
+GridTest>>testGridWithTarget
+
+	| grid |
+	grid := Grid new  at: 5@1 put: TargetCell new.  
+	self assert:  grid printString = '
+|   |   |   |   | o | 
+|   |   |   |   |   | 
+|   |   |   |   |   | 
+|   |   |   |   |   | 
+|   |   |   |   |   | 
+' 
+]]]
+
+
+
+[[[
+GridTest>>testGridWithMirrors
+
+	| grid |
+	grid := Grid new  at: 1@1 put: MirrorCell leanLeft.
+	self assert:  grid printString = '
+| \ |   |   |   |   | 
+|   |   |   |   |   | 
+|   |   |   |   |   | 
+|   |   |   |   |   | 
+|   |   |   |   |   | 
+' 
+]]]
+
+You have 3 space characters between the pipes.
+
+[[[
+Cell>>stringRepresentation
+
+	^ ' '
+]][
+We have one character in the empty string.
+
+
+MirrorCell>>stringRepresentation
+
+	^ leansLeft ifTrue: ['\'] ifFalse: [ '/']
+
+TargetCell>>stringRepresentation
+
+	^ 'o'
+]]
+
+Now we can redefine the ==printOn: method==
+
+[[[
+Grid>>printOn: aStream 
+	
+	aStream cr.
+	1 to: self numberOfRows do: [ :aRow |
+		aStream nextPutAll:  '| '.
+		1 to: self numberOfColumns do: [ :aCol |
+			aStream
+				nextPutAll: (self at: aCol@aRow) stringRepresentation;
+				nextPutAll: ' | '.
+			 ].
+		aStream cr.
+		 ]
+]]]
+
+
+A final test can validate it.
+
+
+[[[
+GridTest>>testTextualRepresentation
+
+	self assert: self generateDemoGrid printString = '
+|   |   |   | / | o | 
+| / |   |   |   | \ | 
+|   | \ | / |   | \ | 
+|   | \ | \ |   |   | 
+| / |   |   | / |   | 
+'
+]]]
+
+
+
+
+Notice that it would be good to have also a class to represent ==StartingCell== like that we could add behavior to it. 
+
+
 ! Laser Beam Path 
 
 We are ready to work on the way to represent the laser beam and its path through the cells. Before jumping in the code let us think a bit about what we will need. We need to have a collection of elements describing the beam (probably such elements will be the basis to represent visually the beam when 
@@ -260,7 +393,7 @@ Once all the tests pass, it is a good time to publish your code.
 !! Back to the Laser Beam Path
 
 
-Now we are read to work on laser path elements. Let us start to define a new class method that eases to instantiate ==LaserPathElement== objects. Do you have any idea how to proceed? When we create a ==LaserPathElement== we should mention the cell it is acting on and also the side of the cells we are talking. 
+Now we are ready to work on laser path elements. Let us start to define a new class method that makes the creation of ==LaserPathElement== objects easier. Do you have any idea how to proceed? When we create a ==LaserPathElement== we should mention the cell it is acting on and also the side of the cells we are talking. 
 
 [[[
 LaserPathElement  class>>cell: aCell entrySide: aDirectionSymbol 
@@ -274,11 +407,51 @@ LaserPathElement  class>>cell: aCell entrySide: aDirectionSymbol
 ]]]
 
 
+SD: add a test
+
+We can also add another method taking a direction instead than a symbol. Objects are always more powerful than mere data so we should favor their use. 
+
+[[[
+LaserPathElement class>>cell: aCell entrySideDirection: aDirection
+
+	^ self cell: aCell entrySide: aDirection directionSymbol
+]]]
+
+
+SD: add a test
 
 A key functionality that we need is a method that given a path element answers the next cell on grid. Here we will clearly see the importance of direction. Let us think a bit, as input we have an path element (which is linked to a cell and direction), a cell that know how the beam exits and a grid which contains all the cells. 
 
 
+[[[
+LaserPathElement>>nextElementIn: aGrid
 
+	|  direction newLocation nextCell |
+	direction := GridDirection directionFor: (self cell exitFor: self entrySide).
+	newLocation := self cell gridLocation + direction vector.
+	nextCell := aGrid at: newLocation.
+	^ nextCell isNil
+		ifTrue: [ nil ]
+		ifFalse: [ self class cell: nextCell entrySideDirection: direction ] 
+]]]
+
+
+There is a dependency on some behavior in ==Grid== that is expected here. When a location is given that would be invalid for the grid, because of indexes like 0 or ones larger than the number of rows or columns. The expectation here is that the cell found would be set to nil. We should go back to the Grid code and ensure we handle this. Just add the "ifAbsent: []" code.
+
+
+[[[
+Grid>>at: aPoint
+   ^ self cells at: aPoint ifAbsent: []
+]]]
+
+SD: Add a test
+
+
+SD: Add more tests
+
+
+
+  ==GridDirection directionFor: (self cell exitFor: self entrySide).== can be turned into cell method.
 
 
 
