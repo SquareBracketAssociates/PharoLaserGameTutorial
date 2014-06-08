@@ -13,10 +13,33 @@ Stéphane Ducasse adapted this tutorial to Pharo (3.0). Here is a list of change
 - Topics on package management and coding in the debugger have been added.
 - All the code has been adapted to Pharo and is available from SmalltalkHub in the LaserGame project under StephaneDucasse account ( ==http://smalltalkhub.com/#!/~StephaneDucasse/LaserGame== ).
 
-The attraction of porting this tutorial to Pharo was that, rather than present the shortest (unrealistic) development path just showcasing the technology, it shows a warts and all development process from concept through to deployment.  Each step is described in detail, including when mistakes were made. The aim is to show how natural it is to start rough, then iterate over the design and refactor the implementation with the confidence that comes from test driven development. This shows not only how to program Pharo, but how to evolve an application over time.  It is the unique way that process operates which provides Pharo its agility for fast application development.  
+Many tutorials showcase just the technology, by presenting the shortest (unrealistic) development path to the final product. This tutorial takes anote nother path, documenting the warts and all development of a project from first concept through to deployment. Each step is described in detail, including (especially) when mistakes were made.
 
+The aim here is to show how natural it is to start from a rough concept, then iterate over the design, refactoring the implementation with the confidence that comes from test driven development. This tutorial demonstrates not only how to program Pharo, but an effective way to evolve an application over time, which provides Pharo its agility for fast application development.
 
 Stéphane really wants to thank Steven for his gift to the Pharo and Smalltalk community.
+
+!! Conventions used in this book
+
+A large part of this tutorial provides sample code and discussion of that code. Within the narrative, references to a class name or method name will look like ""==MyClass=="" and ""==myMethod=="" respectively. To efficiently specify which class a method belongs to we write ""==MyClass>>myMethod=="".
+
+Blocks of sample code are displayed as follows:
+
+[[[
+MyClass>>myMethod
+	^ 1 + 2.
+]]]
+
+Note the class name prefix and ">>" are not typed into the code pane. This is a documentation convention only. So the above sample code when entered into the system would look like this:
+
+[[[
+myMethod
+	^ 1 + 2.
+]]]
+
+The carat "^" is the return symbol, here indicating a value of 3 is returned by the method. Note if there is no return symbol, self is returned by default.
+
+@@note BTC-2014-05-24 The carat symbol "^" seems to have been Squeakified. How to fix?
 
 
 !! License
@@ -25,7 +48,7 @@ Copyright 2007 by Steven Wessels. Copyright 2014 Steven Wessels and Stéphane Du
 
 The contents of this book are protected under Creative Commons Attribution-ShareAlike 3.0 Unported license.
 
-You are free:
+''You are free:''
 
 - to Share: to copy, distribute and transmit the work
 - to Remix: to adapt the work

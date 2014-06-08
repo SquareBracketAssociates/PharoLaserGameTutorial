@@ -1,5 +1,7 @@
 ! Enhancing MirrorCell
 
+% http://squeak.preeminent.org/tut2007/html/024.html
+
 A mirror cell is a cell which reflects the beam in a different direction. This cell is different from the Blank Cell because it has a mirror and the mirror can be oriented. The output direction of the entering laser beam is also different because of the mirror. 
 
 !! Adding a class comment
@@ -42,6 +44,7 @@ Add testing methods for ==isLeft== and ==isRight==. These methods should be defi
 
 !! Introducing a Common Ancestor
 
+% http://squeak.preeminent.org/tut2007/html/025.html
 
 This was all straight-forward. But what about the behavior that is similar to the Blank Cell such as ==isSegmentOn:== or ==laserEntersFrom:== or simply encoding the output direction of a beam? If we follow the way we defined this behavior in ==BlankCell==. We'll need the same instance variables 'activeSegments' and 'exitSides'. The behavior of how these values are set will be different. Having to define nearly the same behavior and state in two different classes is a sign that we can do better. We want to re-use the code as much as possible. This is a good case for an abstract class that would define what the two cells have in common. 
 
@@ -60,6 +63,8 @@ Object subclass: #Cell
 Pharo comes with a powerful tool to manipulate code (moving methods between classes, moving instance variables within a hierarchy...). A refactoring is a behavior preserving operation. This means that the behavior of a program should not change when applying a refactoring. This tools is called the RefactoringEngine (and it was the first fully working refactoring engine available for a programming language). The refactogin engine is available in the default class browser under the Refactoring menu item. 
 
 !!! Inheriting from Cell
+
+% http://squeak.preeminent.org/tut2007/html/026.html
 
 First let redefine ==MirrorCell== as a subclass of ==Cell==.
 
@@ -258,7 +263,7 @@ Up to now all the tests should pass.
 
 We know we will have to set the orientation for the mirror both when the cell is first instantiated as well as on-the-fly if the user decides to rotate the cell. Therefore we need methods to handle those requests, but first let us write two nice tests to make sure that we will be sure that our methods are correct.
 
-
+% http://squeak.preeminent.org/tut2007/html/027.html
 
 The ==testCellExitSides== method should be different, and should depend on orientation of the mirror. Use 2 new method names to show testing for each orientation.
 
@@ -364,6 +369,8 @@ Then this is a good moment to save your work.
 
 
 !! Instance Creation Methods
+
+% http://squeak.preeminent.org/tut2007/html/028.html
 
 Whenever we instantiate cells from the ==MirrorCell== we need to take an extra step of orienting the mirror. As a practical matter, the ==MirrorCell== must always have one orientation, left or right. We can streamline this behavior with a few new ''class'' methods on ==MirrorCell==.
 

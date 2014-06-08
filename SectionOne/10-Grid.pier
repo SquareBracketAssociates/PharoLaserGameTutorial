@@ -1,5 +1,7 @@
 ! Grid 
 
+% http://squeak.preeminent.org/tut2007/html/031.html
+
 From what we've seen so far, the Grid is responsible for holding the cells in a matrix. It must have a provision to add specific cells to specific locations, and it should have a mechanism to address cells at specific locations. The Grid will activate the laser beam.
 
 !! Adding a class comment
@@ -33,6 +35,7 @@ Object subclass: #Grid
 	category: 'LaserGame-Model'
 ]]]
 
+% http://squeak.preeminent.org/tut2007/html/032.html (rearranged bottom part first)
 
 !! Encapsulating cell accesses
 
@@ -53,6 +56,8 @@ Note that using a dictionary to store cells to support their accesses based on t
 Now using the ==at:== and ==at:put:== messages is nice because we will be able to change this implementation point at anytime in the future without impacting the rest of the program. 
 
 !! Initializing a Grid
+
+% http://squeak.preeminent.org/tut2007/html/032.html (rearranged top part second)
 
 Now we are ready to initialize a grid. We should set the value of the ==laserIsActive== variable to false and initialize the cells, taking into account the number of rows and columns. So let us start to define the ==initialize== method and see how it goes.
 
@@ -120,6 +125,7 @@ Now try to address the problem before looking at the solution.
 
 +TargetCell should also inherit from Cell.>file://figures/10-DebuggerNewDefinition.pdf|width=60|label=DebuggerNewDefinition+
 
+% http://squeak.preeminent.org/tut2007/html/033.html (bottom)
 
 We forgot to send ==numberOfRows== to self and the algorithm tried to use the instance variable directly. We knew the variable could have been nil and it was.
 Okay, that's easy enough of a mistake to fix. Here's the corrected ==initializeCells== method. You can fix it right in the debugger. Just press proceed when after you have saved the change and then re-run the unit tests.
@@ -156,6 +162,8 @@ Both strategies have pros and cons. Just be aware of the possibilities and pick 
 
 
 !! Validating Behavior with Some More Tests
+
+% http://squeak.preeminent.org/tut2007/html/034.html
 
 Let's enrich the Grid unit test. We'll specify a column and row size and re-test the basics.
 
@@ -301,6 +309,8 @@ Grid class>>potentiallySuspectNumberOfColumns: colInteger numberOfRows: rowInteg
 
 !! Building a better test context
 
+% http://squeak.preeminent.org/tut2007/html/035.html
+
 With the basics on the cells working, and a minimal test for Grid, we can start to write a much deeper unit test for the ==Grid== class, using broader parts of the overall design. Remember the original diagram used to introduce the game idea? Let's use that for our unit test. Here's the empty diagram and the diagram with the laser firing (see Figure *DoubleSetup*).
 
 
@@ -346,6 +356,8 @@ It is a good point to save your work.
 
 !! Conclusion 
 Now all the structure elements of a game are in place and tested so we will be able to start working on the beam computation. 
+
+@@note BTC-2014-05-31 Similar to how http://squeak.preeminent.org/tut2007/html/035A.html provides a check sheet, maybe it would be good to direct the reader how to use Monticello to "Compare Changes".
 
 
 
