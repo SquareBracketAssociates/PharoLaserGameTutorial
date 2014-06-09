@@ -346,7 +346,7 @@ BlankCell>>isOn
 	^ self activeSegments values anySatisfy: [ :each | each = true ]
 ]]]
 
-Here ""==activeSegment=="" returns the dictionary whose ""==values=="" are booleans indicating which segments are on, ""==anySatisfy=="" returns true as soon as one element is true. Now since ""==each=="" will hold booleans, you could equivalently write:
+Here ""==activeSegments=="" returns a dictionary whose ""==values=="" are booleans that indicate which segments are on. As soon as one of these is found to be ""==true=="",  ""==anySatisfy=="" returns true, and returns false if no segments are on. Now since ""==each=="" will hold booleans, you could equivalently write:
 
 [[[
 BlankCell>>isOn
@@ -370,8 +370,8 @@ Now if you rerun the test, it passes as shown by Figure *GreenTest*.
 !!! Adding a class comment
 
 It is not a good practice to leave our classes undocumented.  The Browser  alerts this condition as shown by the exclamation mark against a class. 
-- Ensure the ""==BLankCell=="" class is selected.
-- Press the ''Comment'' button.
+- Ensure the ""==BlankCell=="" class is selected.
+- Press the 'Comment' button.
 - Add a comment like the following one for example:
 
 [[[
