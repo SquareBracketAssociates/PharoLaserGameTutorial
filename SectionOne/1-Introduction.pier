@@ -20,7 +20,7 @@ Stéphane really wants to thank Steven for his gift to the Pharo and Smalltalk c
 
 !! Conventions used in this book
 
-A large part of this tutorial provides sample code and discussion of that code. Within the narrative, references to a class name or method name will look like ""==MyClass=="" and ""==myMethod=="" respectively. Blocks of sample code are shown as follows:
+A large part of this tutorial provides sample code and discussion of that code. Within the narrative, references to a class name or method name will look like ==MyClass== and ==myMethod== respectively. Blocks of sample code are shown as follows:
 
 [[[
 MyClass>>myMethod
@@ -29,7 +29,7 @@ MyClass>>myMethod
 
 @@note ""The "==MyClass>>==" part is not typed in."" 
 
-The ""==MyClass>>=="" prefix is a convention that specifies which class a method belongs to. The specified class must be selected in the System Browser when the method code is entered. When entered, it will look like this:
+The ==MyClass>>== prefix is a convention that specifies which class a method belongs to. The specified class must be selected in the System Browser when the method code is entered. When entered, it will look like this:
 
 [[[
 myMethod
