@@ -137,12 +137,54 @@ Run the tests and they should all be green. This is clearly a good occasion to s
 
 !!! About our initialize methods
 
-It looks like we already defined this method several times and exactly the same. This is clearly a sign that we can do better. In the literature
-this is called a code smell (with the idea that bad code smells rotten parfums). Propose a solution to this problem. 
+It looks like we already defined this method several times and exactly the same. This is clearly a sign that we can do better. In the literature this is called a code smell (with the idea that bad code smells rotten parfums). Propose a solution to this problem without readin ours.
 
+Our solution is the following one: we remove ==	self exitSides: Dictionary new.== from the ==initializeExitSides== and move it to the superclass ==initialize== method.
 
+[[[
+Cell>>initialize
 
-!! About TargetCell Design
+	super initialize.
+	self initializeActiveSegments.
+	self exitSides: Dictionary new.
+	self initializeExitSides.
+
+Cell>>initializeExitSides
+	"does nothing"
+]]]
+
+[[[
+BlankCell>>initializeExitSides
+
+	self exitSides at: #north put: #south.
+	self exitSides at: #south put: #north.
+	self exitSides at: #east put: #west.
+	self exitSides at: #west put: #east
+]]]
+
+And we can now remove the initialize methods of ==BlankCell==. 
+
+[[[
+MirrorCell>>initialize
+	super initialize.
+	self leanLeft
+]]]
+
+And we can remove the method ==initializeExitSides== from MirrorCell since it is a copy of its superclass.
+
+[[[
+TargetCell>>initializeExitSides
+
+	self exitSides at: #north put: nil.
+	self exitSides at: #east put: nil.
+	self exitSides at: #south put: nil.
+	self exitSides at: #west put: nil.
+]]]
+And we can remove the initialize method of ==TargetCell==. 
+
+Now we can run again our tests. And we can safely save a new version.
+
+!!! About TargetCell Design
 
 Using ==nil== to encode that there is no value for the exitSide is not an optimal way. Why? because it may force the client code to always check 
 if it gets true, false or nil. Good object-oriented design is often to have an object accepting the same messages but doing nothing. It is called the ==NullObject== design pattern. What is nice is that it eliminates all the ==ifNil:== tests and follow the "tell don't ask" way of really thinking object-oriented programming. 

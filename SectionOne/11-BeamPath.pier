@@ -1,3 +1,136 @@
+! Improving Our Debugging Context
+
+
+Dealing with the grid is a bit a pain because we do not have a graphical representation. But wait we can produce a textual representation of the grid and its elements to help us debug it and understand how it is working. 
+
+
+Here is a test showing the behavior that we want to start with. Here we test the output for an empty grid. We use ' x ' to make sure that we will print 
+the character cell well centered.
+
+
+[[[
+GridTest>>testEmptyGridTextualRepresentation
+
+	self assert: Grid new printString = '
+| x | x | x | x | x | 
+| x | x | x | x | x | 
+| x | x | x | x | x | 
+| x | x | x | x | x | 
+| x | x | x | x | x | 
+' 
+]]]
+
+
+On the class ==Grid== define the method ==printOn:==. Here is a possible implementation, again try to define it alone and follow our definition if you encounter difficulties.
+
+[[[
+Grid>>printOn: aStream	
+	aStream cr.
+	1 to: self numberOfRows do: [ :aRow |
+		aStream nextPutAll:  '| '.
+		1 to: self numberOfColumns do: [ :aCol |
+			aStream
+				nextPutAll: 'x';
+				nextPutAll: ' | '.
+			 ].
+		aStream cr.
+		 ]
+]]]
+
+Now we would like that the grid displays correctly its cells. Do you have an idea how we could do that?
+May be we could ask each cell its visual representation character instead of printing =='x'==. So what should we do? Just define three new methods
+on the class ==Cell==, ==Mirrorr==, and ==Target==.  Define a method named ==stringRepresentation== to the classes. We decided to use a string and not a character to be able to change fast the representation of a cell. Using a string implies that the representation can have a variable length.
+
+We can write the following tests. Now pay attention that the space representation is different between texteditors. Therefore you may have a different look.
+
+[[[
+GridTest>>testGridWithTarget
+
+	| grid |
+	grid := Grid new  at: 5@1 put: TargetCell new.  
+	self assert:  grid printString = '
+|   |   |   |   | o | 
+|   |   |   |   |   | 
+|   |   |   |   |   | 
+|   |   |   |   |   | 
+|   |   |   |   |   | 
+' 
+]]]
+
+
+
+[[[
+GridTest>>testGridWithMirrors
+
+	| grid |
+	grid := Grid new  at: 1@1 put: MirrorCell leanLeft.
+	self assert:  grid printString = '
+| \ |   |   |   |   | 
+|   |   |   |   |   | 
+|   |   |   |   |   | 
+|   |   |   |   |   | 
+|   |   |   |   |   | 
+' 
+]]]
+
+You have 3 space characters between the pipes.
+
+[[[
+Cell>>stringRepresentation
+
+	^ ' '
+]][
+We have one character in the empty string.
+
+
+MirrorCell>>stringRepresentation
+
+	^ leansLeft ifTrue: ['\'] ifFalse: [ '/']
+
+TargetCell>>stringRepresentation
+
+	^ 'o'
+]]
+
+Now we can redefine the ==printOn: method==
+
+[[[
+Grid>>printOn: aStream 
+	
+	aStream cr.
+	1 to: self numberOfRows do: [ :aRow |
+		aStream nextPutAll:  '| '.
+		1 to: self numberOfColumns do: [ :aCol |
+			aStream
+				nextPutAll: (self at: aCol@aRow) stringRepresentation;
+				nextPutAll: ' | '.
+			 ].
+		aStream cr.
+		 ]
+]]]
+
+
+A final test can validate it.
+
+
+[[[
+GridTest>>testTextualRepresentation
+
+	self assert: self generateDemoGrid printString = '
+|   |   |   | / | o | 
+| / |   |   |   | \ | 
+|   | \ | / |   | \ | 
+|   | \ | \ |   |   | 
+| / |   |   | / |   | 
+'
+]]]
+
+
+
+
+Notice that it would be good to have also a class to represent ==StartingCell== like that we could add behavior to it. 
+
+
 ! Laser Beam Path 
 
 We are ready to work on the way to represent the laser beam and its path through the cells. Before jumping in the code let us think a bit about what we will need. We need to have a collection of elements describing the beam (probably such elements will be the basis to represent visually the beam when 
@@ -65,19 +198,260 @@ Object subclass: #Cell
 ]]]
 
 
-We should not forget to set the grid location to the cells when the grid adds the cell to its own structure.
+We should not forget to set the grid location to the cells when the grid adds the cell to its own structure. 
+We modify then the method ==at:put:== of the class ==Grid== as follows:
 
 [[[
 Grid>>at: aPoint put: aCell
 
 	aCell gridLocation: aPoint.
-	 self cells at: aPoint put: aCell.
+	self cells at: aPoint put: aCell.
 ]]]
 
 
 
 
 
+!! Handling Directions
+
+We've been using two kinds of systems to describe cell locations and laser beam direction. In one situation we use ==x\@y== (column x, row y) objects to describe where cells are located within the grid. We describe laser beam direction with the symbols ==\#north==, ==\#east==, ==\#south== and ==\#west==. We need a way to allow us to combine these concepts when we start to navigate our laser beam across the grid and through cells. 
+
+Let us think about a solution: what would be good is to have objects that capture that for example going east is increasing of one the ==x== coordinates. If we are in cell ==5\@5== going east we should get to the cell ==6\@5==. Similarly going south is changing the y coordinates. 
+
+A first reflex could be to write some conditions but we can do better. Indeed we do not want to have to have tests and conditionals and we can imagine that we can get different objects representing different directions and each one answering the delta that should be applied to get from one cell to the other one.
+
+SD: should be better explained. It took me a while to understand it.
+
+SD add a diagram explaining how to use Direction
+
+For this we will create classes to represent the different direction and we will start by defining a common superclass named ==GridDirection==. We will then define a couple of messages on these classes. 
+
+[[[
+Object subclass: #GridDirection
+	instanceVariableNames: ''
+	classVariableNames: ''
+	category: 'LaserGame-Model'
+]]]
+
+And we can add a comment.
+
+[[[
+I represent directions for the beam path accross the grid cells.
+]]]
+
++A hierarchy of directions.>file://figures/11-GridDirection.pdf|width=60|label=RowDebugPreview+
+
+Then we can define one suclass for each direction as follows
+
+[[[
+GridDirection subclass: #EastGridDirection
+	instanceVariableNames: ''
+	classVariableNames: ''
+	category: 'LaserGame-Model'
+]]]
+
+[[[
+GridDirection subclass: #WestGridDirection
+	instanceVariableNames: ''
+	classVariableNames: ''
+	category: 'LaserGame-Model'
+]]]
+
+[[[
+GridDirection subclass: #NorthGridDirection
+	instanceVariableNames: ''
+	classVariableNames: ''
+	category: 'LaserGame-Model'
+]]]
+
+[[[
+GridDirection subclass: #SouthGridDirection
+	instanceVariableNames: ''
+	classVariableNames: ''
+	category: 'LaserGame-Model'
+]]]
+
+You should obtain an inheritance hierarchy as described in *RowDebugPreview*.
+
+
+
+
+
+Now for each subclasses, we can define some messages: the ==vector== which returns the delta from the cell to the direction and ==directionSymbol== which returns the symbol encoding the direction. 
+
+For example we want to write 
+
+[[[
+SouthGridDirection directionSymbol
+  -> #south
+]]]
+
+
+[[[
+SouthGridDirection vector 
+  -> 0@1
+
+]]]
+
+Since we want to ask the class for its encodings, we will define ''class'' methods on each subclasses as below.
+
+[[[
+EastGridDirection class>>vector
+	^ 1 @ 0
+
+EastGridDirection class>>directionSymbol
+	^ #east
+]]]
+
+
+
+
+[[[
+NorthGridDirection class>>vector
+	^ 0 @ -1
+
+NorthGridDirection class>>directionSymbol
+	^ #north
+]]]
+
+
+[[[
+SouthGridDirection class>>directionSymbol
+	^ #south
+
+SouthGridDirection class>>vector
+	^ 0 @ 1
+]]]
+
+
+[[[
+WestGridDirection class>>directionSymbol
+	^ #west
+
+WestGridDirection class>>vector
+	^ - 1 @ 0
+]]]
+
+
+
+Now we can define a method named ==directionFor:== returning the class of the direction associated to directiondescribed by a symbol. 
+
+[[[
+GridDirection directionFor: #east
+-> EastGridDirection
+]]]
+
+Here is the class method definition:
+
+[[[
+GridDirection class>>directionFor: aDirectionSymbol
+
+	^ self subclasses 
+			detect:  [ :cls | cls directionSymbol = aDirectionSymbol ]
+]]]
+
+
+
+
+
+!! Adding Some Tests
+
+Now we need a unit test for the grid direction vector code. So let us add the new class ==GridDirectionTestCase== is a subclass of ==TestCase== of course.
+
+[[[
+TestCase subclass: #GridDirectionTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	category: 'LaserGame-Tests'
+]]]
+
+
+[[[
+GridDirectionTest>>testDirectionSelection
+	| direction |
+	direction := GridDirection directionFor: #north.
+	self assert: direction = NorthGridDirection.
+	self assert: direction vector = ( 0 @ -1 ).
+	
+	direction := GridDirection directionFor: #east.
+	self assert: direction = EastGridDirection.
+	self assert: direction vector = ( 1 @ 0 ).
+	
+	direction := GridDirection directionFor: #south.
+	self assert: direction = SouthGridDirection.
+	self assert: direction vector = ( 0 @ 1 ).
+	
+	direction := GridDirection directionFor: #west.
+	self assert: direction = WestGridDirection.
+	self assert: direction vector = ( -1 @ 0 ).
+]]]
+
+
+Once all the tests pass, it is a good time to publish your code.
+
+
+!! Back to the Laser Beam Path
+
+
+Now we are ready to work on laser path elements. Let us start to define a new class method that makes the creation of ==LaserPathElement== objects easier. Do you have any idea how to proceed? When we create a ==LaserPathElement== we should mention the cell it is acting on and also the side of the cells we are talking. 
+
+[[[
+LaserPathElement  class>>cell: aCell entrySide: aDirectionSymbol 
+
+	| element |
+	element := self basicNew.
+	element 
+		cell: aCell;
+		entrySide: aDirectionSymbol.
+	^ element
+]]]
+
+
+SD: add a test
+
+We can also add another method taking a direction instead than a symbol. Objects are always more powerful than mere data so we should favor their use. 
+
+[[[
+LaserPathElement class>>cell: aCell entrySideDirection: aDirection
+
+	^ self cell: aCell entrySide: aDirection directionSymbol
+]]]
+
+
+SD: add a test
+
+A key functionality that we need is a method that given a path element answers the next cell on grid. Here we will clearly see the importance of direction. Let us think a bit, as input we have an path element (which is linked to a cell and direction), a cell that know how the beam exits and a grid which contains all the cells. 
+
+
+[[[
+LaserPathElement>>nextElementIn: aGrid
+
+	|  direction newLocation nextCell |
+	direction := GridDirection directionFor: (self cell exitFor: self entrySide).
+	newLocation := self cell gridLocation + direction vector.
+	nextCell := aGrid at: newLocation.
+	^ nextCell isNil
+		ifTrue: [ nil ]
+		ifFalse: [ self class cell: nextCell entrySideDirection: direction ] 
+]]]
+
+
+There is a dependency on some behavior in ==Grid== that is expected here. When a location is given that would be invalid for the grid, because of indexes like 0 or ones larger than the number of rows or columns. The expectation here is that the cell found would be set to nil. We should go back to the Grid code and ensure we handle this. Just add the "ifAbsent: []" code.
+
+
+[[[
+Grid>>at: aPoint
+   ^ self cells at: aPoint ifAbsent: []
+]]]
+
+SD: Add a test
+
+
+SD: Add more tests
+
+
+
+  ==GridDirection directionFor: (self cell exitFor: self entrySide).== can be turned into cell method.
 
 
 
@@ -86,5 +460,11 @@ Grid>>at: aPoint put: aCell
 
 
 
-+Running the test brings the preview debugger.>file://figures/10-RowDebugPreview.pdf|width=60|label=RowDebugPreview+
+
+
+
+
+!! About Encodings Default Values and Shared Pools
+
+Note that there are other ways in Pharo to define constant: Shared pools 
 
