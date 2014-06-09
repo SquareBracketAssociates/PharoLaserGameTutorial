@@ -1,15 +1,15 @@
 ! Using Versionner
 
-When you save several packages you would like that when you reload them you get the correct versions of each packages. In addition, you want to make sure that the dependencies between packages are well defined. For example, it does not make sense to load LaserGame-Tests without LaserGame-Model. We say that LaserGame-Tests depends on LaserGame-Model. Pharo uses Metacello (explained in depth in Deep into Pharo *http://www.deepintopharo.org*) to manage dependencies within and between projects. The key concept with Metacello is the notion of configuration of a project. Here we will show how to use Versionner a new tool to define a configuration for the laser game. Versionner allows you to save a new development structure (package structure and dependencies) and from there to release and commit specific versions of your packages.
+When you save several packages you would like to be able to reload package versions that work together. In addition, you want to make sure that the dependencies between packages are well defined. For example, it does not make sense to load LaserGame-Tests without LaserGame-Model. We say that LaserGame-Tests depends on LaserGame-Model. Pharo uses Metacello (explained in depth in Deep into Pharo *http://www.deepintopharo.org*) to manage dependencies within and between projects. The key concept with Metacello is the notion of ''configuration of'' a project. Indeed, the convention is that we define these dependencies in a class called ''ConfigurationOfLaserGame''.
 
-Let us see how we do that for our project.
-
-!!! First Steps: Adding and Naming a New Project
-
-- Open Versionner using the Tools Menu available in the World menu.
+The tool ''Versionner'' helps us define the configuration we want. This allows us to save a the development structure (package structure and dependencies), and from there release and commit specific versions of your packages. Lets see that in action for our project.
 
 
-- Add a New Project by pressing the New Project button. Name the new project 'LaserGame'. You should get a window similar to one shown by Figure *EmptyConfig*.
+!!! First Steps: Adding and Naming a New Configuration
+
+- Open World menu > Tools > Versionner.
+
+- Press the New Project button. Name the new project 'LaserGame'. You should get a window similar to that shown by Figure *EmptyConfig*.
 
 +An empty configuration.>file://figures/5-EmptyConfig.pdf|width=50|label=EmptyConfig+
 
@@ -18,50 +18,67 @@ Let us see how we do that for our project.
 !!! Adding Packages
 Now we will list the packages that should be managed by the configuration.
 
-- On the left list, select the development item
-- In package pane press add package button
-- Once prompted, pick up the package LaserGame-Model
-- Add the package LaserGame-Tests
+- In the ''Versions'' list on the left, select the ''development'' item.
+- In the ''Packages'' pane press the 'Add package' button, which displays a filtered list of packages.
+- Pick the package LaserGame-Model, and 'Ok'.
+- Repeat and add the package LaserGame-Tests.
 
-You should get two packages in the package list.
+You should now have two packages in the ''Packages'' list.
 
 !!! Declaring Package Dependencies
 
-Now we are ready to declare package dependencies: we want to express that Tests depends on Model. 
+Now we are ready to declare package dependencies: we want to express that the Tests depend on the Model. 
 
 +Ready to add required package.>file://figures/5-ToAddDependent.pdf|width=60|label=ToAddDependent+
 
-- Select laserGame-Tests package and edit the requirement (pen icon) (See Figure *ToAddDependent*). 
-- Press the '\+' button and select the LaserGame-Model (this means that LaserGame-Model is required to load LaserGame-Tests), you should now get a system similar to the one shown in Figure *WithDependent*.
+- Select the LaserGame-Tests package and edit its requirements by clicking on the 'Edit package requirements' button (the pen icon in Figure *ToAddDependent*). 
+- Press the '\+' button and choose LaserGame-Model.
+
+You have just defined that the LaserGame-Model package is required to be loaded prior to LaserGame-Tests.  You can observe this by expanding the ''Packages'' list, to get a system similar to the one shown in Figure *WithDependent*.
 
 +With Dependent Package.>file://figures/5-WithDependent.pdf|width=60|label=WithDependent+
 
 !!! Save to Development
 
-The button 'Save to Development' is meant to save each time you are changing the structure of your project i.e., if you add a package or add or change a dependency. Note that loading a development version means that the system will load the latest version of a package found in the project repository. This is not exactly what we want for now but we should save to development to save the structure of our project first. So we do it.  
+The Metacello convention is 
 
-- Press the button 'Save to development'. Pay attention the configuration is not committed to your remote server - smalltalkHub here yet. The configuration is created inside Pharo. 
+The button 'Save to Development' is meant to be used each time you change the structure of your project i.e. if you add a package or add or change a dependency. Loading a development version of a Configuration into an image means that the latest version of packages found in the project repository will be loaded. This is not our end goal, but for now we use it to first save the structure of our project.  
+
+- Press the button 'Save to development'. Pay attention that the configuration is not yet committed to your remote repository. The configuration is only staged inside the Pharo image. You can observe this with System Browser showing the newly created ''ConfigurationOfLaserGame'' class.  
 
 !!! Adding a Repository and Committing
 Now we should be able to save a development configuration. We just need to add the repository of our project (as shown in Figure *WithRepo*).
 
-- Add a repository by pressing the little cylinder icon and select the one of your project
+- Under the ''Packages'' list is an little cylinder icon 'Add new repository to this project'. Click this.
+
+- Scroll down to your LaserGame project (e.g. similar to LaserGame/StephaneDucasse). 
 
 +With our repository.>file://figures/5-WithRepo.pdf|width=60|label=WithRepo+
 
-Now we can commit (i.e., save the configuration to a remote server such as your smalltalkHub project).
+Now we can push the configuration to that remote repository. 
 
-- Press the button 'Commit the project'. It will bring a new window showing the changes your did. It should look similar to Figure *commited*. Press the 'Ok' Button and your configuration will be saved (currently only the development one). Now our the server we saved a first configuration defining the packages and dependencies of our project. 
+- Press the button 'Commit the project'. It will bring a new window showing the changes your did. It should look similar to Figure *commited*. 
+- Enter a commit message
+- Ensure the Remote is your remote repository (e.g. similar to LaserGame/StephaneDucasse). Note the 'DIR' refers to your local package cache.
+- Press the 'Ok' Button and your configuration will be saved (currently only the development one). 
+
+We now have saved to a remote server the first configuration defining the packages and dependencies of our project. 
 
 +With our repository.>file://figures/5-commited.pdf|width=60|label=commited+
 
 !!! Releasing a version
 
-Now we are ready to release commit versions of our projects. 
+Now at some point you will want to commit release versions of your projects. This is done as follows:
 
-- Press the button 'Release version'. It will update the configuration with a new milestone representing the fact that this milestone is composed of the two specific version of our two packages. Pay attention once again the configuration is defined in Pharo but not save in the repository. Therefore we should commit it.
+- Press the button 'Release version' and specify the version number according to your needs. (You might consider semantic versioning http://semver.org). 
+- Leave 'Resolve symbolic dependencies' selected in most cases.  This ensures your configuration always loads the exact same package versions. If your configuration refers to a symbolic name like #stable, then your specific release version would load version dependencies as #stable progressed for them.
+- Click 'Ok' and the configuration is updated with a new milestone, comprising the two specific versions currently loaded in the image for our two packages. 
 
-- Commit again the configuration by pressing the button 'Commit the project'. You should obtain a configuration state as shown in Figure *Released*. You should see that the package list now also shows you the exact version of the packages.
+Pay attention once again that this release configuration is defined only in the image, and not yet saved in a repository.
+
+@@todo BTC-2014-06-09 I got an alert "Question - There are unsaved changes to the development version. Ok to loose these changes?"  Well, no I don't want to loose them, but after I click <No> what is the next step?? Should I check Monticello? Should the packages be save first so that they are clean? Or do I just need to do a 'Save to development'?
+
+- Again push the project to the remote repository by pressing the button 'Commit the project'. You should obtain a configuration state as shown in Figure *Released*. You should see that the package list now also shows you the exact version of the packages.
 
 +The project now has a stable version and a development one.>file://figures/5-Released.pdf|width=60|label=Released+
 
@@ -72,7 +89,9 @@ Each time you commit a configuration, the system produces a log of the commit fo
 
 !!! Ready to Continue
 
-Now each time you want to save your work you can either select the development and commit or release a version and commit it. 
+Now each time you want to save your work you can either:
+- Select the ''development'' item and commit it, or
+- Select 'Release version' and commit it. 
 
 
 
