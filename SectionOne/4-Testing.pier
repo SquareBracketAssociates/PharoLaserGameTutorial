@@ -42,7 +42,7 @@ Within a class, methods are organised into "protocols" that are shown in the thi
 
 @@note Be sure that your browser is showing "instance" methods when you add this new method protocol and further methods - because the methods we define for now will correspond to messages sent to instances and not their classes.  This is done by observing the "Class side" check-box (beneath the second browser pane) is unselected, as shown in Figure *testCellStateShouldBeOffEmpty*. 
 
-@@note BTC-2014-05-24 The selected class BlankCellTestCase in Figure *testCellStateShouldBeOffEmpty* doesn't match BlankCellTest used in the narrative.
+@@todo BTC-2014-05-24 The selected class BlankCellTestCase in Figure *testCellStateShouldBeOffEmpty* doesn't match BlankCellTest used in the narrative.
 
 @@dothis Select the protocol named ""==tests=="". 
 
@@ -110,12 +110,12 @@ BlankCell>>isOn
 
 Even though we know the ""==isOn=="" and ""==isOff=="" methods are wrong (since we hard-coded both to answer ""==false=="") we should run the ""==testCellStateShouldBeOff=="" test. Enough code has been written already that we want to be sure that ""==BlankCell=="" objects are created correctly and the test produces the "wrong" result we are expecting. Lets do that now.
 
-@@note BTC-2015-05-21 Rather than give two ways to do this, we mention just one we a demonstrating.  I moved the mention of the second to later.  Also, note I'm just using the "dothis" Pharo icons for code changes, and not here.
+@@todo BTC-2015-05-21 Rather than give two ways to do this, we mention just one we a demonstrating.  I moved the mention of the second to later.  Also, note I'm just using the "dothis" Pharo icons for code changes, and not here.
 
 - Open the Test Runner from the world Menu.
 - Filter the listed packages by typing 'Laser' in the top left input field as shown in Figure *TestRunnerYellow*.
-- Select the package LaserGame-Tests.
-- Select the class ""==BlankCellTest=="".
+- Ensure the LaserGame-Tests package is selected.
+- Ensure the ""==BlankCellTest=="" is selected.
 - Press the button 'Run Selected', and you should get the situation shown in Figure *TestRunnerYellow*.
 
 +Running a test that does not pass.>file://figures/4-TestRunnerYellow.pdf|width=60|label=TestRunnerYellow+
@@ -129,7 +129,7 @@ Even though we know the ""==isOn=="" and ""==isOff=="" methods are wrong (since 
 
 In the yellow pane Test Runner shows "1 failure". Beneath that the failing test methods are listed. We can open a debugger to investigate where the problem comes as follows:
 
-- In Test Runner, click once on the failed test.  A Debugger Preview window opens displaying the call stack as shown in Figure *DebuggerPreview*. 
+- In Test Runner, click once on the failed test ""==BlankCellTest>>#testCellStateShouldBeOff=="".  A Debugger Preview window opens displaying the call stack as shown in Figure *DebuggerPreview*. 
 
 +The Debugger preview.>file://figures/4-DebuggerPreview.pdf|width=60|label=DebuggerPreview+
 
@@ -137,7 +137,7 @@ In the yellow pane Test Runner shows "1 failure". Beneath that the failing test 
 
 - Click the ''Debug'' button and select the test method named ""==testCellStateShouldBeOff=="" from the call-stack to see where it actually failed. You should see something like Figure *DebuggerStack*.
 
-@@note BTC-2014-05-24 The activeSegments instance variable in Figure *DebuggerStack* has not been created yet.  Can probably just edit the bitmap to fix.
+@@todo BTC-2014-05-24 The activeSegments instance variable in Figure *DebuggerStack* has not been created yet.  Can probably just edit the bitmap to fix.
 
 When we navigate the stack (by clicking on different lines in the top pane), the variables listed down below change. We can inspect objects held by these variables by choosing ''Inspect it'' from their context menu. You can also select any part of the code to evaluate and inspect. Figure *DebuggerInspector* shows the Inspector that appeared after selecting the text "cell" and from its context menu, choosing to ''Inspect it''. Later we will show that we can also change the method definition and proceed on the fly.
 
@@ -145,31 +145,35 @@ When we navigate the stack (by clicking on different lines in the top pane), the
 
 
 
-That looks great. Okay. Let's go back and make our model pass the tests. Close the debugger and inspector we opened. You can leave the Test Runner open for later. Go back to the class browser.
-
 
 !! An alternative way to run tests
 
-In Pharo there are two ways to execute tests. You've seen one already, using Test Runner.  The other is from the System Browser. Next to each method and class is a small circle icon that indicates the success/failure status of the last test run.  Clicking on the icon next to a method runs just that test, while clicking on one next to a class runs all the tests for that class.  For now, we will continue to use Test Runner.
+In Pharo there are two ways to execute tests. You've seen one already, using Test Runner.  The other way to run tests is from the System Browser, which you can see here:
+- Find the System Browser you were working in before (or open a new one).
+- Browse to package LaserGame-Tests and class ""==BlankCellTest=="".
+- Observe next to the ""==testCellStateShouldBeOff=="" method is a small circle icon that indicates the success/failure status of the last test run - green for success, yellow or red for failure.  
+- Click on that icon to run just that single test. Figure *DebuggerPreview* will appear and you can proceed as before.
+- Observe a similar icon next to the class ""==BlankCellTest=="". Clicking on that icon runs all the tests for that class.
+
+For now, we will continue using Test Runner.
 
 
 !! Saving a Milestone on SmalltalkHub
 
-Saving packages is a nice way to be able to reload your work in another image and to go back in the past of your project. We show you now how to proceed. We suggest you to create an account on SmalltalkHub (*http://www.smalltalkhub.com*) then create a project to save your version of this tutorial. 
+Saving packages is a nice way to be able to reload your work in another image and to go back in the past of your project. We suggest you to create an account on SmalltalkHub (*http://www.smalltalkhub.com*) and a project to save your version of this tutorial. 
 
-Assuming you've signed up and created a "LaserGame" project similar to that shown in Figure *SmalltalkHub*, we can illustrate the process of saving to that project repository. 
+Assuming you've signed up and created a "LaserGame" project similar to that shown in Figure *SmalltalkHub*, we can illustrate the process of saving to that project repository.:
 
 +Defining a project on SmalltalkHub>file://figures/3-Smalltalkhub.pdf|width=60|label=SmalltalkHub+
 
-- Open the Monticello Browser from the World menu,
-- On the left, select the LaserGame-Model package.
-- Press the '\+Repository' button to add the location of your SmalltalkHub project.
-- Choose an HTTP repository.
-- Paste your "Monticello registration" information from SmalltalkHub (similar to that highlighted in Figure *SmalltalkHub*) 
-- Click the 'Open' button to check the repository opens without error, though it is likely empty.
-- Repeat the same steps for the 'LaserGame-Tests' package.
- 
-We added the following repository to both our packages, but yours will differ slightly.
+- From the World menu, open Monticello Browser.
+- On the left, select the ''LaserGame-Model'' package.
+- Press the '\+Repository' button.
+- Choose an HTTP repository, which will display a template like this:
+[[[
+MCHttpRepository	location: ''	user: ''	password: ''
+]]]
+- Copy/paste your "Monticello registration" information from SmalltalkHub (as highlighted in Figure *SmalltalkHub*) over the top of the template, and click 'OK'. We added the following repository, but yours will differ slightly.
 
 [[[
 MCHttpRepository
@@ -178,7 +182,12 @@ MCHttpRepository
 	password: 'mysecret'
 ]]]
 
-You should get a situation similar to the one depicted by Figure *MCDirty*. Note that the star appearing in front of your packages means that there are changes in the system that have not been saved in the code repository. Dirty packages are sorted to the top of the list. 
+- Click the 'Open' button to check the repository opens without error, though it is likely empty.
+- Repeat these same steps for the 'LaserGame-Tests' package.
+ 
+
+
+You should get a situation similar to the one depicted by Figure *MCDirty*. Note that the star appearing in front of your packages means there are changes in the system that have not been saved in the repository. Dirty packages are sorted to the top of the list. 
 
 +Defining a project on SmalltalkHub>file://figures/3-MCDirty.pdf|width=60|label=MCDirty+
 
@@ -186,11 +195,13 @@ You should get a situation similar to the one depicted by Figure *MCDirty*. Note
 
 +Monticello packages saved in the SmalltalHub repository>file://figures/4-RepositorySaved.png|width=60|label=RepositorySaved+
 
-- Select one of the dirty packages and press the 'Save' button. Fill out the form with some useful information (e.g. 'first version with dummy testing methods'), after which you will observe the start is removed from the package, which is now resorted down with the rest of the clean packages. You should get the situation in the Monticello browser as depicted by Figure *MCSaved*. 
+- Select one of the dirty packages and press the 'Save' button. Fill out the form with some useful information (e.g. 'first version with dummy testing methods').
 
-- Scroll back up to the other dirty package and save that also.  You can reuse the previous log message by clicking 'Old log messages'. 
+- After the package is saved, you will observe the star is removed from the package, and also the package has been resorted down with the rest of the clean packages. 
 
-- Now ''Refresh'' your SmalltalkHub repository (or open it again) and you should see something like Figure *RepositorySaved*.
+- Scroll back up to the other dirty package and save that also.  You can reuse the previous log message by clicking 'Old log messages'. You should get the situation in the Monticello browser as depicted by Figure *MCSaved*. 
+
+- If you now look again at your SmalltalkHub repository and click 'Refresh', you should see something like Figure *RepositorySaved*.
 
 
 
@@ -198,9 +209,7 @@ You should get a situation similar to the one depicted by Figure *MCDirty*. Note
 
 
 
-Now we are ready to refine our methods to make our tests passed.
-
-
+Now we are ready to refine our code to make our tests passed.
 
 
 
@@ -211,7 +220,7 @@ Now we are ready to refine our methods to make our tests passed.
 
 % http://squeak.preeminent.org/tut2007/html/016.html
 
-Remember our first test ""==testCellStateShouldBeOff=="" which was defined as:
+Remembering our first test ""==testCellStateShouldBeOff=="" is currently defined as:
 
 [[[
 BlankCellTest>>testCellStateShouldBeOff
@@ -221,7 +230,7 @@ BlankCellTest>>testCellStateShouldBeOff
 	self deny: cell isOn
 ]]]
 
-Of course we know this will fail before we even run it because we haven't fully defined either the ""==isOff=="" or ""==isOn=="" instance methods. Following on from the LED clock analogy presented earlier, to know if a cell is "on" we need to examine its four internal line segments. If any of the four internal segments are lit-up then the cell can be thought of as ''on''.
+Of course we know this will fail before we even run it because we haven't fully defined the ""==isOff=="" or ""==isOn=="" methods. Following on from the LED clock analogy presented earlier, to know if a cell is "on" we need to examine its four internal line segments. If any of the four internal segments are lit-up then the cell can be thought of as ''on''.
 
 However, before we can finish our ""==isOn=="" or ""==isOff=="" methods we need to define the line segments on our class. We need an instance variable to hold the active segments, using a dictionary to store pair directions and their associated values.
 
@@ -236,7 +245,7 @@ Object subclass: #BlankCell
 
 This modifies the class definition such that, as well as newly created ""==BlankCell=="" objects having that instance variable, any existing ""==BlankCell=="" objects within Pharo's live environment will also have the instance variable added to them.   
 
-@@note BTC-2014-05-30 The follow text is just a distraction here. There should be opportunity to demonstrate this soon. Fit it in somewhere later... "Note that we do not have to define an instance variable this way, we could simply type a method using it and compile the method, at that time the system will prompt us to know how to declare the variable (either as an instance variable or a local variable)." 
+@@todo BTC-2014-05-30 The follow text is just a distraction here. There should be opportunity to demonstrate this soon. Fit it in somewhere later... "Note that we do not have to define an instance variable this way, we could simply type a method using it and compile the method, at that time the system will prompt us to know how to declare the variable (either as an instance variable or a local variable)." 
 
 We will then use Pharo's built-in refactoring tools to create accessors for this new instance variable. 
 
@@ -250,7 +259,7 @@ This will automatically create the following methods categorized in the 'accessi
 
 +Accessors are now created and sorted in the 'accessing' protocol.>file://figures/4-WithAccessors.pdf|width=60|label=WithAccessors+
 
-@@note BTC-2014-05-30 The (C) icon next to BlankCell in Figure *WithAccessors* indicates its been commented already. Was that done yet?
+@@todo BTC-2014-05-30 The (C) icon next to BlankCell in Figure *WithAccessors* indicates its been commented already. Was that done yet?
 
 [[[
 BlankCell>>activeSegments
@@ -262,14 +271,16 @@ BlankCell>>activeSegments: anObject
 	activeSegments := anObject
 ]]]
 
-@@dothis Now since we will store a Dictionary object inside the ""==activeSegments=="" variable we will rename its argument of its setter from anObject to aDictionary.  Note this is just for convenience as a form of documentation.  It does not affect compilation or operation of code.
+Now since we will store a Dictionary object inside the ""==activeSegments=="" variable we will rename its argument of this setter method to indicate this. Note this is just for convenience as a form of documentation.  It does not affect compilation or operation of code.
+
+@@dothis Rename the ""==anObject=="" parameter to ""==aDictionary=="".  
 
 [[[
 BlankCell>>activeSegments: aDictionary
 	activeSegments := aDictionary
 ]]]
 
-@@note Creating accessors is not mandatory, especially for private state, so that instance variables can be only accessed directly from within the methods of the class. Different schools propose different practices with different pros and cons. We created here to provide uniformity during the complete book. 
+@@note Creating accessors is not mandatory, especially for private state that should only be accessed directly from within the methods of the class. Different schools propose different practices with different pros and cons. We created here to provide uniformity during the complete book. 
 
 
 
@@ -335,7 +346,7 @@ BlankCell>>isOn
 	^ self activeSegments values anySatisfy: [ :each | each = true ]
 ]]]
 
-Here ""==activeSegment=="" returns the dictionary whose ""==values==" are booleans indicating which segments are on, ""==anySatisfy=="" returns true as soon as one element is true. Now since ""==each==" will hold booleans, you could equivalently write:
+Here ""==activeSegment=="" returns the dictionary whose ""==values=="" are booleans indicating which segments are on, ""==anySatisfy=="" returns true as soon as one element is true. Now since ""==each=="" will hold booleans, you could equivalently write:
 
 [[[
 BlankCell>>isOn
@@ -373,7 +384,6 @@ An empty cell. A beam entering the west will exit east and the same in reverse. 
 !! Save your packages
 Now that our tests are green we suggest to save a new configuration of our project following the process explained in the following chapter.
 
-@@note BTC-2014-05-30 Might be better to leave Versioneer to later on, when they've got something graphical to share.
 
 
 
