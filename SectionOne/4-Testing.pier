@@ -384,7 +384,6 @@ An empty cell. A beam entering the west will exit east and the same in reverse. 
 !! Save your packages
 Now that our tests are green we suggest to save a new configuration of our project following the process explained in the following chapter.
 
-@@todo BTC-2014-05-30 Might be better to leave Versioneer to later on, when they've got something graphical to share.
 
 
 

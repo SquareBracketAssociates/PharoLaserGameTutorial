@@ -93,6 +93,7 @@ Now each time you want to save your work you can either:
 - Select the ''development'' item and commit it, or
 - Select 'Release version' and commit it. 
 
+@@todo BTC-2014-05-30 Might be better to leave Versioneer to later on, when they've got something graphical to share.
 
 
 
