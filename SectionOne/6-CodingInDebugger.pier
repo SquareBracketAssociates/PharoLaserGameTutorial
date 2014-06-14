@@ -1,15 +1,15 @@
 ! Coding in the debugger
 
-Certain agile developers like to define tests first, make sure that the test fails, and define the methods within the debugger. Why? Because inside the debugger you can access ''live'' objects. We want to show you that we can code in the debugger. Since you save your code you will be able to continue without losing anything. 
+Certain agile developers like to define tests first, let the test fail, then define the required supporting methods from within the debugger. Why? Because inside the debugger you can access ''live'' objects in the context of the executing program. You get to progressively execute the code you write against the live objects. You can save code and continue execution. We now want to show you how that is done, to code in the debugger. 
 
 
 !! Setting up the context
 So let us start.
 
-- Redefine the methods ==isOn== and ==isOff== as follows
+@@dothis Temporarily redefine the methods ==isOn== and ==isOff== as follows
 
 [[[
-BlankCell>>isOn
+BlankCell>>isOff
 	"dummy definition"
 	^ self halt.
 ]]]
@@ -20,37 +20,53 @@ BlankCell>>isOn
 	"dummy definition"
 	^ self halt.
 ]]]
+
+
+The ==self halt== is normally used as a breakpoint to open a debugger when it is executed. Here we are using it just to produce an error that we can use to show how to hot fix it on the run.
 
 +Getting the preview debugger.>file://figures/5-HaltPreview.pdf|width=60|label=HaltPreview+
 
-The ==self halt== expression will raise an error when the methods will be executed. Here this is just to get an error and show how to fix it hot.
++Getting the stack debugger.>file://figures/5-HaltDebugger.pdf|width=60|label=HaltDebugger+
 
 !! Coding in the debugger
 
-- Execute the test ==testCellStateShouldBeOff==, it will bring the preview debugger as shown in Figure *HaltPreview*. 
+- Execute the test ==testCellStateShouldBeOff==, which brings up the preview debugger as shown in Figure *HaltPreview*. 
+
+- Press the 'Debug' button to get the full debugger shown in Figure *HaltDebugger*. Navigate the stack and find the method raising the error, usually near the top of the list. In this case the method ==inOff== has the ==halt== message highlighted.
+
+%% BTC-2014-06-14 This note doesn't seem to fit the context. %% @@note  Sending a message to an object that does not have that method defined will raise an error "Message Not Understood" and bring up a debugger.  
+
+@@dothis Now directly in the debugger we restore the method ==isOff== back to its previous code, shown below. 
+
+[[[
+BlankCell>>isOff	^ self isOn not
+]]]
+
+-After saving and compiling the ==isOff== method (using 'Accept' or cmd-s) you will see Figure *RecompiledOne* which shows the ==isOn== message highlighted as the position that execution will resume from.
 
 
++Editing the method ==isOff== directly in the debugger.>file://figures/6-Recompiled.pdf|width=60|label=RecompiledOne+
 
-- Press the 'Proceed' button, you should obtain the following debugger *HaltDebugger*. You can navigate the stack and find the method raising the error, usually it is on the top of the list.
+- Now pressing the button 'Proceed' sends the ==isOn== message, and the ==halt== in the ==isOn== method is encountered.  
 
+@@dothis Click 'Debug' in the preview debugger (similar to Figure *HaltPreview*) and restore ==isOn== back to what it was previously, as shown here and in Figure *RecompileSecond*
 
-+Getting the stack debugger.>file://figures/5-HaltDebugger.pdf|width=60|label=HaltDebugger+
+[[[
+BlankCell>>isOn	^ self activeSegments values anySatisfy: [ :each | each ]
+]]]
 
-@@note  When methods are not defined, sending a message that would lead to their execution will raise an error and bring a debugger.  
-
-Now we redefine the method ==isOn== directly in the debugger as shown in Figure *RecompiledOne*. Don't forget to compile (using Command-s).
-
-+The method isOn directly in the debugger.>file://figures/6-Recompiled.pdf|width=60|label=RecompiledOne+
-
-- Then we can press the button 'Proceed' and this will bring you to the next method ==isOff== (See Figure *RecompilePreview*) that we can then defined as shown in Figure *RecompileSecond*
-
-+Getting to the method isOff.>file://figures/6-RecompiledPreview.pdf|width=60|label=RecompilePreview+
 
 +Now we can redefine the other method.>file://figures/6-RecompileSecond.pdf|width=60|label=RecompileSecond+
 
-- Press proceed and you will see that the test gets green.
+
+
+- Press 'Proceed' and you will see that TestRunner shows a green result.
 
 
 !! Conclusion
 We will not repeat this process further in the tutorial but we use it daily in our development.
 We can only encourage you to try this great way of developing software.
+
+@@todo BTC-2014-06-14 I think this example would be clearer using a real error like "1/0" rather than "halt".  Also, better to not remove the original code to make less re-typing.  Just precede existing code with a "1/0".  Let me know if you agree and I'll update it.  Its a fairly isolated section that does't affect subsequent chapters.  
+
+@@todo  BTC-2014-06-14 btw fixing  a "1/0" error and proceeding doesn't end up with a green TestRunner.  Is that expected?
