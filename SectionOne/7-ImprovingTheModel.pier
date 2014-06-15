@@ -1,14 +1,18 @@
 ! Improving our Model
 
 Now that we saved our previous version with green tests, we can add new behavior to our model.
-We will do it test first. 
+We will do this test first. 
 
 
-!! Adding a new method
+!! Testing which segments are on
+% BTC-2014-06-15 Temporary comment just for integration review.
+% I think headings should be domain based as much as possible, rather than generic.
 
 % http://squeak.preeminent.org/tut2007/html/020.html (bottom)
 
-We want to add a new method named ==isSegmentOnFor:== which will tell us whether a segment for a giving direction is on. Let us define first a simple test named ==testIsSegmentOn== defined as follow.
+From our model we want to be able to determine whether a segment is on for a given direction.  New objects will initially have all segments off, so we define the following simple test:
+
+@@dothis Define the method ==testIsSegmentOn==.
 
 [[[
 BlankCellTest>>testIsSegmentOn
@@ -17,34 +21,41 @@ BlankCellTest>>testIsSegmentOn
 	self deny: (cell isSegmentOnFor: #north).
 ]]]
 
-Note that the message will be displayed with a different indicating that the messsage does not already exist in the system. Proceed and compile the method. Pharo will prompt you, so confirm that you are defining a new method.
+The message ==isSegmentOnFor:== will tell us whether a segment for the given direction is on.  In the editor it will be highlighted to indicate that the messsage doesn't exist yet. When you save and compile, Pharo will prompt you with "Unknown selector, please confirm, correct or cancel". This is shown in Figure *UnknownSelector*.  So confirm this is expected by selecting ==isSegmentOnFor:== from the top of the list.  
 
-Then execute the new test, and open the debugger, you should get a debugger as the one shown in Figure *IsSegmentOne*. The debugger shows you that the message ==isSegmentOn:== not understood by the receiver. 
++Confirm by choosing the top item from Unknown selector.>file://figures/7-UnknownSelector.png|width=50|label=UnknownSelector+
 
+Execute the new test, then open the full debugger to get to the point shown in Figure *IsSegmentOne*. Here the title of the debugger shows you, as expected, that the message ==isSegmentOn:== is not understood by the receiver, where the receiver is the ==BlankCell== object held by the ==cell== variable. 
 
 +Debugger opened for a message not understood.>file://figures/7-isSegmentOnOne.pdf|width=50|label=IsSegmentOne+
 
-Click on the 'Create' button, you will get prompt to know on which class you want to define the method ==isSegmentOn:==. Pick ==BlankCell== as shown in Figure *IsSegmentOnTwo*.
+{{{latex: \pagebreak }}}
+
+Click on the 'Create' (method) button in the debugger, and you will get a prompt asking in which class you want to define the method ==isSegmentOn:==. Pick ==BlankCell== as shown in Figure *IsSegmentOnTwo*, then at the protocol chooser type "testing" and press 'Enter'.
+
 
 +Selecting the class to create the new method>file://figures/7-isSegmentOnTwo.pdf|width=50|label=IsSegmentOnTwo+
 
-You should get now a debugger on the method automatically created by the debugger as shown in Figure *IsSegmentOnThree*.
 
-+An automatically created method>file://figures/7-isSegmentOnTwo.pdf|width=50|label=IsSegmentOnThree+
+Now you should see the debugger has stepped into the automatically created method as shown in Figure *IsSegmentOnThree*.  The message ==shouldBeImplemented== is a placeholder to catch the case where you might be distracted completing the method definition, and will bring up the debugger again if executed. 
 
++Debugger stepped into the automatically created method>file://figures/7-isSegmentOnThree.pdf|width=50|label=IsSegmentOnThree+
 
-Now we can define inside the debugger the method ==isSegmentOnFor:==. 
+@@dothis Again inside the debugger, we now define the method ==isSegmentOnFor:==. 
 
 [[[
 BlankCell>>isSegmentOnFor: aSymbol
 	^ self activeSegments at: aSymbol
 ]]]
 
-And when we press proceed, the test is run. 
 
-!!! Defining another test
 
-Now we can define a test testing all the directions.
+And after we save it, then press 'Proceed', the test is run. 
+
+@@todo BTC-2014-06-15 Actually after pressing 'Proceed' the test still shows up as failed in TestRunner and we need to run the tests once more.  I'm thinking that we lead the reader to step a few times through the debugger, then close it and re-run the tests.
+
+
+@@dothis Now we test all the directions by adding the following method.
 
 [[[
 BlankCellTest>>testNewCellDoesNotHaveSegmentOn
@@ -60,21 +71,14 @@ Execute the tests to verify that everything is working. Your three tests should 
 It is a good occasion to save your code.
 
 
-!! Handling Beam Exist Path
+!! Handling Beam Exit Path
 
 % http://squeak.preeminent.org/tut2007/html/021.html
+% The original talks about directions, but this seems misleading. A beam going in a #north direction will exit the #north side.  Rather it seems all about sides. A beam entering the #south side will exit the #north side.
 
-We've written methods to check the state of individual segments within our cell. Now we also need methods to answer the output direction for a given laser beam input direction. The ==BlankCell== class needs another instance variable that will encode the path of a beam: i.e., for an input direction provides an output direction.
+We've written methods to check the state of individual segments within our cell. Now we also need to know the output side for a given laser beam input side.  
 
-[[[
-Object subclass: #BlankCell
-	instanceVariableNames: 'activeSegments exitSides'
-	classVariableNames: ''
-	category: 'LaserGame-Model'
-
-]]]
-
-As before, create accessors and we will define another initialization method to define the beam path in a cell. But let us write first a test method.
+@@dothis We first define the test that shows the goal of how we want this to work.
 
 [[[
 BlankCellTest>>testCellExit
@@ -86,11 +90,26 @@ BlankCellTest>>testCellExit
 	self assert: (cell exitFor:  #east) = #west.
 ]]]	
 
-Now define the method  ==initializeExitSides== to initialize the path.
+Again as before, when you compile this, confirm you know ==exitFor:== is an unknown selector. We'll hold off running this test for a moment since we know of some supporting infrastructure it requires. The ==BlankCell== class needs another instance variable to store the ==exitSides== mapping that encodes the path of a beam, and some initialization code.
+
+@@dothis Modify the ==BlankCell== class definition like this.
+
+[[[
+Object subclass: #BlankCell
+	instanceVariableNames: 'activeSegments exitSides'
+	classVariableNames: ''
+	category: 'LaserGame-Model'
+
+]]]
+
+@@dothis Create accessor methods ==exitSides== and ==exitSides:== from the class context menu Refactoring > Inst Var Refactoring > Accessors .
+
+
+
+@@dothis Add the method  ==initializeExitSides== to define the ==exitSides== mapping, and modify ==initialize== to call it.
 
 [[[
 BlankCell>>initializeExitSides
-
 	self exitSides: Dictionary new.
 	self exitSides at: #north put: #south.
 	self exitSides at: #south put: #north.
@@ -98,17 +117,14 @@ BlankCell>>initializeExitSides
 	self exitSides at: #west put: #east.
 ]]]
 
-And modify the ==initialize== method to call it. 
-
 [[[
 BlankCell>>initialize
-
 	super initialize.
 	self initializeActiveSegments.
 	self initializeExitSides
 ]]]
 
-Now we can define the method ==exitFor:== which given a direction returns the exit that the laser beam will follow.
+@@dothis Finally we define the ==exitFor:== method, which given a side that the beam enters the cell, returns the side that the laser beam will exit.
 
 [[[
 BlankCell>>exitFor: aSymbol
@@ -123,8 +139,9 @@ Run your tests and once they are green this is a good occasion to commit your wo
 
 % http://squeak.preeminent.org/tut2007/html/022.html
 
-Another behavior we need, is to tell the cell that the laser beam has entered the cell. We will need to specify which side the laser beam entered by. Then our new test should check that the expected line segments in the cell are lit-up when the method completes. Just add the test in the test case class. We already know the new method ==laserEntersFrom:== does not exist yet.
+Another behavior we need, is to tell the cell that the laser beam has entered the cell. We will specify which side the laser beam entered using a new method ==laserEntersFrom:== (which does not exist yet). A new test should check that the expected line segments in the cell are lit-up when this method completes. 
 
+@@dothis Add the test that shows the goal of how we want this to work.
 
 [[[
 BlankCellTest>>testLaserEntersNorthShouldLitUpSouth
@@ -139,25 +156,24 @@ BlankCellTest>>testLaserEntersNorthShouldLitUpSouth
 ]]]
 
 
-Execute the test and it should failed as expected. Now define the method ==laserEntersFrom:== in the class ==BlankCell==.
+Execute the test and as expected it should fail. 
 
-http://squeak.preeminent.org/tut2007/html/023.html
+@@dothis Click 'Create' to define the ==laserEntersFrom:== method in class ==BlankCell==.
+
+% http://squeak.preeminent.org/tut2007/html/023.html
 
 [[[
 BlankCell>>laserEntersFrom: aSymbolDirection
-
-    | exit |
-    self activeSegments at: aSymbolDirection put: true.
-    exit := self exitSideFor: aSymbol.
-	self activeSegments at: exit put: true.
+	| exit |	self activeSegments at: aSymbolDirection put: true. 	exit := self exitFor: aSymbolDirection.	self activeSegments at: exit put: true.
 ]]]
 
 
 Run your tests. They should all be green. 
 
 
-Note that we could provide methods to set or toggle the state of a direction, instead of exposing the fact that 
-we manipulate a dictionary. It could be ==setOnSegmentFor:== and ==setOffSegmentFor:==. 
+Now rather than ==laserEntersFrom:== directly manipulating the dictionary stored in ==exitSides==, it is better to hide that implementation by providing methods to set the state of a direction. 
+
+@@dothis Define methods ==setOnSegmentFor:== and ==setOffSegmentFor:==, and revise ==laserEntersFrom:== to use them. 
 
 [[[
 BlankCell>>setSegmentOnFor: aSymbolDirection
@@ -166,15 +182,15 @@ BlankCell>>setSegmentOnFor: aSymbolDirection
 BlankCell>>setOffSegmentOffFor: aSymbolDirection
     self activeSegments at: aSymbolDirection put: false
 
-
 BlankCell>>laserEntersFrom: aSymbolDirection
-
     self setSegmentOnFor: aSymbolDirection.
-	self setSegmentOnFor: (self exitFor: aSymbol)
+    self setSegmentOnFor: (self exitFor: aSymbol)
 ]]]
 
+Comparing the two implementations of ==laserEntersFrom:== I find the second more readable an intention revealling.  We should define a test to cover the two new methods. 
 
-Add a new test to cover ==setOnSegmentFor:== and ==setOffSegmentFor:==. For example a good test is the following one.
+@@dothis Define ==testSetSegment==.
+
 
 [[[
 BlankCellTest>>testSetSegment
@@ -187,10 +203,7 @@ BlankCellTest>>testSetSegment
 	self deny: (cell isSegmentOnFor: #north).
 ]]]
 
-Run your tests. They should all be green. 
-
-
-
+Run your tests. When they are green, save your packages. 
 
 
 
@@ -199,10 +212,30 @@ Run your tests. They should all be green.
 
 !! A Discussion About Directions
 
-The design we proposed to you use symbols to represent direction. It is ok now there are still some place for improvements that you could do. Carrying around symbol in all the code is prone to errors. Imagine that you mistype west as vest then your system will not work well anymore. 
-A way to improve is to define class methods (==north==, ==south==, ==west==, ==east==) on the class ==Cell== and to use them in place of symbol. We could also use class variables or a pool dictionary to hold such values (Read the model chapter of Pharo by Example to know more). 
+The design we proposed to you uses symbols to represent direction. This is okay, but there are some improvements that you could do. Carrying around symbols in all the code is prone to errors. Imagine that you mistype west as vest then your system will not work well anymore. 
 
-A good acid test is that we can replace the symbol ==\#north== in the method ==north== by a number such as 0 and the system should continue to work. 
+We will not pursue this here, but for example one way to improve this situation is to define class-methods (==north==, ==south==, ==west==, ==east==) on the class ==Cell== and to use them in place of symbol, like so:
 
-Another way to improve could be to represent direction as real objects. We let you experiment with such design. 
+[[[
+BlankCell class>>north
+	^ #north.
+
+BlankCell class>>south
+	^ #south.
+
+BlankCell class>>west
+	^ #west
+
+BlankCell class>>east 
+	^ #east
+
+BlankCellTest>>testIsSegmentOn 
+	| cell |	cell := BlankCell new.	self deny: (cell isSegmentOnFor: BlankCell north). 
+]]]
+
+@@note Previously we have dealt with instance-methods, defined on the instance-side of a class.  The convention "Cell class>>" indicates a class-method defined on the class-side of a class.  You will see a checkbox to toggle between the two sides under the Class list in the System Browser.  Make sure you change back for the following chapters.
+
+A good acid test is that we could replace the symbol ==\#north== in the method ==north== by a number such as 0 and the system should continue to work. 
+
+We could also use class variables or a pool dictionary to hold such values (Read the model chapter of "Pharo by Example" to know more).  Another way to improve could be to represent direction as real objects. We let you experiment with such design. 
 
