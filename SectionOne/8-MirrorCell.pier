@@ -2,23 +2,24 @@
 
 % http://squeak.preeminent.org/tut2007/html/024.html
 
-A mirror cell is a cell which reflects the beam in a different direction. This cell is different from the Blank Cell because it has a mirror and the mirror can be oriented. The output direction of the entering laser beam is also different because of the mirror. 
+A ==MirrorCell== is different from a ==BlankCell== because it contains a mirror that can be oriented to reflect the laser beam in different directions.  Let us start by adding a class comment. We propose something like the following.
 
-!! Adding a class comment
-
-Let us start to add a class comment. We propose something like the following.
+@@dothis Click on the 'Comments' button under the class list to enter your comment.
 
 [[[
 A mirror is a cell that reflects beam based on its orientation. 
-There are two main orientation: towards left and towards right.
+There are two main orientations: 
 
-With left, a beam coming from the south will exit left.
-With right, a beam coming from the south will exit left.
+* For a left leaning mirror, a beam coming from the south will exit left.
+* For a right leaning mirror, a beam coming from the south will exit right.
 ]]]
 
-!! Capturing Mirror Orientation
-Then we need a way to define the orientation of the mirror. We can begin by adding the instance variable "leansLeft" to the class and creating the accessors too.
 
+
+!! Capturing Mirror Orientation
+We need a way to define the orientation of the mirror. The default condition will be that the mirror leans left unless otherwise specified. We will also need some methods to determine the orientation of the mirror.
+
+@@dothis We begin by adding instance variable ==leansLeft== to the ==MirrorCell== definition. 
 
 [[[ 
 Object subclass: #MirrorCell
@@ -28,7 +29,9 @@ Object subclass: #MirrorCell
 ]]]
 
 
-Add some initialization code. Let the default condition be that the mirror leans left unless otherwise specified.
+@@dothis And create accessors for ==leansLeft==.
+
+@@dothis Then add the 'initialize' protocol with the following method.
 
 [[[
 MirrorCell>>initialize
@@ -36,9 +39,16 @@ MirrorCell>>initialize
    self leansLeft: true
 ]]]
 
-Add testing methods for ==isLeft== and ==isRight==. These methods should be defined with the protocol 'testing'.
+@@dothis And add the 'testing' protocol with the following methods. 
 
+[[[
+MirrorCell>>isLeft 
+	^self leansLeft
 
+MirrorCell>>isRight
+	^self isLeft not
+
+]]]
 
 
 
@@ -46,13 +56,14 @@ Add testing methods for ==isLeft== and ==isRight==. These methods should be defi
 
 % http://squeak.preeminent.org/tut2007/html/025.html
 
-This was all straight-forward. But what about the behavior that is similar to the Blank Cell such as ==isSegmentOn:== or ==laserEntersFrom:== or simply encoding the output direction of a beam? If we follow the way we defined this behavior in ==BlankCell==. We'll need the same instance variables 'activeSegments' and 'exitSides'. The behavior of how these values are set will be different. Having to define nearly the same behavior and state in two different classes is a sign that we can do better. We want to re-use the code as much as possible. This is a good case for an abstract class that would define what the two cells have in common. 
+This was all straight-forward. But what about the behavior that is similar to the Blank Cell? We'll need similar methods like ==laserEntersFrom:==, ==exitFor:== and ==isSegmentOn:==. These will require similar instance variables ==exitSides== and ==activeSegments==, but the behavior of how values are set and mapped will be different. 
 
-SD: we should add a diagram showing the transformation
+We want to re-use the code as much as possible! Having nearly the same state and behavior in two different classes is a sign that we can do better. Indeed, this is a good case for a common abstract class that defines what the two cells have in common. 
+
+@@todo SD: we should add a diagram showing the transformation
 
 
-Let's create an abstract class called ==Cell==.
-
+@@dothis First let's create an abstract class called ==Cell==.
 [[[
 Object subclass: #Cell
 	instanceVariableNames: ''
@@ -60,13 +71,18 @@ Object subclass: #Cell
 	category: 'LaserGame-Model'
 ]]]
 
-Pharo comes with a powerful tool to manipulate code (moving methods between classes, moving instance variables within a hierarchy...). A refactoring is a behavior preserving operation. This means that the behavior of a program should not change when applying a refactoring. This tools is called the RefactoringEngine (and it was the first fully working refactoring engine available for a programming language). The refactogin engine is available in the default class browser under the Refactoring menu item. 
+@@dothis And a class comment.
+[[[
+Cell is an abstract class class that defines behaviour common to different types of cells.
+]]]
+
+Now Pharo comes with a powerful tool to refactor code (e.g. moving methods between classes, moving instance variables within a hierarchy). A refactor is a behavior preserving operation. This means that the behavior of a program should not change when the refactoring is applied. This tool is called the RefactoringEngine (and it was the first fully working refactoring engine available for any programming language [1]). The refactoring engine is available from the System Browser class list context menu under 'Refactoring'. 
+
+@@todo BTC-2014-06-17 Should RefactoringEngine be one word?  Its only that I've not seen the term before, (neither as one word or two) and I can't find it as a class in the Pharo3 image.
 
 !!! Inheriting from Cell
 
-% http://squeak.preeminent.org/tut2007/html/026.html
-
-First let redefine ==MirrorCell== as a subclass of ==Cell==.
+@@dothis Redefine both ==MirrorCell== and ==BlankCell== as a subclass of ==Cell==. Click on each class to view the existing definition, then modify it to match the following.
 
 [[[
 Cell subclass: #MirrorCell
@@ -74,8 +90,6 @@ Cell subclass: #MirrorCell
 	classVariableNames: ''
 	category: 'LaserGame-Model'
 ]]]
-
-And ==BlankCell== as a subclass of ==Cell==
 [[[
 Cell subclass: #BlankCell
 	instanceVariableNames: 'activeSegments exitSides'
@@ -83,16 +97,24 @@ Cell subclass: #BlankCell
 	category: 'LaserGame-Model'
 ]]]
 
-You can run the tests and they should pass.
+@@todo BTC-2014-06-18 What about ==TargetCell==? Is it done later?
 
-!!! Moving up Segment and Exit to Cell
+In the System Browser you should see something like Figure *InheritanceRefactored*.  Observe the indenting of ==BlankCell== and ==MirrorCell== to indicate they subclass from ==Cell==.  You can rerun the tests and they should still pass.
+
++Refactored common superclass.>file://figures/8-InheritanceRefactored.png|width=50|label=InheritanceRefactored+
+
+!!! Moving instance variables up to Cell
 
 
-Since a ==BlankCell== and a ==MirrorCell== have to manage which segments are on and how a beam cross them, we will move the instance variable ==activeSegments== and ==exitSides== to the superclass. 
+Since both ==BlankCell== and ==MirrorCell== need to manage which segments are "on" and how a beam crosses them, we'll move the instance variables ==exitSides== and ==activeSegments== to their new common superclass. Let us start by pulling up the instance variables using the refactoring engine. 
 
-Let us start to pull up the instance variable using the refactoring engine. Click on the class ==BlankCell== and bring the menu and select 'Refactoring', then 'Inst Var Refactoring' and finally 'pull up'. Select the activeSegments instance variable. Do the same for the 'exitSide' instance variables. 
+@@dothis Bring up the context menu on ==BlankCell== and choose 'Refactoring > Inst Var Refactoring > Pull up'. Select the ==activeSegments== instance variable. 
 
-You should get now your classes as follows:
+@@todo BTC-2014-06-18 For the next step, ==activeSegments== was still listed, and selecting offers to move it from ==Cell== to ==Object==.  I find that surprising behaviour.  It it expected or a bug? Note here to investigate later and open a case. 
+
+@@dothis Do the same for the ==exitSide== instance variables. 
+
+You should observe that both instance variables have moved up to the superclass, and that your classes now look like this.  
 
 [[[
 Object subclass: #Cell
@@ -108,55 +130,34 @@ Cell subclass: #BlankCell
 	category: 'LaserGame-Model'
 ]]]
 
-Your tests should still be passing.
+Check your tests are still passing.
 
-What is nice with refactorings is that they verify a lot of possible mistakes for example a subclass of Cell could have already an instance variable with the same name and this would be problem. Note that refactorings are good also for more complex situations involving multiple classes.
+What is nice with refactorings is that they eliminate a lot of possible mistakes in transforming code.  For example, a subclass of Cell could have already an instance variable with the same name and this would be problem. Note that refactorings are good also for more complex situations involving multiple classes.
 
 
-!!! Moving up Methods to Cell
+!!! Moving methods up to Cell
 
-Now we can do the same to move up the following methods:
-- The accessors ==activeSegments==, ==activeSegments:==, ==exitSides==, ==exitSides:==,
-- the testing methods ==isSegmentOnFor:==, ==isOn==, ==isOff==, and
-- some operations such as ==setSegmentOffFor:==, ==setSegmentOnFor:==, ==laserEntersFrom:== and ==exitFor:==.
+The accessor and behavior methods need to follow the instance variables up to the new abstract class. We need to push up following methods:
+- the accessors ==activeSegments==, ==activeSegments:==, ==exitSides==, ==exitSides:==,
+- the testing methods ==isOff==, ==isOn== and ==isSegmentOnFor:==, 
+- some common operations ==laserEntersFrom:==, ==setSegmentOffFor:==, ==setSegmentOnFor:==, and ==exitFor:==.
 
-Select these methods, bring the menu, and select the 'Refactoring' submenu and from this one the 'Push up' submenu item.
-You will move all the methods at once to the superclass. 
+Select those methods, and from the selection context menu choose 'Refactoring > Push up'.
+You will have moved all the methods at once to the superclass. All that is left are the three initialization methods.
 
 Your tests should still be passing.
 
 !!! Splitting object initialization
 
-The ==initialize== methods need to be integrated into the new class. 
+Considering the ==initialize== methods need to be integrated into the new class. 
 
-- The ==initializeActiveSegments== method will work for any of these cells because they all have 4 segments with a default condition of false. This method clearly belongs on the superclass. So push it up to the superclass as we did before. 
+- The ==initializeActiveSegments== metho works for any cell type since all cells have four segments with a default condition of false. This method clearly belongs on the superclass. 
 
 - The ==initializeExitSides== does not because it defines part of what makes the ==BlankCell== unique from the other cells. 
 
-Here's how the ==initialize== methods turn out for ==Cell==.
+@@dothis Push up ==initializeActiveSegments==to the superclass as we did before. 
 
-[[[
-Cell>>initializeActiveSegments
-
-	self activeSegments: Dictionary new.
-	self activeSegments at: #north put: false.
-	self activeSegments at: #south put: false.
-	self activeSegments at: #west put: false.
-	self activeSegments at: #east put: false.
-]]]
-
-We could use the method ==setSegmentOffFor:==
-
-[[[
-Cell>>initializeActiveSegments
-
-	self activeSegments: Dictionary new.
-	self setSegmentOffFor: #north.
-	self setSegmentOffFor: #south.
-	self setSegmentOffFor: #west.
-	self setSegmentOffFor: #east.
-]]]
-
+@@dothis You need to manually edit the ==initialize== methods as follows.
 
 [[[
 Cell>>initialize
@@ -164,19 +165,6 @@ Cell>>initialize
 	super initialize.
 	self initializeActiveSegments.
 ]]]
-
-Here's how the ==initialize== methods turn out for ==Cell==.
-
-[[[
-BlankCell>>initializeExitSides
-
-	self exitSides: Dictionary new.
-	self exitSides at: #north put: #south.
-	self exitSides at: #south put: #north.
-	self exitSides at: #east put: #west.
-	self exitSides at: #west put: #east.
-]]]
-
 [[[
 BlankCell>>initialize
 
@@ -184,10 +172,19 @@ BlankCell>>initialize
 	self initializeExitSides
 ]]]
 
+Confirm that the supporting methods are located as follows: 
 
-Run the tests they should pass.
+- ==Cell>>initializeActiveSegments==
+
+- ==BlankCell>>initializeExitSides==
+
+
+Run the tests and they should pass.
+
 
 !!! Alternate Design
+
+@@todo BTC-2014-06-18 I think the following is a distraction that is not needed at this time.  Look at moving later to an "improvement" section.
 
 For the initialization we could also define the ==initialize== method as follows:
 
@@ -212,20 +209,30 @@ BlankCell>>initializeExitSides
 ]]]
 
 
-!! Coming back to MirrorCell
-
-Now the class ==MirrorCell== can be also a subclass of ==Cell==. 
+We could use the method ==setSegmentOffFor:==
 
 [[[
-Cell subclass: #MirrorCell
-	instanceVariableNames: 'leansLeft'
-	classVariableNames: ''
-	category: 'LaserGame-Model'
+Cell>>initializeActiveSegments
+
+	self activeSegments: Dictionary new.
+	self setSegmentOffFor: #north.
+	self setSegmentOffFor: #south.
+	self setSegmentOffFor: #west.
+	self setSegmentOffFor: #east.
 ]]]
 
-When we left off coding the ==MirrorCell== we realized that there were a lot of similarities with ==BlankCell== and a few differences. 
 
-Let us write a couple of tests to specify the behavior we expect. Add a new test class named ==MirrorCellTest== subclass of ==TestCase==. 
+
+!! Tests for MirrorCell
+
+% http://squeak.preeminent.org/tut2007/html/026.html
+% http://squeak.preeminent.org/tut2007/html/027.html
+
+% BTC-2014-06-18 Temporary comment. Removed MirrorCell definition since it has already been defined as a subclass of Cell.
+
+When we left off coding the ==MirrorCell== we realized that there were a lot of similarities with ==BlankCell== and a few differences. Let us write a couple of basic tests for the default behavior we expect from new instances of ==MirrorCell==. We should organize these tests into a new class, that by convention we'll call ==MirrorCellTest==.  
+
+@@dothis Add a new test class named ==MirrorCellTest== subclassed from ==TestCase==. 
 
 [[[
 TestCase subclass: #MirrorCellTest
@@ -234,7 +241,7 @@ TestCase subclass: #MirrorCellTest
 	category: 'LaserGame-Tests'
 ]]]
 
-First create a simple test to check that a newly created instance is off.
+@@dothis Start with two simple tests to check the state of a newly created instance.
 
 [[[
 MirrorCellTest>>testCellAtCreationShouldBeOff
@@ -261,11 +268,9 @@ Up to now all the tests should pass.
 
 !!! Handling Orientation 
 
-We know we will have to set the orientation for the mirror both when the cell is first instantiated as well as on-the-fly if the user decides to rotate the cell. Therefore we need methods to handle those requests, but first let us write two nice tests to make sure that we will be sure that our methods are correct.
+We know we will have to set the orientation for the mirror both when the cell is first instantiated, as well as on-the-fly when the user decides to rotate the cell. Therefore we need methods to handle those requests, but first let us write two nice tests to specify the behavior we expect. Now the exit sides will depend on the orientation of the mirror, so we should have a test for each case. We should also test which segments light up for each orientation when a beam passes through the cell.  Initially the tests will be failing until later we define the application methods. We ignore any unknown methods for now.
 
-% http://squeak.preeminent.org/tut2007/html/027.html
-
-The ==testCellExitSides== method should be different, and should depend on orientation of the mirror. Use 2 new method names to show testing for each orientation.
+@@dothis Define a test for each orientation of the mirror
 
 [[[
 MirrorCellTest>>testCellExitSidesForLeftMirror
@@ -292,8 +297,7 @@ MirrorCellTest>>testCellExitSidesForRightMirror
 	self assert: (cell exitFor: #west) = #north.
 ]]]
 
-
-Now we have to write two test methods to specify the activity of the cell when the beam pass through it.
+@@dothis Now test which segments light up in each orientation.
 
 [[[
 MirrorCellTest>>testLaserEntersNorthShouldLitUpEast
@@ -321,21 +325,7 @@ MirrorCellTest>>testLaserEntersNorthShouldLitUpWest
 	self deny: ( cell isSegmentOnFor: #east).
 ]]]
 
-Obviously the four last test methods should fail, since we did not implement yet the correct behavior.
-But now we are ready to do so.
-
-
-[[[
-MirrorCell>>initializeExitSides
-	self exitSides: Dictionary new.
-]]]
-
-[[[
-MirrorCell>>initialize
-	super initialize.
-    self initializeExitSides.
-	self leanLeft.
-]]]
+Obviously the four last test methods should fail, since we did not yet implement the application methods.  But now we are ready to do so. We need to provide the exit sides mapping for each orientation, and initialise new objects to a particular orientation. 
 
 [[[
 MirrorCell>>leanRight
@@ -358,8 +348,21 @@ MirrorCell>>leanLeft
 ]]]
 
 
+[[[
+MirrorCell>>initializeExitSides
+	self exitSides: Dictionary new.
+]]]
+
+[[[
+MirrorCell>>initialize
+	super initialize.
+	self initializeExitSides.
+	self leanLeft.
+]]]
+
+
 Run your tests and they should pass, else fix your code and rerun your tests.
-Then this is a good moment to save your work.
+Then its a good moment to save your work.
 
 
 
@@ -372,13 +375,23 @@ Then this is a good moment to save your work.
 
 % http://squeak.preeminent.org/tut2007/html/028.html
 
-Whenever we instantiate cells from the ==MirrorCell== we need to take an extra step of orienting the mirror. As a practical matter, the ==MirrorCell== must always have one orientation, left or right. We can streamline this behavior with a few new ''class'' methods on ==MirrorCell==.
+As a practical matter, a ==MirrorCell== must always have one orientation, left or right.  So whenever we instantiate cells from the ==MirrorCell== class we need to take the extra step of orienting the mirror. You've seen how this works in  ==MirrorCellTest>>testLaserEntersNorthShouldLitUpWest==...
 
-A class method is a method that will be executed when we send a message to a ''class'', while an instance method is a method that will be executed when we send a message to an ''instance'' of this class. Here we want to write ==MirrorCell leanLeft==  therefore we should define a class method ==leanLeft==. We are sorted the new class methods in a protocol called "instance creation" as shown in Figure *InstanceCreation*. Noticed how the browser shows us that we are editing a class method: the ''Class side'' radio button is set.
+[[[
+cell := MirrorCell new.cell leanRight.
+]]]
 
-+Defining a class method: the ''Class side'' button is set.>file://figures/8-InstanceCreation.pdf|width=50|label=InstanceCreation+
+But it would be nice to be able to do it in one step like this...
 
+[[[
+cell := MirrorCell leanRight
+]]]
 
+...and indeed we can achieve this by defining a few new ''class'' methods. A ''class method'' is a method that is executed when we send a message to a ''class'' (e.g. ==MirrorCell leanLeft==), while an ''instance method'' is a method that is executed when we send a message to an ''instance'' of this class (e.g. ==cell leanRight==). 
+
+Class methods are defined in the System Browser by enabling the 'Class side' checkbox under the class list, which you can see selected in Figure *InstanceCreation*. The documentation convention "class>>" is used to indicate a method defined on the class-side.
+
+@@dothis On the class-side of ==MirrorCell==, add the protocol "instance creation" and the following two class methods. 
 
 [[[
 MirrorCell class>>leanLeft
@@ -390,10 +403,15 @@ MirrorCell class>>leanRight
     ^ self new leanRight
 ]]]
 
-@@note Important note! In the browser above we just created a new ''Class'' method. Not an ''Instance'' method. Make sure you have the "class" button clicked before creating the leanLeft method. A number of students learning from this tutorial have made this mistake. If you do too, just delete the instance method you created by mistake, click on the "class" button and create a new class method instead.
++Defining a class method: the ''Class side'' button is set.>file://figures/8-InstanceCreation.pdf|width=50|label=InstanceCreation+
 
-You can for example add a new test method as the following one:
+@@note Important note! In the browser above we just created new ''class'' methods. Not ''Instance'' methods. Make sure you have the 'Class side' checkbox selected before creating the methods (and remember to switch back after too). 
 
+You can check this works by evaluating ==MirrorCell leanRight inspect== in a Workspace.
+A number of students learning from this tutorial have made the mistake of defining these methods on the wrong side, which leads to a Message Not Understood error. If this happens to you too, just delete the instance method you created by mistake, enable 'Class side' button and create a new class method instead.
+
+You can also try it out with a new (instance-side) test method like the following:
+% BTC-2014-06-18 It would be good to update a previous test.
 
 [[[
 MirrorCellTest>>testMirrorCreationWithClassAPI
@@ -412,12 +430,18 @@ MirrorCellTest>>testMirrorCreationWithClassAPI
 
 !! About MirrorCell Design
 
+@@todo BTC-2014-06-18 Need to review this still.  
+
 Instead of having to test all the time state using ==isLeft== and ==isRight==, a better design is to 
 define two subclasses to ==MirrorCell== one for each of the case and define specific methods in each. 
 What is important to see is that each time we send a message, the correct method based on the receiver is automatically selected and executed. This mechanism acts as a systematic conditionals, therefore each time we explicitly test we do not take advantage of this build-in mechanism that the center of object-oriented programming. 
 
 
 
+
+!! References
+
+[1] J.Brant, D.Roberts and R.Johnson, "A refactoring tool for smalltalk," ''Theory and Practice of Object Systems'', vol. 3(4), 1997. http://st-www.cs.illinois.edu/users/droberts/tapos.pdf
 
 
 
