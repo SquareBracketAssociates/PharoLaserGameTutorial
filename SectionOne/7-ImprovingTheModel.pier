@@ -179,18 +179,17 @@ Now rather than ==laserEntersFrom:== directly manipulating the dictionary stored
 BlankCell>>setSegmentOnFor: aSymbolDirection
     self activeSegments at: aSymbolDirection put: true
 
-BlankCell>>setOffSegmentOffFor: aSymbolDirection
+BlankCell>>setSegmentOffFor: aSymbolDirection
     self activeSegments at: aSymbolDirection put: false
 
 BlankCell>>laserEntersFrom: aSymbolDirection
     self setSegmentOnFor: aSymbolDirection.
-    self setSegmentOnFor: (self exitFor: aSymbol)
+    self setSegmentOnFor: (self exitFor: aSymbolDirection)
 ]]]
 
-Comparing the two implementations of ==laserEntersFrom:== I find the second more readable an intention revealling.  We should define a test to cover the two new methods. 
+Comparing the two implementations of ==laserEntersFrom:==, the second is more readable and intention revealing.  We should define a test to cover the two new methods. 
 
 @@dothis Define ==testSetSegment==.
-
 
 [[[
 BlankCellTest>>testSetSegment
