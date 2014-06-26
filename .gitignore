@@ -9,7 +9,8 @@
 *.toc
 # *.pdf   #why are some images pdfs?
 *.pier.pdf
-
+*.synctex.gz
+auto/
 
 #### Pillar & Pharo
 
@@ -65,3 +66,5 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
+
+
