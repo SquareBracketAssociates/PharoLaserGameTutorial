@@ -2,25 +2,26 @@
 
 % http://squeak.preeminent.org/tut2007/html/029.html
 
-A target cell is the last one of our cells. It is unique because it does not have exit. Once the laser beam enters a target cell it does not leave and propagate anymore. A design choice we made here is to set the exit values to be nil. But let us start by writing some tests to clarify what we mean.
+A ==TargetCell== is the last one of our cells. It is unique because it does not have exit. Once the laser beam enters a target cell it does not leave and propagate anymore. A design choice we made here is to set the exit values to be nil. But let us start by writing some tests to clarify what we mean.
 
 
 !! Adding a class comment
 
-Let us start to add a class comment. We propose something like the following.
+Let us start by adding a class comment - something like the following...
 
 [[[
 A target cell is a cell does not let the beam leave once entered. Once a target is reached the game is finished. 
 ]]]
 
+@@todo BTC-2014-06-21 Cosmetic - that class comment should not indent the second line.
 
 !! Adding Some Tests
 
 % http://squeak.preeminent.org/tut2007/html/030.html
 
-Let us follow our good practices and add some tests.
+Let us continue our good practices and add some tests.
 
-We add a new test class named ==TargetCellTest==
+@@dothis We add a new test class named ==TargetCellTest==
 
 [[[
 TestCase subclass: #TargetCellTest
@@ -29,7 +30,7 @@ TestCase subclass: #TargetCellTest
 	category: 'LaserGame-Tests'
 ]]]
 
-At creation time the cell should be off.
+@@dothis At creation time the cell should be off, and all its segments should be off too. 
 
 [[[
 TargetCellTest>>testCellStateShouldBeOff
@@ -38,8 +39,6 @@ TargetCellTest>>testCellStateShouldBeOff
 	self assert: cell isOff.
 	self deny: cell isOn
 ]]]
-
-All its segments should be off too. 
 
 [[[
 TargetCellTest>>testSegmentAtCreationShouldBeOff
@@ -53,8 +52,7 @@ TargetCellTest>>testSegmentAtCreationShouldBeOff
 ]]]
 
 
- The ==testCellLaserActivitytestLaserEntersNorthShouldNotLitUpSouth== 
-method should only find one segment lit-up when the laser beam enters.
+@@dothis When the laser beam enters, only one segment should light-up.
 
 
 [[[
@@ -72,7 +70,7 @@ TargetCellTest>>testLaserEntersNorthShouldNotLitUpSouth
 
 
 
-Now we express that all the exit sides of a target will be nil. 
+@@dothis Now we express that all the exit sides of a target will be nil. 
 
 [[[
 TargetCellTest>>testCellExitsAreNil
@@ -84,15 +82,16 @@ TargetCellTest>>testCellExitsAreNil
 ]]]
 
 !! Defining the corresponding behavior
-Now we are ready to define all the behavior we wrote tests for. 
+Now we are ready to define all the application behavior we wrote tests for. 
 
 !!! TargetCell is a Cell
 
-The first thing we will do is to make ==TargetCell== inherits from ==Cell==. Do it and you should get an hierarchy as shown by Figure *TargetCellInheritance*.
+The first thing we will do is to make ==TargetCell== inherit from ==Cell==.
 
+@@dothis Edit the existing ==TargetCell== class definition to match the following.
 
 [[[ 
-Cell subclass: #MTargetCell
+Cell subclass: #TargetCell
 	instanceVariableNames: ''
 	classVariableNames: ''
 	category: 'LaserGame-Model'
@@ -101,13 +100,20 @@ Cell subclass: #MTargetCell
 
 +TargetCell should also inherit from Cell.>file://figures/9-TargetCellInheritance.pdf|width=60|label=TargetCellInheritance+
 
+You should get a class hierarchy like that shown by Figure *TargetCellInheritance*. 
 
-Start to run the tests. Normally two not related to exit faces should already pass.
+Run the tests. Two of the four tests which are not related to exit faces should already pass.
+
+@@todo BTC-2014-06-21 TargetCell already had a comment defined, so the icon in that figure should be different.  (A bitmap edit will do).
+
+
 
 
 !!! Handling Exits
 
-Now we should handle exit side. We redefine the ==initializeExitSides== as follows: 
+Now we should handle the exit sides. 
+
+@@dothis We define the ==initializeExitSides== and ==initialize== as follows: 
 
 
 [[[
@@ -122,24 +128,29 @@ TargetCell>>initializeExitSides
 ]]]
 
 
-And again we should define the method ==initialize== as follows. 
-
-[[[TargetCell>>initialize
+[[[
+TargetCell>>initialize
 
 	super initialize.
 	self initializeExitSides
 ]]]
 
-Run the tests and they should all be green. This is clearly a good occasion to save your code. 
+Run the tests and they should all be green. You should count 17 tests were run and passed.  If you count less than 17, check you have all three unit test classes selected in the Test Runner.  
+
+This is a good occasion to save your code. 
+
 
 
 !! About Design Points
 
 !!! About our initialize methods
 
-It looks like we already defined this method several times and exactly the same. This is clearly a sign that we can do better. In the literature this is called a code smell (with the idea that bad code smells rotten parfums). Propose a solution to this problem without readin ours.
+It looks like we defined our initialization methods several times, for each cell type, and some parts are exactly the same. This is clearly a sign that we can do better. Colloquially this duplication is a form of 'code smell' (with the idea that bad code smells rotten perfume). Can you propose a solution to this problem without reading ours?
 
-Our solution is the following one: we remove ==	self exitSides: Dictionary new.== from the ==initializeExitSides== and move it to the superclass ==initialize== method.
+Our solution is the following: We find ==self exitSides: Dictionary new== common to the three cell classes, so we push that up to the superclass ==initialize== method.
+
+
+@@dothis Make the following modifications. 
 
 [[[
 Cell>>initialize
@@ -148,7 +159,8 @@ Cell>>initialize
 	self initializeActiveSegments.
 	self exitSides: Dictionary new.
 	self initializeExitSides.
-
+]]]
+[[[
 Cell>>initializeExitSides
 	"does nothing"
 ]]]
@@ -186,10 +198,9 @@ Now we can run again our tests. And we can safely save a new version.
 
 !!! About TargetCell Design
 
-Using ==nil== to encode that there is no value for the exitSide is not an optimal way. Why? because it may force the client code to always check 
-if it gets true, false or nil. Good object-oriented design is often to have an object accepting the same messages but doing nothing. It is called the ==NullObject== design pattern. What is nice is that it eliminates all the ==ifNil:== tests and follow the "tell don't ask" way of really thinking object-oriented programming. 
+Using ==nil== to encode that there is no value for ==exitSides== is not optimal,  because it forces the client code to always check whether it gets true, false or nil. A good object-oriented design principle i to have an object accepting the same messages but doing nothing. This is called the ==NullObject== design pattern. What is nice is that it eliminates all the ==ifNil:== tests and follows the "tell don't ask" way of really thinking in an object-oriented manner. 
 
-We will let the use of ==nil== right now but remember it in the future and a good exercise is to propose a new version without this encoding.
+For now we will continue with ==nil==, but keep it in mind for a future refactoring exercise. 
 
 
 
