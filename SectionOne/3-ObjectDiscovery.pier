@@ -10,7 +10,7 @@ Exploring with objects is easy to do with Pharo. We very much enjoy spending tim
 
 As we once heard someone say, ''You can read about swimming all you want. But, you'll never learn about swimming until you actually dive in the water.''
 
-Of course we believe the water here is safe. The worst we could do is write some code and throw it away. And that's nothing to worry about. A per method version history in maintained you to quickly review and restore previous code.  Development in Pharo encourages experimentation and quick idea exploration.
+Of course we believe the water here is safe. The worst we could do is write some code and throw it away. And that's nothing to worry about. A per method version history in maintained for you to quickly review and restore previous code.  Development in Pharo encourages experimentation and quick idea exploration.
 
 Let's have a look at the objects.
 
@@ -23,18 +23,18 @@ The Grid holds our Cells. It also contains the source of our laser beam. Let's g
 
 We identify three kinds of Cells.
 
-- Blank, or empty
+- Blank (i.e., empty)
 - Target
 - Mirror
 
-The basic responsibility of a Cell concerns what happens to the laser beam when it enters the Cell. Also, the Mirror Cells need to know something about their orientation. A Mirror Cells can be thought of as leaning “left” or leaning “right”.
+The basic responsibility of a Cell concerns what happens to the laser beam when it enters the Cell. Also, the Mirror Cells need to know something about their orientation. A Mirror Cells can be thought of as leaning ''left'' or leaning ''right''.
 
 If we dig a little deeper into our understanding of these Cells we can imagine that each Cell has four internal line-segments. Something like an LED clock. We'll use these segments to indicate the path of the laser beam. Let's explore how that would work with our different Cell types.
 
 
 !!! The Blank Cell
 
-We label the four segments ==north, east, south==, and ==west==. If the laser beam enters the ==west== segment then we know the east segment will light-up. If the laser beam enters south then the ==north== segment would also light-up as shown by Figure *BlankCell*
+We label the four segments ==north==, ==east==, ==south==, and ==west==. If the laser beam enters the ==west== segment then we know the ==east== segment will light-up. If the laser beam enters ==south== then the ==north== segment would light-up as shown by Figure *BlankCell*
 
 +Blank Cell.>file://figures/3-028.jpg|width=25|label=BlankCell+
 
@@ -45,21 +45,12 @@ Depending on the orientation of the mirror we can also determine the path of the
 +Left Leaning Mirror Cell.>file://figures/3-029.jpg|width=25|label=MirrorCellOne+
 +Right Leaning Mirror Cell.>file://figures/3-030.jpg|width=25|label=MirrorCellTwo+
 
-For the left leaning Mirror Cell, if the laser beam enters the ==west== segment we know the ==south== segment will also light-up (See Figure *MirrorCellOne*). If the laser beam enters the right leaning Mirror Cell from the ==west== it will exit by the ==north== segment (See Figure *MirrorCellTwo*).
+For the left leaning mirror cell, if the laser beam enters the ==west== segment we know the ==south== segment will light-up (See Figure *MirrorCellOne*). If the laser beam enters the right leaning mirror cell from the ==west== it will exit by the ==north== segment (See Figure *MirrorCellTwo*).
 
 !!!The Target Cell
 
 In the case of the Target Cell no other segment will light-up. The laser beam ends its path here (see Figure *TargetCell*).
 +Target Cell.>file://figures/3-031.jpg|width=25|label=TargetCell+
-
-
-
-
-
-
-
-
-
 
 !! Identifying Classes
 
@@ -72,7 +63,7 @@ Visually, each of the three Cell types would render differently. So they can be 
 - ==MirrorCell==
 - ==TargetCell==
 
-We suspect that there may an abstract class that will unify common behavior between the classes. For now, let's not do that and just stick with these classes until the need to create other classes actually exists.
+We suspect that there may be an abstract class that will unify common behavior between the classes. For now, let's not do that and just stick with these classes until the need to create other classes actually exists.
 
 Instances of ==Grid== will be responsible for our grid and overall management of the cells.
 
@@ -93,22 +84,17 @@ First we should define a package to contain our classes. When we save a package 
 
 You should get a system like that shown in Figure *CreatedPackage*. Later we'll define two other packages to hold the tests and graphical elements of the game. We'll work out the presentation layer of our game (the graphics) later in the development process. For now we'll concern ourselves with the model. 
 
-+The class browser showing a newly created package>file://figures/3-PackageCreated.pdf|width=60|label=CreatedPackage+
-
-
-
++The class browser showing a newly created package>file://figures/3-PackageCreated.png|width=60|label=CreatedPackage+
 
 !! Some Model Classes Creation
 
-http://squeak.preeminent.org/tut2007/html/015.html
+% http://squeak.preeminent.org/tut2007/html/015.html
 
-Now we are ready to define the first class of our model. Make sure that you selected the "LaserGame-Model" package where we want to define the four model classes we identified before: ==Grid==, ==BlankCell==, ==MirrorCell== and ==TargetCell==. 
+Now we are ready to define the first class of our model. Make sure that you selected the ==LaserGame-Model== package where we want to define the four model classes we identified before: ==Grid==, ==BlankCell==, ==MirrorCell== and ==TargetCell==. 
 
-Figure *CreatedPackage* shows a class creation template in the bottom pane of the Browser. Each class is required to have a superclass.  For now the "easiest thing to do" for now is just subclass from ==Object==.  This will refactor later as the design structure is fleshed out.
+Figure *CreatedPackage* shows a class creation template in the bottom pane of the Browser. Each class is required to have a superclass.  For now the "easiest thing to do" for now is just subclass from ==Object==.  We will refactor that later as the design structure is fleshed out.
 
-@@dothis Fill out the template as below, then right-click and choose to "accept" the class definition (or alternatively use the keystroke alt-s or cmd-s, depending on platform).
-
-+The class browser showing a newly created ==Grid== class>file://figures/3-GridCreated.pdf|width=60|label=GridCreated+
+@@dothis Fill out the template as below, then right-click and choose to ==accept== the class definition (or alternatively use the keystroke ==alt-s== or ==cmd-s==, depending on platform).
 
 [[[
 Object subclass: #Grid
@@ -117,7 +103,9 @@ Object subclass: #Grid
 	category: 'LaserGame-Model'
 ]]]
 
-You result should be Figure *GridCreated*.  Note that for now we don't define any instance variables, just plain empty classes. 
++The class browser showing a newly created ==Grid== class>file://figures/3-GridCreated.png|width=60|label=GridCreated+
+
+Your result should look like Figure *GridCreated*.  Note that for now we don't define any instance variable.
 
 @@dothis Then similarly define the following three classes.
 
@@ -142,10 +130,8 @@ Object subclass: #TargetCell
 	category: 'LaserGame-Model'
 ]]]
 
-Once you are done you should get a system similar to the one shown in Figure *FourClassesCreated*
-+The class browser showing a newly created Grid class>file://figures/3-FourClassesCreated.pdf|width=60|label=FourClassesCreated+
+Once you are done you should get a system similar to the one shown in Figure *FourClassesCreated*.
 
++The class browser showing our new classes>file://figures/3-FourClassesCreated.png|width=60|label=FourClassesCreated+
 
-Before continuing to define the behavior of our model, we will start to define tests to capture
-such behavior. It will help us to make sure that our model is correct, it will document its behavior 
-in a way that can be automatically checked. 
+Before implementing the behavior of our model, we will define tests to specify this behavior. These tests will help us make sure that our implementation is correct and they will document the behavior in a way that can be automatically checked.
