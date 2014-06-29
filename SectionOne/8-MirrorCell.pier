@@ -149,9 +149,9 @@ Your tests should still be passing.
 
 !!! Splitting object initialization
 
-Considering the ==initialize== methods need to be integrated into the new class. 
+Considering the ==initialize== methods that need to be integrated into the new class. 
 
-- The ==initializeActiveSegments== metho works for any cell type since all cells have four segments with a default condition of false. This method clearly belongs on the superclass. 
+- The ==initializeActiveSegments== method works for any cell type since all cells have four segments with a default condition of false. This method clearly belongs on the superclass. 
 
 - The ==initializeExitSides== does not because it defines part of what makes the ==BlankCell== unique from the other cells. 
 
