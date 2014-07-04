@@ -1,3 +1,9 @@
+#### PharoLaserGameTutorial
+
+LaserGame.pdf
+
+#### Pillar
+
 *.aux
 *.html
 *.log
@@ -12,7 +18,8 @@
 *.synctex.gz
 auto/
 
-#### Pillar & Pharo
+
+#### Pharo
 
 pillar
 pharo
@@ -20,6 +27,7 @@ pharo-ui
 pharo-vm
 Pharo.changes
 Pharo.image
+package-cache/
 
 
 
