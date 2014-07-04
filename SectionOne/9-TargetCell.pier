@@ -195,47 +195,6 @@ And we can remove the initialize method of ==TargetCell==.
 
 Now we can run again our tests. And we can safely save a new version.
 
-!!! ALTERNATIVE About our initialize methods
-
-@@todo BTC-2014-06-21 For discussion... Coming back to this after a couple of days, I got confused for five minutes why ==MirrorCell>>initializeExitSides== only instantiated the Dictionary and did not fill it.  Along the way I came to the opinion that the call to ==self leanLeft== should have been done from ==MirrorCell>>initializeExitSides== rather than ==MirrorCell>>initialize==.  This would make the ==initialize== method identical between the three cell classes, which could then be removed.
-
-@@todo BTC-2014-06-21 For my own learning, since Cell is an abstract superclass, should == MirrorCell>>initializeExitSides== have ==self subclassResponsibility== rather than =="does nothing"==.  This would tie in with my previous point having ==self leanLeft== in ==MirrorCell>>initializeExitSides==.  
-
-@@dothis Make the following modifications... 
-
-[[[
-Cell>>initialize
-	super initialize.
-	self initializeActiveSegments.
-	self exitSides: Dictionary new.
-	self initializeExitSides.
-]]]
-
-[[[
-Cell>>initializeExitSides
-	self subclassResponsibility
-]]]
-
-[[[
-MirrorCell>>initializeExitSides
-	self leanLeft
-]]]
-
-[[[
-BlankCell>>initializeExitSides
-	self exitSides at: #north put: #south.
-	self exitSides at: #south put: #north.
-	self exitSides at: #east put: #west.
-	self exitSides at: #west put: #east
-]]]
-
-[[[
-TargetCell>>initializeExitSides	self exitSides at: #north put: nil. 	self exitSides at: #south put: nil. 	self exitSides at: #east put: nil. 	self exitSides at: #west put: nil.
-]]]
-
-@@dothis Remove the initialize methods of ==BlankCell==, ==MirrorCell== and ==TargetCell==. 
-
-
 
 
 !!! About TargetCell Design
