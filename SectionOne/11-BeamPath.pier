@@ -1,134 +1,195 @@
+
+% Left out "Leaving Notes in Your Code" from original,
+% http://squeak.preeminent.org/tut2007/html/035B.html 
+% http://squeak.preeminent.org/tut2007/html/035C.html 
+
+! Leaving Notes in Your Code
+
+http://squeak.preeminent.org/tut2007/html/035B.html 
+
+@@todo BTC-2014-07-06 Is this section of original tutorial left out on purpose?
+
+
 ! Improving Our Debugging Context
 
+% This section is new.
 
-Dealing with the grid is a bit a pain because we do not have a graphical representation. But wait we can produce a textual representation of the grid and its elements to help us debug it and understand how it is working. 
-
-
-Here is a test showing the behavior that we want to start with. Here we test the output for an empty grid. We use ' x ' to make sure that we will print 
-the character cell well centered.
+Dealing with ==a Grid== in the debugger is a bit a pain because we don't yet have a graphical representation of it. In addition, when such graphical representations are broken, they cannot be used to debug themselves.  So a fallback representation is useful for observing the structure of ==a Grid==. 
+The system tools have the convention of asking objects for their textual representation via the object's ==printString== method.   Following this convention will help us debug and observe how the system it is working. 
 
 
+Here is a test showing the behavior that we want to start with. We test the output for an empty grid. We use ' x ' to make sure that
+the character is well centered. Now pay attention that spaces are representated differently between text editors. Therefore you may have a different look.
+
+% BTC-2014-07-08 Ahh, Steph. Now I guess why you changed the default grid size
+% from 1x1 to 5x5, and I had changed it 3x3 with knowing it impacted here. 
+% Well my 3x3 change was already integrated, so I propogate this here.
 [[[
-GridTest>>testEmptyGridTextualRepresentation
+GridTest>>testTextualRepresentationEmptyGrid
 
-	self assert: Grid new printString = '
-| x | x | x | x | x | 
-| x | x | x | x | x | 
-| x | x | x | x | x | 
-| x | x | x | x | x | 
-| x | x | x | x | x | 
-' 
+	self assert: Grid new printString = 
+'
+| x | x | x |
+| x | x | x |
+| x | x | x |
+'
 ]]]
 
+The ==printString== method ends up calling its object's ==printOn:== method to generate the textual representation.  Below is one possible implementation. 
+Again try to define it alone and follow our definition if you encounter
+difficulties.  Note the common practice of putting a test expression in 
+comments the top of the method, which you can select and ''Inspect''.
 
-On the class ==Grid== define the method ==printOn:==. Here is a possible implementation, again try to define it alone and follow our definition if you encounter difficulties.
+@@dothis On the class ==Grid== define the method ==printOn:== in the  'printing' protocol. 
 
+% BTC-2014-07-06 Leaving a trailing space on each line (per previous code)
+% is awkward and non-inutitive, and hard to capture in a printed page.
+% Its better to be more explicit by using ==space==. 
 [[[
 Grid>>printOn: aStream	
+	" Grid new printString "
 	aStream cr.
-	1 to: self numberOfRows do: [ :aRow |
-		aStream nextPutAll:  '| '.
-		1 to: self numberOfColumns do: [ :aCol |
+	1 to: self numberOfRows do: [ :row |
+		aStream nextPutAll:  '|'.
+		1 to: self numberOfColumns do: [ :col | 
 			aStream
+				space;
 				nextPutAll: 'x';
-				nextPutAll: ' | '.
+				space;
+				nextPutAll: '|'.
 			 ].
 		aStream cr.
 		 ]
 ]]]
+% BTC-2014-07-06 aCol & aRow not suitable var names since Col and Row are not classes?
 
-Now we would like that the grid displays correctly its cells. Do you have an idea how we could do that?
-May be we could ask each cell its visual representation character instead of printing =='x'==. So what should we do? Just define three new methods
-on the class ==Cell==, ==Mirrorr==, and ==Target==.  Define a method named ==stringRepresentation== to the classes. We decided to use a string and not a character to be able to change fast the representation of a cell. Using a string implies that the representation can have a variable length.
+Run the test.  Now it can be tricky formatting the spaces exactly to satisfy 
+the test, so you might get a "TestFailure: Assertion failed" error.  
+In the debugger, inspect the line ==Grid new printString== to investigate.
+Actually since this formatting is not really critical here, you might be 
+pragmatic and paste the result of that inspection into ==testTextualRepresentationEmptyGrid==. 
+% Otherwise it will be annoying that the reader works hard to get the 
+% above test working with the 'x', and then need to replace it with space.
 
-We can write the following tests. Now pay attention that the space representation is different between texteditors. Therefore you may have a different look.
 
+Now we would like the grid to display the type of cells. 
+Do you have an idea how we could do that?
+May be we could ask each cell its visual representation character instead of 
+the =='x'== placeholder. We'll define a method named
+==stringRepresentation== on the cell classes. We decided to use a string 
+rather than a character to provide more flexibility to quickly change the
+representation of a cell. Using a string implies that the representation 
+can have a variable length.
+
+% BTC-2014-07-06 I feel in this case the test is better written
+% after-the-fact.  Is that really-bad?  I think its advtangeous to not
+% be so proscriptive to the reader on Test Driven Development
+% that they feel locked in.  Let them see a bit of flexibility. 
+
+
+@@dothis Update the ==printOn:== method as follows, and add the placeholder ==stringRepresentation== ('printing' procotol).
 [[[
-GridTest>>testGridWithTarget
-
-	| grid |
-	grid := Grid new  at: 5@1 put: TargetCell new.  
-	self assert:  grid printString = '
-|   |   |   |   | o | 
-|   |   |   |   |   | 
-|   |   |   |   |   | 
-|   |   |   |   |   | 
-|   |   |   |   |   | 
-' 
+Grid>>printOn: aStream	
+	" Grid new printString "
+	aStream cr.
+	1 to: self numberOfRows do: [ :row |
+		aStream nextPutAll:  '|'.
+		1 to: self numberOfColumns do: [ :col | 
+			| cell |
+			cell := self at: col@row.
+			aStream
+				space;
+				nextPutAll: cell stringRepresentation;
+				space;
+				nextPutAll: '|'.
+			 ].
+		aStream cr.
+		 ]
 ]]]
-
-
-
-[[[
-GridTest>>testGridWithMirrors
-
-	| grid |
-	grid := Grid new  at: 1@1 put: MirrorCell leanLeft.
-	self assert:  grid printString = '
-| \ |   |   |   |   | 
-|   |   |   |   |   | 
-|   |   |   |   |   | 
-|   |   |   |   |   | 
-|   |   |   |   |   | 
-' 
-]]]
-
-You have 3 space characters between the pipes.
 
 [[[
 Cell>>stringRepresentation
+	^ 'x'.
+]]]
 
-	^ ' '
-]][
-We have one character in the empty string.
+Check you test is green. 
 
-
-MirrorCell>>stringRepresentation
-
-	^ leansLeft ifTrue: ['\'] ifFalse: [ '/']
-
-TargetCell>>stringRepresentation
-
-	^ 'o'
-]]
-
-Now we can redefine the ==printOn: method==
+@@dothis Now add ==stringRepesentations== for the specific cell types, and modify/add tests to suit.
 
 [[[
-Grid>>printOn: aStream 
-	
-	aStream cr.
-	1 to: self numberOfRows do: [ :aRow |
-		aStream nextPutAll:  '| '.
-		1 to: self numberOfColumns do: [ :aCol |
-			aStream
-				nextPutAll: (self at: aCol@aRow) stringRepresentation;
-				nextPutAll: ' | '.
-			 ].
-		aStream cr.
-		 ]
+BlankCell>>stringRepresentation
+	^ ' '   "There is one space character in the string."
+]]]
+[[[
+GridTest>>testTextualRepresentationEmptyGrid
+	"There are 3 space characters between the bars."
+	self assert: Grid new printString = 
+'
+|   |   |   |
+|   |   |   |
+|   |   |   |
+'  
 ]]]
 
 
-A final test can validate it.
-
-
 [[[
-GridTest>>testTextualRepresentation
+TargetCell>>stringRepresentation
 
-	self assert: self generateDemoGrid printString = '
-|   |   |   | / | o | 
-| / |   |   |   | \ | 
-|   | \ | / |   | \ | 
-|   | \ | \ |   |   | 
-| / |   |   | / |   | 
+	^ 'o'
+]]]
+[[[
+GridTest>>testTextualRepresentationGridWithTarget
+
+	| grid |
+	grid := Grid new  at: 3@1 put: TargetCell new.  
+	self assert:  grid printString = 
+'
+|   |   | o |
+|   |   |   |
+|   |   |   |
 '
 ]]]
 
 
 
+[[[
+MirrorCell>>stringRepresentation
 
-Notice that it would be good to have also a class to represent ==StartingCell== like that we could add behavior to it. 
+	^ leansLeft ifTrue: ['\'] ifFalse: [ '/']
+]]]
+[[[
+GridTest>>testTextualRepresentationGridWithMirror
+
+	| grid |
+	grid at: 1@1 put: MirrorCell leanLeft.
+	grid at: 2@1put: MirrorCell leanRight.
+	self assert:  grid printString = 
+'
+| \ | / |   |
+|   |   |   |
+|   |   |   |
+'
+]]]
+
+Now since ==GridTest>>generateDemoGrid== is already defined, we can use that for  final test to validate overall behavior.
+
+@@dothis Define a test for the textual representation of the demo grid.
+
+[[[
+GridTest>>testTextualRepresentation
+
+	self assert: self generateDemoGrid printString = 
+'
+|   |   |   | / | o |
+| / |   |   |   | \ |
+|   | \ | / |   | \ |
+|   | \ | \ |   |   |
+| / |   |   | / |   |
+'
+]]]
+
+@@todo Notice that it would be good to have also a class to represent ==StartingCell== like that we could add behavior to it.  
+@@todo BTC-2014-07-06 Maybe, but need to finish the rest of the port, and see how it would fit. Maybe just advise reader to try it themselves.
 
 
 ! Laser Beam Path 
@@ -139,6 +200,7 @@ This means that we will need a way to handle the cell locations and the interpre
 
 
 
+% http://squeak.preeminent.org/tut2007/html/036.html
 
 !! Laser Path Element 
 When we consider the path of the laser beam through the grid, it's pretty easy to imagine the path as an ordered collection. The elements in the path may not be strictly cells since we will need to be aware how the laser is entering each cell. Let us get started by defining a new class named ==LaserPathElement== to represent path element. 
