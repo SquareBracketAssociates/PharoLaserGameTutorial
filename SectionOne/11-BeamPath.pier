@@ -200,9 +200,10 @@ This means that we will need a way to handle the cell locations and the interpre
 
 
 
+!! Laser Path Element 
+
 % http://squeak.preeminent.org/tut2007/html/036.html
 
-!! Laser Path Element 
 When we consider the path of the laser beam through the grid, it's pretty easy to imagine the path as an ordered collection. The elements in the path may not be strictly cells since we will need to be aware how the laser is entering each cell. Let us get started by defining a new class named ==LaserPathElement== to represent path element. 
 
 Such element is bound to a given cell and an entry side, therefore we add the following instance variables to fully characterize an element. 
@@ -245,6 +246,8 @@ Grid>startingCell
 ]]]
 
 
+http://squeak.preeminent.org/tut2007/html/037.html
+
 !! Adding Location to Cell
 
 To be able to compute from a cell and a direction its neighbouring cell we will enhance the cells. Each cell should store its own grid location. This will make navigation and position calculations easier. Without the stored location, we can still find specific cell locations within the grid by scanning through all the cells until we find the identical one we are looking for, then we would answer that cell's key (a position) in the cell dictionary. Holding the location within the cell is easier and much faster. 
@@ -275,6 +278,8 @@ Grid>>at: aPoint put: aCell
 
 
 !! Handling Directions
+
+% http://squeak.preeminent.org/tut2007/html/038.html
 
 We've been using two kinds of systems to describe cell locations and laser beam direction. In one situation we use ==x\@y== (column x, row y) objects to describe where cells are located within the grid. We describe laser beam direction with the symbols ==\#north==, ==\#east==, ==\#south== and ==\#west==. We need a way to allow us to combine these concepts when we start to navigate our laser beam across the grid and through cells. 
 
@@ -337,7 +342,7 @@ You should obtain an inheritance hierarchy as described in *RowDebugPreview*.
 
 
 
-
+% http://squeak.preeminent.org/tut2007/html/038a.html
 
 Now for each subclasses, we can define some messages: the ==vector== which returns the delta from the cell to the direction and ==directionSymbol== which returns the symbol encoding the direction. 
 
@@ -414,9 +419,9 @@ GridDirection class>>directionFor: aDirectionSymbol
 
 
 
-
-
 !! Adding Some Tests
+
+% http://squeak.preeminent.org/tut2007/html/039.html
 
 Now we need a unit test for the grid direction vector code. So let us add the new class ==GridDirectionTestCase== is a subclass of ==TestCase== of course.
 
@@ -454,6 +459,7 @@ Once all the tests pass, it is a good time to publish your code.
 
 !! Back to the Laser Beam Path
 
+% http://squeak.preeminent.org/tut2007/html/040.html
 
 Now we are ready to work on laser path elements. Let us start to define a new class method that makes the creation of ==LaserPathElement== objects easier. Do you have any idea how to proceed? When we create a ==LaserPathElement== we should mention the cell it is acting on and also the side of the cells we are talking. 
 
@@ -530,3 +536,4 @@ SD: Add more tests
 
 Note that there are other ways in Pharo to define constant: Shared pools 
 
+% http://squeak.preeminent.org/tut2007/html/041.html
