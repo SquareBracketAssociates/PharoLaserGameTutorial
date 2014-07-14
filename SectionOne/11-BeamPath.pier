@@ -14,15 +14,14 @@ http://squeak.preeminent.org/tut2007/html/035B.html
 
 % This section is new.
 
-Dealing with ==a Grid== in the debugger is a bit a pain because we don't yet have a graphical representation of it. In addition, when such graphical representations are broken, they cannot be used to debug themselves.  So a fallback representation is useful for observing the structure of ==a Grid==. 
-The system tools have the convention of asking objects for their textual representation via the object's ==printString== method.   Following this convention will help us debug and observe how the system it is working. 
+Dealing with a ==Grid== in the debugger is a bit a pain because we don't yet have a graphical representation of it. Also when graphical representations break, they can't be used to debug themselves.  So its useful to have a textual representation for observing the a ==Grid's== structure. 
+The system had this convention of asking objects for their ==printString==.   Following this convention will help us debug and observe how the system it is working. 
 
+Here is a test showing the behavior we want to start with, for an empty grid. For now we use ' x ' to help ensure the character well centered. Now pay attention that spaces are representated differently between text editors, so you may have a different look.
 
-Here is a test showing the behavior that we want to start with. We test the output for an empty grid. We use ' x ' to make sure that
-the character is well centered. Now pay attention that spaces are representated differently between text editors. Therefore you may have a different look.
-
-% BTC-2014-07-08 Ahh, Steph. Now I guess why you changed the default grid size
-% from 1x1 to 5x5, and I had changed it 3x3 with knowing it impacted here. 
+% BTC-2014-07-08 Ahh... Now I guess why the default grid size was 
+% earlier changed from the original 1x1 to 5x5. And I had changed it 
+% 3x3 without knowing its impacted here. 
 % Well my 3x3 change was already integrated, so I propogate this here.
 [[[
 GridTest>>testTextualRepresentationEmptyGrid
@@ -63,8 +62,8 @@ Grid>>printOn: aStream
 ]]]
 % BTC-2014-07-06 aCol & aRow not suitable var names since Col and Row are not classes?
 
-Run the test.  Now it can be tricky formatting the spaces exactly to satisfy 
-the test, so you might get a "TestFailure: Assertion failed" error.  
+Run the test.  Now formatting the spaces exactly to satisfy the test can 
+be tricky, so you might get a "TestFailure: Assertion failed" error.  
 In the debugger, inspect the line ==Grid new printString== to investigate.
 Actually since this formatting is not really critical here, you might be 
 pragmatic and paste the result of that inspection into ==testTextualRepresentationEmptyGrid==. 
@@ -72,7 +71,7 @@ pragmatic and paste the result of that inspection into ==testTextualRepresentati
 % above test working with the 'x', and then need to replace it with space.
 
 
-Now we would like the grid to display the type of cells. 
+Once that is working, we would like the grid to display each type of cell. 
 Do you have an idea how we could do that?
 May be we could ask each cell its visual representation character instead of 
 the =='x'== placeholder. We'll define a method named
@@ -112,7 +111,7 @@ Cell>>stringRepresentation
 	^ 'x'.
 ]]]
 
-Check you test is green. 
+Check you test is still green. 
 
 @@dothis Now add ==stringRepesentations== for the specific cell types, and modify/add tests to suit.
 
@@ -194,9 +193,13 @@ GridTest>>testTextualRepresentation
 
 ! Laser Beam Path 
 
-We are ready to work on the way to represent the laser beam and its path through the cells. Before jumping in the code let us think a bit about what we will need. We need to have a collection of elements describing the beam (probably such elements will be the basis to represent visually the beam when 
-we will start adding visual elements). When the beam will exist to the east of a given cell we will need to know to which other cell it will enter.
-This means that we will need a way to handle the cell locations and the interpretation of the direction based on such location. 
+Now we are ready to work on how to represent the laser beam and its path 
+through the cells. Before jumping into the code, lets think a bit about what
+ we'll need. We need to have a collection of elements describing the beam 
+(that later will likely form the basis of the beam's visual representation).
+ When the beam exits a cell we need to ==determine/know== which cell it
+ will enter next.
+This means that we need a way to handle the cell locations and the interpretation of the direction based on such location. 
 
 
 
@@ -204,9 +207,19 @@ This means that we will need a way to handle the cell locations and the interpre
 
 % http://squeak.preeminent.org/tut2007/html/036.html
 
-When we consider the path of the laser beam through the grid, it's pretty easy to imagine the path as an ordered collection. The elements in the path may not be strictly cells since we will need to be aware how the laser is entering each cell. Let us get started by defining a new class named ==LaserPathElement== to represent path element. 
+When we consider the path of the laser beam through the grid, it's
+pretty easy to imagine the path as an ordered collection. The elements
+in the path may not be strictly cells, since as well as knowing the
+type of cell, we need to know how the laser is entering each
+cell. So we need a path element that wraps together both pieces of information.  
+Later we can work out what "questions" we want to ask of this element.
 
-Such element is bound to a given cell and an entry side, therefore we add the following instance variables to fully characterize an element. 
+Lets get started by defining a new class named ==LaserPathElement== to
+represent a path element. Each element will bind an entry side to a
+given cell, so we needing an instance variable for each to fully
+characterize an element. 
+
+@@dothis Define new class ==LaserPathElement==.
 
 [[[
 Object subclass: #LaserPathElement
@@ -215,20 +228,21 @@ Object subclass: #LaserPathElement
 	category: 'LaserGame-Model'
 ]]]
 
-Add the corresponding accessors. 
-
-
-!! Adding a Class Comment
-
-So let us first add a class comment, for example as follows
-
+@@dothis Add its class comment.
 [[[
-I represent the part of a laser beam that is associated with a cell and with an entry side. 
+"I define one step in the path of a laser beam, which associates a cell
+with which side the beam enters it."
 ]]]
 
-!! Back to the Grid
+@@dothis Create the four accessors ==cell, cell:, entrySide, entrySide:==.
 
-Go back to the Grid and add an instance variable for the laser beam path and then add its accessors. We'll work out initialization in a few minutes.
+!! Grid support
+
+We'll need somewhere to hold our collection of path elements.
+Conceptually,  the laser beam operates on the grid, so we'll store it
+there.  We'll work out initialization in a few minutes.
+
+@@dothis Go back to ==Grid== to add an instance variable for the laser beam path.  
 
 [[[
 Object subclass: #Grid
@@ -237,7 +251,13 @@ Object subclass: #Grid
 	category: 'LaserGame-Model'
 ]]]
 
-We also need a method to answer the starting cell when the laser is activated. This will always be the cell in the bottom left corner.
+@@dothis Create accessors ==laserBeamPath, laserBeamPath:==.
+
+We also need to specify the starting cell when the laser is
+activated. This will always be the cell in the bottom left corner, 
+so for now we hardcode it.
+
+@@dothis Define a method on ==Grid== to answer the starting cell.
 
 [[[
 Grid>startingCell
@@ -246,14 +266,20 @@ Grid>startingCell
 ]]]
 
 
-http://squeak.preeminent.org/tut2007/html/037.html
-
 !! Adding Location to Cell
 
-To be able to compute from a cell and a direction its neighbouring cell we will enhance the cells. Each cell should store its own grid location. This will make navigation and position calculations easier. Without the stored location, we can still find specific cell locations within the grid by scanning through all the cells until we find the identical one we are looking for, then we would answer that cell's key (a position) in the cell dictionary. Holding the location within the cell is easier and much faster. 
+% http://squeak.preeminent.org/tut2007/html/037.html
+
+To help compute the next cell from a given cell and direction we
+need to enhance our cells. Each cell should store its own grid location.
+This will make navigation and position calculations easier. Without this
+stored location, if we had reference to a cell and wanted to know its
+position, we would need to scan through the grid (a Dictionary) until 
+we found the key referencing it, where the key is its position. 
+Holding the location within the cell is easier and much faster. 
 
 
-Add the ==gridLocation== instance variable and its accessors.
+@@dothis To ==Cell== add instance variable ==gridLocation==. Also create accessors for this.
 
 [[[
 Object subclass: #Cell
@@ -262,9 +288,10 @@ Object subclass: #Cell
 	category: 'LaserGame-Model'
 ]]]
 
+Now at what point should a cell's grid location be set?   Probably when
+the cell is placed in the grid. 
 
-We should not forget to set the grid location to the cells when the grid adds the cell to its own structure. 
-We modify then the method ==at:put:== of the class ==Grid== as follows:
+@@dothis Modify ==Grid>>at:put:== to set the ==gridLocation:== of ==aCell==.
 
 [[[
 Grid>>at: aPoint put: aCell
@@ -277,21 +304,60 @@ Grid>>at: aPoint put: aCell
 
 
 
-!! Handling Directions
+!! Direction Vectors
 
 % http://squeak.preeminent.org/tut2007/html/038.html
 
-We've been using two kinds of systems to describe cell locations and laser beam direction. In one situation we use ==x\@y== (column x, row y) objects to describe where cells are located within the grid. We describe laser beam direction with the symbols ==\#north==, ==\#east==, ==\#south== and ==\#west==. We need a way to allow us to combine these concepts when we start to navigate our laser beam across the grid and through cells. 
+@@todo BTC-2014-07-14 Rather than this section split the ==LaserPathElement== material, I feel inclined to move it forward as its own chapter - but will wait until later to guage the overall structure of the book. 
 
-Let us think about a solution: what would be good is to have objects that capture that for example going east is increasing of one the ==x== coordinates. If we are in cell ==5\@5== going east we should get to the cell ==6\@5==. Similarly going south is changing the y coordinates. 
+!!!Requirement 
 
-A first reflex could be to write some conditions but we can do better. Indeed we do not want to have to have tests and conditionals and we can imagine that we can get different objects representing different directions and each one answering the delta that should be applied to get from one cell to the other one.
+So far we've been using two kinds of systems to describe cell locations
+and laser beam directions. Cell locations have been described 
+numerically, of form ==x\@y== to describe where cells are located 
+within the grid (representing the column and row respectively).  
+Laser beam directions have been described symbolically, 
+using ==\#north==, ==\#east==, ==\#south== and ==\#west==. 
+What we need is a way to combine these concepts for when we start 
+to navigate our laser beam across the grid and through cells. 
 
-SD: should be better explained. It took me a while to understand it.
+@@todo SD: should be better explained. It took me a while to understand it. BTC: I've had a go, what do you think?
 
-SD add a diagram explaining how to use Direction
+Let us think about a solution: Consider for example that moving east or 
+south in the grid increases the ==x== or ==y== coordinates respectively.
+If we are at 5\@5, then going east should take us to 6\@5. 
+Similarly going south should take us to 5\@6. Effectively the 
+symbolic direction needs to be mapped to a numeric vector that can 
+be applied to a grid location.  
+We can define a simple test for this to clarify our thinking. 
 
-For this we will create classes to represent the different direction and we will start by defining a common superclass named ==GridDirection==. We will then define a couple of messages on these classes. 
+@@dothis Define classes ==GridDirection== & ==GridDirectionTest==, and method ==testDirectionVectors==.
+[[[
+TestCase subclass: #GridDirectionTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	category: 'LaserGame-Tests'
+]]]
+[[[
+GridDirectionTest>>testDirectionVectors
+	| vector |
+	vector := GridDirection vectorFor: #east.
+	self assert: vector = 1 @ 0.
+	
+	vector := GridDirection vectorFor: #west.
+	self assert: vector = -1 @ 0.
+
+	vector := GridDirection vectorFor: #south.
+	self assert: vector = 0 @ 1.
+
+	vector := GridDirection vectorFor: #north.
+	self assert: vector = 0 @ -1.
+]]]
+
+When asked, approve the unknown method ==vectorFor:==. 
+Then for '' 'Unknown variable: GridDirection' '' 
+you should '' 'Define new class' '' as follows... 
+(Note, change the ==category:== of the given class definition template.)
 
 [[[
 Object subclass: #GridDirection
@@ -300,21 +366,116 @@ Object subclass: #GridDirection
 	category: 'LaserGame-Model'
 ]]]
 
-And we can add a comment.
-
+@@dothis Add a class comment to ==GridDirection==.
 [[[
-I represent directions for the beam path accross the grid cells.
+I map symbolic directions to numeric vectors for the beam path across the grid.
 ]]]
 
-+A hierarchy of directions.>file://figures/11-GridDirection.pdf|width=60|label=RowDebugPreview+
 
-Then we can define one suclass for each direction as follows
+
+!!! A scent of code
+
+Now for the supporting code. The above test sends the 
+==vectorFor:== message direct to the ==GridDirection== class, 
+so this will need to be a class-method 
+(so ensure the class-side checkbox is selected). 
+A first reflex might be to use a bunch of conditional statements 
+like a traditional case statement.
+
+@@dothis Add class method ==vectorFor:== using a traditional case-structure. 
+
+[[[
+GridDirection class>>vectorFor: gridDirectionSymbol
+	(gridDirectionSymbol = #east)   ifTrue: [ ^  1 @ 0  ].
+	(gridDirectionSymbol = #west)   ifTrue: [ ^ -1 @ 0  ].	
+	(gridDirectionSymbol = #south)  ifTrue: [ ^  0 @ 1  ].
+	(gridDirectionSymbol = #north)  ifTrue: [ ^  0 @ -1 ].	
+]]]
+
+Run our tests to ensure everything is good. Oops! 
+We have a coding error as shown in Figure *FailedTestGridDirectionTest*. 
++Failed test testDirectionSelection>file://figures/11-testFail-needsBrackets.png|width=60|label=FailedTestGridDirectionTest+
+
++The message '@' was sent to a boolean>file://figures/11-testFail-needsBrackets-debugger.png|width=60|label=MNUFalse+
+
+Clicking on the failed test brings up the debugger shown in  Figure
+*MNUFalse*, which describes the problem as  '' "Message Not Understood:
+False>>@" ''. This indicates the '==@=='  message was sent to an
+instance of ==False==, and indeed this doesn't define the '==@=='
+method. But this is strange!  We've previous used positions like
+==1@0==, where the '==@==' message is sent to the number '==1=='
+object. Inspecting the ==vector== variable shows it holds the expected
+value of ==1@0==, but the comparison is not working.  
+
+What is happening is that =='='== and =='@'== are both binary messages,
+and so are of the same precedence. Hence these are evaluated strictly
+left to right.   We require parenthesis to ensure the =='@'== message
+(which creates a Point object for our position) is evaluated before the
+comparison message =='='==.
+
+@@dothis Edit the ==vectorFor:== method in the debugger, adding parenthesis around each position. 
+
+% http://squeak.preeminent.org/tut2007/html/039.html
+
+[[[
+GridDirectionTest>>testDirectionVectors
+	| vector |
+	vector := GridDirection vectorFor: #east.
+	self assert: vector = (1 @ 0).
+	
+	vector := GridDirection vectorFor: #west.
+	self assert: vector = (-1 @ 0).
+
+	vector := GridDirection vectorFor: #south.
+	self assert: vector = (0 @ 1).
+
+	vector := GridDirection vectorFor: #north.
+	self assert: vector = (0 @ -1).
+]]]
+
+After accepting the changes, observe that the method restarts and you 
+can continue execution. Try stepping '' 'Over' '' the remainder of the 
+method. 
+
+Re-run the tests. They should now all be green.
+
+
+
+!!! A bettter scent of code
+
+Reviewing our quick and dirty first implementation of ==vectorFor:==,
+this works but has a bad smell object-oriented wise, and we
+can do better. As Valloud says, "a high frequency of 
+[conditional statements] suggests that distinctions which might have
+been possible at design-time are being drawn at run-time. But if
+distinctions were drawn at design time in the form of classes, then it
+would not be neccessary for the running program to repeatly rediscover
+what was known by the developers."  [1]
+
+Following this philosophy, we reimplement our case-structure in an
+object-oriented manner. Imagine each direction is represented by a
+different object that can answer the required vector. In Pharo, class
+descriptions are objects too. We can define a class per direction which
+binds together the symbolic/numberic mapping as class-methods.  Using
+classes rather than instances allows us to refer to the directions
+as global identifiers. 
+
+These classes will be similar, so we will use our
+existing ==GridDirection== as their superclass, to hold any common
+behaviour that may arise. You should end up with an inheritance
+hierarchy like that shown in *RowDebugPreview*.
+
+@@todo SD add a diagram explaining how to use Direction
+
+@@dothis Define a class per direction.
 
 [[[
 GridDirection subclass: #EastGridDirection
 	instanceVariableNames: ''
 	classVariableNames: ''
 	category: 'LaserGame-Model'
+	
+	"I specify the delta to move east."
 ]]]
 
 [[[
@@ -322,6 +483,8 @@ GridDirection subclass: #WestGridDirection
 	instanceVariableNames: ''
 	classVariableNames: ''
 	category: 'LaserGame-Model'
+
+  "I specify the delta to move west."
 ]]]
 
 [[[
@@ -329,6 +492,8 @@ GridDirection subclass: #NorthGridDirection
 	instanceVariableNames: ''
 	classVariableNames: ''
 	category: 'LaserGame-Model'
+
+  "I specify the delta to move north."
 ]]]
 
 [[[
@@ -336,52 +501,39 @@ GridDirection subclass: #SouthGridDirection
 	instanceVariableNames: ''
 	classVariableNames: ''
 	category: 'LaserGame-Model'
+
+  "I specify the delta to move south."
 ]]]
 
-You should obtain an inheritance hierarchy as described in *RowDebugPreview*.
+
+@@todo BTC-2014-07-07 Stef, what do you think about specifying the class comments as above?  We can describe this convention in the introduction. Separating out class comments for each of the above is more verbose and a bit awkward.
 
 
++A hierarchy of directions.>file://figures/11-GridDirection.pdf|width=60|label=RowDebugPreview+
 
 % http://squeak.preeminent.org/tut2007/html/038a.html
 
-Now for each subclasses, we can define some messages: the ==vector== which returns the delta from the cell to the direction and ==directionSymbol== which returns the symbol encoding the direction. 
+Now we can define the polymorphic behaviour of each direction class. 
+Each class should know its:
+- ==directionSymbol== - the symbol encoding the direction.  
+- ==vector== - the numeric delta to move from one cell to the next
 
-For example we want to write 
-
-[[[
-SouthGridDirection directionSymbol
-  -> #south
-]]]
-
+@@dothis Define the following eight class-methods (then try them out in a Workspace as described above.)
 
 [[[
-SouthGridDirection vector 
-  -> 0@1
-
-]]]
-
-Since we want to ask the class for its encodings, we will define ''class'' methods on each subclasses as below.
-
-[[[
-EastGridDirection class>>vector
-	^ 1 @ 0
-
 EastGridDirection class>>directionSymbol
 	^ #east
+
+EastGridDirection class>>vector
+	^ 1 @ 0
 ]]]
-
-
-
-
 [[[
-NorthGridDirection class>>vector
-	^ 0 @ -1
-
 NorthGridDirection class>>directionSymbol
 	^ #north
+
+NorthGridDirection class>>vector
+	^ 0 @ -1
 ]]]
-
-
 [[[
 SouthGridDirection class>>directionSymbol
 	^ #south
@@ -389,8 +541,6 @@ SouthGridDirection class>>directionSymbol
 SouthGridDirection class>>vector
 	^ 0 @ 1
 ]]]
-
-
 [[[
 WestGridDirection class>>directionSymbol
 	^ #west
@@ -399,69 +549,177 @@ WestGridDirection class>>vector
 	^ - 1 @ 0
 ]]]
 
-
-
-Now we can define a method named ==directionFor:== returning the class of the direction associated to directiondescribed by a symbol. 
+Since we have defined these as class-methods, we are able to use
+them like this (for example in a Workspace)... 
 
 [[[
-GridDirection directionFor: #east
--> EastGridDirection
+EastGridDirection directionSymbol.  " --> #east "
+
+EastGridDirection vector.   " --> (1@0) "
 ]]]
 
-Here is the class method definition:
+Above each class defines a single case of our case-structure.  Now we
+need to be define how to detect which direction-class matches a given
+direction-symbol. Here ==self subclasses== returns all of our cases, and
+the ==detect:== message iterates through these passing each into the
+block variable ==case== until the block evaluates to true.  At that
+point the current value of ==case== is returned. Observe how its easy
+for the run-time to query the class hierarchy, and how the classes can
+themselves be passed around like objects.
+
+@@dothis Define a method to map a direction-symbol to its direction-class, as well as a test for this.
 
 [[[
 GridDirection class>>directionFor: aDirectionSymbol
-
-	^ self subclasses 
-			detect:  [ :cls | cls directionSymbol = aDirectionSymbol ]
+	^ self subclasses detect: [ :case | case directionSymbol = aDirectionSymbol ]
 ]]]
-
-
-
-!! Adding Some Tests
 
 % http://squeak.preeminent.org/tut2007/html/039.html
 
-Now we need a unit test for the grid direction vector code. So let us add the new class ==GridDirectionTestCase== is a subclass of ==TestCase== of course.
-
-[[[
-TestCase subclass: #GridDirectionTest
-	instanceVariableNames: ''
-	classVariableNames: ''
-	category: 'LaserGame-Tests'
-]]]
-
-
 [[[
 GridDirectionTest>>testDirectionSelection
-	| direction |
-	direction := GridDirection directionFor: #north.
-	self assert: direction = NorthGridDirection.
-	self assert: direction vector = ( 0 @ -1 ).
-	
-	direction := GridDirection directionFor: #east.
-	self assert: direction = EastGridDirection.
-	self assert: direction vector = ( 1 @ 0 ).
-	
-	direction := GridDirection directionFor: #south.
-	self assert: direction = SouthGridDirection.
-	self assert: direction vector = ( 0 @ 1 ).
-	
-	direction := GridDirection directionFor: #west.
-	self assert: direction = WestGridDirection.
-	self assert: direction vector = ( -1 @ 0 ).
+	self assert: NorthGridDirection = GridDirection directionFor: #north.	
+	self assert: EastGridDirection  = GridDirection directionFor: #east.
+	self assert: SouthGridDirection = GridDirection directionFor: #south.	
+	self assert: WestGridDirection  = GridDirection directionFor: #west.
+]]]
+
+Run the tests to check this works.   
+
+Now we are ready to reconsider our original ==vectorFor:== method, which
+is repeated here for convenience. Instead of this traditional
+case-structure, we now determine the applicable direction-class and
+just ask that for its ==vector==.
+
+[[[
+GridDirection class>>vectorFor: gridDirectionSymbol
+	(gridDirectionSymbol = #east)   ifTrue: [ ^  1 @ 0  ].
+	(gridDirectionSymbol = #west)   ifTrue: [ ^ -1 @ 0  ].	
+	(gridDirectionSymbol = #south)  ifTrue: [ ^  0 @ 1  ].
+	(gridDirectionSymbol = #north)  ifTrue: [ ^  0 @ -1 ].	
+]]]
+
+@@dothis Modify ==vectorFor:== to an object-oriented form.
+
+[[[
+GridDirection class>>vectorFor: gridDirectionSymbol
+	^ (self directionFor: gridDirectionSymbol) vector.	
+]]]
+
+Re-run the tests to check they are still green.  Well actually, they
+could just be green because our tests don't cover this method.  You
+might double-check this is indeed a neutral refactoring, by returning
+''nil'' from ==vectorFor:== to confirm this breaks some test. Being able
+to break things reliably is a useful check point. Then return
+==vectorFor:== to its proper form.
+
+Once all the tests pass, it is a good time to publish your code.
+
+
+!!! Discussion
+
+% http://squeak.preeminent.org/tut2007/html/048A.html
+
+So we have seen both the traditional and object-oriented approach to a
+case-structure.  So what is gained by the latter? There are two
+things: maintainability and performance. 
+
+For maintainability, consider a scenario needing a ==symbolFor:== method
+to map vector directions back to symbols. The traditional form 
+might add this...
+
+[[[
+GridDirection class>>symbolFor: gridDirectionVector
+	(gridDirectionVector = ( 1 @ 0 ) )  ifTrue: [ ^ #east ].
+	(gridDirectionVector = (-1 @ 0 ) )  ifTrue: [ ^ #west ].	
+	(gridDirectionVector = ( 0 @ 1 ) )  ifTrue: [ ^ #south ].
+	(gridDirectionVector = ( 0 @ -1 ) ) ifTrue: [ ^ #north ].	
+]]]
+
+However this essentially duplicates the hardcoded information in
+==vectorFor:==, creating a burden to manage consistency between the two
+methods. Imagine that the requirement to handle diagonal directions is
+added, needing updates to both ==symbolFor:== and ==vectorFor:==. Then
+later, requirements change again to reverse the east-west vector
+convention. Having the data of the forward and reverse mappings
+coded apart raises the risk of error.
+
+In its object-oriented form, each forward and reverse mapping is coded
+in same place, local to its own dedicated class object.  The existing
+mapping of previously defined ==GridDirection== subclasses can be
+reused, so our ==symbolFor:== method would look like this...
+
+[[[
+GridDirection class>>symbolFor: gridDirectionVector 
+		^ (self directionForVector: gridDirectionVector) symbol.
+]]]
+[[[
+GridDirection class>>directionForVector: aDirectionVector
+	^ self subclasses detect: [ :case | case vector = aDirectionVector ]
+]]]
+
+A requirements change that adds diagonal directions now does not change
+==symbolFor:== nor ==vectorFor:==. Both methods benefit from defining
+each new mapping once like so...
+
+[[[
+SouthEastGridDirection>>directionSymbol
+	^ #southeast
+
+SouthEastGridDirection class>>vector 
+	^ 1@1
+]]]
+
+In addition, with the traditional case-structure symbols like ==#north==
+end up scattered throughout the code. When we inspect these in the
+debugger at run-time, they hold no information about their symbol/vector
+mapping.  However when real objects like ==NorthGridDirection== are used
+throughout the code in place of symbols, inspecting these at run-time
+provides access to the symbol/vector mapping.
+
+Now you may be wondering how a default values is provided by an
+object-oriented case-structure. This is handled where we iterate to
+detect a matching case, changing from ==#detect:== to
+==detect:ifNone:==. For example, for an unknown direction-symbol the
+default might be  to stay in the same position, as follows...
+
+[[[
+GridDirection class>>directionFor: aDirectionSymbol
+	^ self subclasses 
+	          detect: [ :case | case directionSymbol = aDirectionSymbol ]
+            ifNone: [ self ].  
+]]]
+
+[[[
+GridDirection class>>vector
+	^ 0@0
 ]]]
 
 
-Once all the tests pass, it is a good time to publish your code.
+With regard to performance, consider that with diagonal directions the
+traditional case-structure has eight conditional statements, half of
+which need to be evaluated on average each time a direction-symbol like
+#north needs to be used as direction-vector.  Alternatively, an
+object-oriented case-structure using real objects like
+==NorthGridDirection==, requires only a single method call to ==vector==
+each time a direction-vector is required. Indeed, Valloud says "If you
+need to improve performance, classes and polymorphism are some of your
+most powerful allies because they can make it so that the run-time does
+not need to spend any time whatsoever recreating known [design-time]
+information."
 
 
 !! Back to the Laser Beam Path
 
 % http://squeak.preeminent.org/tut2007/html/040.html
 
-Now we are ready to work on laser path elements. Let us start to define a new class method that makes the creation of ==LaserPathElement== objects easier. Do you have any idea how to proceed? When we create a ==LaserPathElement== we should mention the cell it is acting on and also the side of the cells we are talking. 
+Now we are ready to work further on our laser path elements. Let us
+begin by defining a convenience method for instance creation. Do you
+have any idea how to proceed? Remember that our ==LaserPathElement== has
+two instance variables, and it will be useful to initialize these at the
+same time that the object is created. 
+
+@@dothis Define an instance-creation class-method to initialize all instance variables.
 
 [[[
 LaserPathElement  class>>cell: aCell entrySide: aDirectionSymbol 
@@ -475,7 +733,9 @@ LaserPathElement  class>>cell: aCell entrySide: aDirectionSymbol
 ]]]
 
 
-SD: add a test
+@@todo SD: add a test. BTC: I'll come back to do this - since it won't upset the flow to leave it for now.
+
+@@todo BTC-2014-07-14 Is the next bit needed yet? Maybe the original tutorial does this later already.
 
 We can also add another method taking a direction instead than a symbol. Objects are always more powerful than mere data so we should favor their use. 
 
@@ -486,25 +746,33 @@ LaserPathElement class>>cell: aCell entrySideDirection: aDirection
 ]]]
 
 
-SD: add a test
+@@todo SD: add a test
 
-A key functionality that we need is a method that given a path element answers the next cell on grid. Here we will clearly see the importance of direction. Let us think a bit, as input we have an path element (which is linked to a cell and direction), a cell that know how the beam exits and a grid which contains all the cells. 
+Some key functionality we require is given a path element, determine the
+next cell on grid. Here we will clearly see the importance of direction.
+Let us think a bit... a path element links an entry direction to a cell,
+which can determine the exit direction and next location.  A grid lookup
+of this next location gives us the next cell.  The exit direction
+becomes the next cell's entry direction, which together give us our next
+path element.  So from a path element and a grid, we can determine the
+next path element.
 
+@@dothis Define a method for a path element to use a grid to determine the next path element. 
 
 [[[
 LaserPathElement>>nextElementIn: aGrid
 
-	|  direction newLocation nextCell |
-	direction := GridDirection directionFor: (self cell exitFor: self entrySide).
-	newLocation := self cell gridLocation + direction vector.
-	nextCell := aGrid at: newLocation.
+	| directionSymbol direction nextLocation nextCell |
+	directionSymbol := self cell exitSideFor: self entrySide.
+	direction := GridDirection directionFor: directionSymbol.
+	nextLocation := self cell gridLocation + direction vector.
+	nextCell := aGrid at: nextLocation.
 	^ nextCell isNil
 		ifTrue: [ nil ]
-		ifFalse: [ self class cell: nextCell entrySideDirection: direction ] 
+		ifFalse: [ self class cell: nextCell entrySideDirection: direction ]
 ]]]
 
-
-There is a dependency on some behavior in ==Grid== that is expected here. When a location is given that would be invalid for the grid, because of indexes like 0 or ones larger than the number of rows or columns. The expectation here is that the cell found would be set to nil. We should go back to the Grid code and ensure we handle this. Just add the "ifAbsent: []" code.
+Now there is a dependency on some behavior in ==Grid== that is expected here. When a location is given that would be invalid for the grid, because of indexes like 0 or ones larger than the number of rows or columns. The expectation here is that the cell found would be set to nil. We should go back to the Grid code and ensure we handle this. Just add the "ifAbsent: []" code.
 
 
 [[[
@@ -512,28 +780,19 @@ Grid>>at: aPoint
    ^ self cells at: aPoint ifAbsent: []
 ]]]
 
-SD: Add a test
+@@todo SD: Add some tests. BTC: I'll come back to do this - since it won't upset the flow to leave it for now.
 
-
-SD: Add more tests
-
-
-
-  ==GridDirection directionFor: (self cell exitFor: self entrySide).== can be turned into cell method.
-
-
-
-
-
-
-
-
-
-
+@@todo SD: Maybe ==GridDirection directionFor: (self cell exitFor: self entrySide)== can be turned into cell method. BTC: Wait to see what the rest of the tutorial brings. It might do this already.
 
 
 !! About Encodings Default Values and Shared Pools
 
-Note that there are other ways in Pharo to define constant: Shared pools 
+@@todo BTC-2014-07-14 I don't see how this applies. What am I missing? Also, I don't think we should complicate the flow of the tutorial by introducing too many things that are "optional," since if the reader tries them they are out of sync with the tutorial.  I think its better to attack these later in some refactoring sections.
 
-% http://squeak.preeminent.org/tut2007/html/041.html
+Note that there are other ways in Pharo to define constant: Shared pools
+
+!! References
+
+[1] Valloud, A. ''A Mentoring Course on Smalltalk'' 
+
+
