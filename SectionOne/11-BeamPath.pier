@@ -117,24 +117,24 @@ Check you test is still green.
 
 [[[
 BlankCell>>stringRepresentation
-	^ ' '   "There is one space character in the string."
+	^ '.'   
 ]]]
 [[[
 GridTest>>testTextualRepresentationEmptyGrid
 	"There are 3 space characters between the bars."
 	self assert: Grid new printString = 
 '
-|   |   |   |
-|   |   |   |
-|   |   |   |
-'  
+| . | . | . |
+| . | . | . |
+| . | . | . |
+'
 ]]]
 
 
 [[[
 TargetCell>>stringRepresentation
 
-	^ 'o'
+	^ '#'
 ]]]
 [[[
 GridTest>>testTextualRepresentationGridWithTarget
@@ -143,9 +143,9 @@ GridTest>>testTextualRepresentationGridWithTarget
 	grid := Grid new  at: 3@1 put: TargetCell new.  
 	self assert:  grid printString = 
 '
-|   |   | o |
-|   |   |   |
-|   |   |   |
+| . | . | # |
+| . | . | . |
+| . | . | . |
 '
 ]]]
 
@@ -164,9 +164,9 @@ GridTest>>testTextualRepresentationGridWithMirror
 	grid at: 2@1put: MirrorCell leanRight.
 	self assert:  grid printString = 
 '
-| \ | / |   |
-|   |   |   |
-|   |   |   |
+| \ | / | . |
+| . | . | . |
+| . | . | . |
 '
 ]]]
 
@@ -179,11 +179,11 @@ GridTest>>testTextualRepresentation
 
 	self assert: self generateDemoGrid printString = 
 '
-|   |   |   | / | o |
-| / |   |   |   | \ |
-|   | \ | / |   | \ |
-|   | \ | \ |   |   |
-| / |   |   | / |   |
+| . | . | . | / | # |
+| / | . | . | . | \ |
+| . | \ | / | . | \ |
+| . | \ | \ | . | . |
+| / | . | . | / | . |
 '
 ]]]
 
@@ -578,10 +578,10 @@ GridDirection class>>directionFor: aDirectionSymbol
 
 [[[
 GridDirectionTest>>testDirectionSelection
-	self assert: NorthGridDirection = GridDirection directionFor: #north.	
-	self assert: EastGridDirection  = GridDirection directionFor: #east.
-	self assert: SouthGridDirection = GridDirection directionFor: #south.	
-	self assert: WestGridDirection  = GridDirection directionFor: #west.
+	self assert: NorthGridDirection = (GridDirection directionFor: #north).	
+	self assert: EastGridDirection  = (GridDirection directionFor: #east).
+	self assert: SouthGridDirection = (GridDirection directionFor: #south).	
+	self assert: WestGridDirection  = (GridDirection directionFor: #west).
 ]]]
 
 Run the tests to check this works.   
@@ -698,15 +698,14 @@ GridDirection class>>vector
 
 With regard to performance, consider that with diagonal directions the
 traditional case-structure has eight conditional statements, half of
-which need to be evaluated on average each time a direction-symbol like
-#north needs to be used as direction-vector.  Alternatively, an
+which need to be evaluated on average each time a direction-symbol  like
+==#north== needs to be used as direction-vector.  Alternatively, an
 object-oriented case-structure using real objects like
 ==NorthGridDirection==, requires only a single method call to ==vector==
 each time a direction-vector is required. Indeed, Valloud says "If you
 need to improve performance, classes and polymorphism are some of your
-most powerful allies because they can make it so that the run-time does
-not need to spend any time whatsoever recreating known [design-time]
-information."
+most powerful allies because they make it so that the run-time does
+not need to spend any time whatsoever recreating known information."
 
 
 !! Back to the Laser Beam Path
@@ -716,7 +715,7 @@ information."
 Now we are ready to work further on our laser path elements. Let us
 begin by defining a convenience method for instance creation. Do you
 have any idea how to proceed? Remember that our ==LaserPathElement== has
-two instance variables, and it will be useful to initialize these at the
+two instance variables, and it is useful to initialize these at the
 same time that the object is created. 
 
 @@dothis Define an instance-creation class-method to initialize all instance variables.
@@ -748,14 +747,14 @@ LaserPathElement class>>cell: aCell entrySideDirection: aDirection
 
 @@todo SD: add a test
 
-Some key functionality we require is given a path element, determine the
-next cell on grid. Here we will clearly see the importance of direction.
-Let us think a bit... a path element links an entry direction to a cell,
-which can determine the exit direction and next location.  A grid lookup
-of this next location gives us the next cell.  The exit direction
-becomes the next cell's entry direction, which together give us our next
-path element.  So from a path element and a grid, we can determine the
-next path element.
+Some key functionality we require is... given a path element, determine
+the next cell on grid. Here we will clearly see the importance of
+direction. Let us think a bit... a path element links an entry direction
+to a cell, which can determine the exit direction and next location.  A
+grid lookup of this next location gives us the next cell.  The exit
+direction becomes the next cell's entry direction, which together give
+us our next path element.  So from a path element and a grid, we can
+determine the next path element.
 
 @@dothis Define a method for a path element to use a grid to determine the next path element. 
 
@@ -763,13 +762,13 @@ next path element.
 LaserPathElement>>nextElementIn: aGrid
 
 	| directionSymbol direction nextLocation nextCell |
-	directionSymbol := self cell exitSideFor: self entrySide.
+	directionSymbol := self cell exitFor: self entrySide.
 	direction := GridDirection directionFor: directionSymbol.
 	nextLocation := self cell gridLocation + direction vector.
 	nextCell := aGrid at: nextLocation.
 	^ nextCell isNil
 		ifTrue: [ nil ]
-		ifFalse: [ self class cell: nextCell entrySideDirection: direction ]
+		ifFalse: [ self class cell: nextCell entrySide: directionSymbol ]
 ]]]
 
 Now there is a dependency on some behavior in ==Grid== that is expected here. When a location is given that would be invalid for the grid, because of indexes like 0 or ones larger than the number of rows or columns. The expectation here is that the cell found would be set to nil. We should go back to the Grid code and ensure we handle this. Just add the "ifAbsent: []" code.
@@ -777,7 +776,7 @@ Now there is a dependency on some behavior in ==Grid== that is expected here. Wh
 
 [[[
 Grid>>at: aPoint
-   ^ self cells at: aPoint ifAbsent: []
+   ^ self cells at: aPoint ifAbsent: [ nil ]
 ]]]
 
 @@todo SD: Add some tests. BTC: I'll come back to do this - since it won't upset the flow to leave it for now.
@@ -790,6 +789,300 @@ Grid>>at: aPoint
 @@todo BTC-2014-07-14 I don't see how this applies. What am I missing? Also, I don't think we should complicate the flow of the tutorial by introducing too many things that are "optional," since if the reader tries them they are out of sync with the tutorial.  I think its better to attack these later in some refactoring sections.
 
 Note that there are other ways in Pharo to define constant: Shared pools
+
+
+!! Path Calculation and Activation
+
+% http://squeak.preeminent.org/tut2007/html/041.html
+
+We can now write the path calculation code for Grid.
+
+
+
+[[[
+Grid>>calculatePath
+	| cell dirSym element next |
+	self laserBeamPath: OrderedCollection new.
+	cell := self startingCell.
+	dirSym := #south.
+	element := LaserPathElement cell: cell entrySide: dirSym.
+	[	self laserBeamPath addLast: element.
+		next := element nextElementIn: self.
+		next isNil.
+	] whileFalse: [ element := next ].
+]]]
+
+Okay. Let's write code to activate the cells on the laser beam's path.
+
+@@dothis Define methods ==activateCellsInPath== and ==activateCell==.
+
+[[[
+Grid>>activateCellsInPath
+	self calculatePath.
+	self laserBeamPath do: [ :pathElement |
+		pathElement activateCell ]
+]]]
+[[[
+LaserPathElement>>activateCell
+	self cell laserEntersFrom: self entrySide.
+]]]
+
+!! Testing Our Grid Activation
+
+% http://squeak.preeminent.org/tut2007/html/042.html
+
+Let's go back to our Grid Unit Test and enhance it with some code that
+exercises all this stuff. Remembering layout of our demo grid (Figure *demoGrid*), we should activate the cells in the laser beam
+path and then check if the target cell is on.  
+ 
++Our demo grid coded in GridTest\>\>generateDemoGrid >file://figures/021.jpg|width=40|label=demoGrid+
+
+@@dothis Add the last two lines below to ==testCellInteractions==
+
+[[[
+GridTestCase>>testCellInteractions
+	| grid cell |
+	grid := self generateDemoGrid.
+	cell := grid at: 5@1.
+	self assert: cell isOff.
+	grid activateCellsInPath.
+	self assert: cell isOn.
+]]]
+
+% BTC-2014-07-15 Actually I had an additional error, accidently using ==direction== rather than ==directionSymbol== in #nextElementIn:. Resolved from debugger checking methods that store into the ivar, which was only the setter and putting a halt in that.  Might be good to add this to tutorial later if its not duplicating something later.
+
+Let's run our tests and see what happens. Hmmm... No joy. An error occurs as shown in Figure *testCellInteractionsFail*, which indicates the "\+" message was sent to ==nil==. We can confirm this by inspecting ==self cell gridLocation== as the expression to the left of the "\+". Now why is this nil? Inspecting ==self cell== shows us an instance of BlankCell like Figure *testCellInteractionsFailBlankCell*. 
+
+
+
++testCellInteractions failure, inspecting "self cell gridLocation" >file://figures/11-MNU-UndefinedObject-plus.png|width=60|label=testCellInteractionsFail+
+
++testCellInteractions failure, inspecting "self cell". >file://figures/11-MNU-UndefinedObject-plus-BlankCell.png|width=50|label=testCellInteractionsFailBlankCell+
+
+Now I thought each ==BlankCell=='s ==gridLocation== was set when it was placed in the grid by ==Grid>>at:put:== (when the grid is created.)  Grid creation calls ==Grid>>initialize== which calls ==Grid>>initializeCells== where we see our ==BlankCells== are created and placed in the grid. The relevant methods are reproduced here for convenience. Can you see the problem? 
+
+[[[
+Grid>>at: aPoint put: aCell
+	aCell gridLocation: aPoint. 
+	self cells at: aPoint put: aCell.
+]]] 
+
+[[[
+Grid>>initializeCells
+	self cells: Dictionary new.
+	1 to: self numberOfColumns do: [ :col |
+		1 to: numberOfRows do: [ :row |
+			self cells at: col@row put: BlankCell new ] ]
+]]]
+
+@@dothis To investigate, we can modify ==Grid>>initializeCells== as follows to add a breakpoint.
+
+[[[
+		1 to: numberOfRows do: [ :row | self halt. "Grid new"
+]]]
+
+After saving, select ==Grid new== then '''Do it'''.  When the debugger appears on the ==halt==, step '''Over''' several times until the ==at:put:== message is selected as shown in Figure *steppingThrough*. Then step '''Into''' that message and we discover that ==Dictionary>>at:put:== is executed rather than the expected ==Grid>>at:put:== method.  Ahh, we need to do this... 
+
++Stepping through Grid\>\>initializeCells. >file://figures/11-Grid-initializeCells-breakkpoint.png|width=60|label=steppingThrough+
+
+@@dothis In the debugger, correct ==Grid>>initializeCells== to send ==at:put:== to ==self== rather than ==self cells==.
+
+[[[
+       self at: col@row put: BlankCell new ] ]
+]]]
+
+After saving the modified code, the debugger restarts the method. Press '''Proceed''' to return to the breakpoint and repeat the stepping until you observe that ==Grid>>at:put:== is executed.  
+
+@@dothis Remove the debugging code so you end up with this (then exit the debugger)...
+[[[
+Grid>>initializeCells
+	self cells: Dictionary new.
+	1 to: self numberOfColumns do: [ :col |
+		1 to: numberOfRows do: [ :row | 
+			self at: col@row put: BlankCell new ] ]
+]]]
+
+@@note Just a prescient tip, take a moment to save the Pharo image as a checkpoint.
+
+Now re-run the tests. Hey! Something else is wrong. The tests never finish running, and system may seem to hang.  Type ''Command-.'' (Command-period) to interrupt the system and see where we are hung up.
+ 
+% http://squeak.preeminent.org/tut2007/html/043.html
+% http://squeak.preeminent.org/tut2007/html/044.html
+% BTC: Took a different troubleshooting approach.
+
+This behaviour of not finishing is indicative of an endless loop.   When the debugger comes up, we can search down the call stack until we see some loop, which we find in ==Grid>>calculatePath== as shown in Figure *UserInterrupt*. (Note your display may be somewhat different above the loop since the user interrupt will occur at a random point of execution.)  Now we see that each loop, the current element is added to ==laserBeamPath==, so reviewing that might give some hint. Figure *UserInterrupt* shows this selected.  Hmmm... we could open it in an inspector and then inspect each of those elements, but it would be useful to see more information here about each element here. Lets change how ==LaserPathElement==s are displayed.
+
++User interrupt, found a loop. >file://figures/11-UserINterrupt.png|width=60|label=UserInterrupt+
+
+
+@@dothis In the debugger, select ==LaserPathElement== and press '''Command-b''' to bring up the System Browser on LaserPathElement, then add the following code...
+
+[[[
+LaserBeamPath>>printOn: aStream 	"printing protocol"	
+	super printOn: aStream.
+	aStream 
+		nextPut: $( ;
+		nextPutAll: cell gridLocation asString , cell stringRepresentation ;
+		nextPutAll: entrySide asString ;
+		nextPutAll: $).
+]]]  
+
+Head back to the debugger to see what this looks like. Uh-oh! We've broken something. Now it just says "Error while printing laserBeamPath", but we can investigate by choosing menu item '''Debug Accessing #longLabel of laserBeamPath''' as shown in Figure *menuDebugLongLabel*. This brings up a debugger like Figure *DebugPrintOn*, where we can see the last ==nextPutAll: $)== is highlighted.  Doh! ==nextPutAll:== is for strings and ==nextPut:== is for characters. 
+
++Investigate an object printing error. >file://figures/11-menu-debug-longLabel.png|width=60|label=menuDebugLongLabel+
+
++The error in LaserElementPath\>\>printOn:. >file://figures/11-LaserElementPath-printOn-debug.png|width=60|label=DebugPrintOn+
+
+
+@@dothis Change the last line of LaserBeamPath>>printOn: as follows (then close that debugger)
+[[[
+			nextPut: $).
+]]]
+
+
+Back in the original debugger, we now have an informative laser beam path like that shown in Figure *InformativeLaserBeamPath*. Lets examine that.  Referring to Figure *demoGrid*, we can see it starts correctly in in the bottom left cell with the mirror leaning right and the beam coming from the south. Then it correctly moves right into a blank cell, but hang on! The beam is shown to be entering from the east, when it should be entering from the west! 
+
++An informative laser beam path >file://figures/11-Informative-LaserBeamPath.png|width=60|label=InformativeLaserBeamPath+
+
+Following this buggy execution a bit further, we see that the beam returns to our starting cell, with the beam entering from the west, which is wrong, it should be entering from the east.  However the mirror works correctly sending that beam up to a blank cell, but again its entering from the wrong side. Hence the beam returns to the starting cell, with the beam coming from the south, which is our starting condition - hence the endless loop.
+
+So we should examine where the ==entrySide== of each ==LaserPathElement== is set. This happens in the following in ==LaserPathElement>>nextElementIn:== with the following statement.
+[[[
+     self class cell: nextCell entrySide: directionSymbol 
+]]] 
+
+Now observe that ==directionSymbol== and the ==direction== object are really exit directions.  It will help if we rename them as such. 
+
+@@dothis Modify the variable declaration as follows (one variable at a time) and push this through to the old variables as they become highlighted. 
+
+[[[
+	| exitDirectionSymbol exitDirection nextLocation nextCell |
+]]] 
+
+
+% http://squeak.preeminent.org/tut2007/html/045.html
+% BTC: Took a different troubleshooting approach.
+
+Now the problem and solution become more obvious... 
+
+[[[
+  self class cell: nextCell entrySide: exitDirectionSymbol 
+]]]
+
+We are mixing our entry and exit sides.  What we need is the entry side adjacent to the exit side.  Now since our ==exitDirection== variable contains a ==GridDirection== object, we can extend that to provide the needed symbol, using it like this... 
+
+[[[
+	self class cell: nextCell entrySide: exitDirection adjacentInversionSymbol. 
+]]]
+
+@@dothis Add the following.
+[[[
+EastGridDirection class>>adjacentInversionSymbol 
+	^ #west
+]]]
+[[[
+WestGridDirection class>>adjacentInversionSymbol 
+	^ #east
+]]]
+[[[
+NorthGridDirection class>>adjacentInversionSymbol 
+	^ #south
+]]]
+[[[
+SouthGridDirection class>>adjacentInversionSymbol 
+	^ #north
+]]]
+
+@@dothis Modify ==nextElementIn:== like this.
+[[[
+LaserPathElement>>nextElementIn: aGrid
+	| exitDirectionSymbol exitDirection nextLocation nextCell |
+	exitDirectionSymbol := self cell exitFor: self entrySide.
+	exitDirection := GridDirection directionFor: exitDirectionSymbol.
+	nextLocation := self cell gridLocation + exitDirection vector.
+	nextCell := aGrid at: nextLocation.
+	^ nextCell isNil
+		ifTrue: [ nil ]
+		ifFalse: [ self class 
+			cell: nextCell 
+			entrySide: exitDirection adjacentInversionSymbol ]
+]]]
+
+% http://squeak.preeminent.org/tut2007/html/046.html
+% http://squeak.preeminent.org/tut2007/html/047.html
+
+Let's rerun our unit tests and see how we are doing now. We still get a failure, but at least it's not an endless loop. Open the debugger by selecting the failed method in Test Runner.  Lets look again at our ==laserBeamPath== variable in ==Grid==. Yours should look like Figure *BeamGotToTargetBeforeError*. Now comparing that to Figure *demoGrid* (our demo grid), it looks correct. It even gets to the target cell! 
+
++An informative laser beam path >file://figures/11-BeamGotToTargetBeforeError.png|width=60|label=BeamGotToTargetBeforeError+
+
+So next we'll have a look our application class nearest the top of the call stack, which is ==GridDrection class==. We see ==directionFor:=='s ==aDirectionSymbol== parameter holds a ==nil== value.  Well thats likely to be a problem for the ==detect:== expression, since the ==subclasses== message won't have ==nil== in its result. Looking back in the caller (==LaserPathElement>>nextElementIn:==) we see ==exitDirectionSymbol== is ==nil==. Now inspecting ==self cell== shows it to be a ==TargetCell==, which the beam doesn't exit, so actually ==nil== is a reasonable value for ==exitDirectionSymbol==, but still it causes a problem in the next line.  Indeed, there is no ''next cell'' for ==TargetCell== - its the end of the line - so we should just exit the method.
+
+@@dothis In the debugger, insert the fourth line.
+[[[
+LaserPathElement>>nextElementIn: aGrid
+	| exitDirectionSymbol exitDirection nextLocation nextCell |
+	exitDirectionSymbol := self cell exitFor: self entrySide.
+	exitDirectionSymbol ifNil: [ ^nil ].
+	exitDirection := GridDirection directionFor: exitDirectionSymbol.
+	nextLocation := self cell gridLocation + exitDirection vector.
+	nextCell := aGrid at: nextLocation.
+	^ nextCell isNil
+		ifTrue: [ nil ]
+		ifFalse: [ self class 
+			cell: nextCell 
+			entrySide: exitDirection adjacentInversionSymbol ]
+]]]
+
+Rerun our tests. Now everything passes. We have a correct laser path in our grid.
+
+!! Some additional tests
+
+% http://squeak.preeminent.org/tut2007/html/048.html
+
+We need to fill-in some more unit tests. Functionality was added before a corresponding test. We're still using Unit Tests as a tool to maintain the validity of the implemented code, but we allowed ourseleves to ignore the need to write the test case before we write in the model code. Sometimes its good to follow the flow of our thoughts for a moment, but its best to go back an cover our code with proper test as soon as possible.  It may seem like its slowing you down, but it helps you go quicker later on.
+
+Let's pick off an easy one by testing the new direction code. Here's the updated version of the #testDirectionSelection method for GridDirectionTestCase.
+
+@@dothis Select method ==GridDirectionTest>>testDirection==, then change the method name and update as follows.
+
+[[[
+GridDirectionTest>>testDirectionInversion
+	self assert: NorthGridDirection = (GridDirection directionFor: #south).	
+	self assert: EastGridDirection  = (GridDirection directionFor: #west).
+	self assert: SouthGridDirection = (GridDirection directionFor: #north).	
+	self assert: WestGridDirection  = (GridDirection directionFor: #east).
+]]]
+
+We could also enhance the grid testing so that all cells, after the laser beam is activated, have been inspected to be either on or off. For our test scenario, which should match this diagram, we should be able to check specific cells.
+
++Our demo grid >file://figures/021.jpg|width=40|label=demoGrid+
+
+[[[
+testCellInteractions
+	| grid targetCell foundOn expectedOn |
+	grid := self generateDemoGrid.
+	targetCell := grid at: 5@1.
+	self assert: targetCell isOff.
+	grid activateCellsInPath.
+	self assert: targetCell isOn.
+	expectedOn := {	
+		1@5.
+		2@5.
+		3@5.
+		4@5.
+		4@4.
+		4@3.
+		4@2.
+		4@1.
+		5@1}.
+	foundOn := grid cells 
+		select: [  :eachCell | eachCell isOn ] 
+		thenCollect: [ :eachCell | eachCell gridLocation ].
+	self assert: ( foundOn difference: expectedOn) size equals: 0.
+	self assert: ( expectedOn difference: foundOn) size equals: 0.
+]]]
+
+Rerun our unit tests. Once they are all green, this is a good place to commit to your repository.
 
 !! References
 

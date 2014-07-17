@@ -97,7 +97,7 @@ Grid>>initializeCells
 	self cells: Dictionary new.
 	1 to: self numberOfColumns do: [ :col |
 			1 to:  numberOfRows do: [ :row |
-				self at: col@row put: BlankCell new ] ] 
+				self cells at: col@row put: BlankCell new ] ] 
 ]]]
 
 
@@ -334,8 +334,10 @@ GridTest>>generateDemoGrid
 We can now add a new test method. A simple check that the target cell is currently off will be fine for now.
 [[[
 GridTest>>testCellInteractions
-
-	self assert: (self generateDemoGrid at: 5@1) isOff
+	| grid cell |
+	grid := self generateDemoGrid.
+	cell := grid at: 5@1.
+	self assert: cell isOff
 ]]]
 
 
