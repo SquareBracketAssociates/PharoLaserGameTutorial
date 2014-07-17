@@ -912,7 +912,7 @@ Now re-run the tests. Hey! Something else is wrong. The tests never finish runni
 
 This behaviour of not finishing is indicative of an endless loop.   When the debugger comes up, we can search down the call stack until we see some loop, which we find in ==Grid>>calculatePath== as shown in Figure *UserInterrupt*. (Note your display may be somewhat different above the loop since the user interrupt will occur at a random point of execution.)  Now we see that each loop, the current element is added to ==laserBeamPath==, so reviewing that might give some hint. Figure *UserInterrupt* shows this selected.  Hmmm... we could open it in an inspector and then inspect each of those elements, but it would be useful to see more information here about each element here. Lets change how ==LaserPathElement==s are displayed.
 
-+User interrupt, found a loop. >file://figures/11-UserINterrupt.png|width=60|label=UserInterrupt+
++User interrupt, found a loop. >file://figures/11-UserInterrupt.png|width=60|label=UserInterrupt+
 
 
 @@dothis In the debugger, select ==LaserPathElement== and press '''Command-b''' to bring up the System Browser on LaserPathElement, then add the following code...
