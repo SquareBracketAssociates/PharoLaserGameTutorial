@@ -1047,10 +1047,10 @@ Let's pick off an easy one by testing the new direction code. Here's the updated
 
 [[[
 GridDirectionTest>>testDirectionInversion
-	self assert: NorthGridDirection = (GridDirection directionFor: #south).	
-	self assert: EastGridDirection  = (GridDirection directionFor: #west).
-	self assert: SouthGridDirection = (GridDirection directionFor: #north).	
-	self assert: WestGridDirection  = (GridDirection directionFor: #east).
+	self assert:  NorthGridDirection adjacentInversionSymbol equals: #south.
+	self assert:  EastGridDirection adjacentInversionSymbol equals: #west.
+	self assert:  WestGridDirection adjacentInversionSymbol equals: #east.
+	self assert:  SouthGridDirection adjacentInversionSymbol equals: #north.
 ]]]
 
 We could also enhance the grid testing so that all cells, after the laser beam is activated, have been inspected to be either on or off. For our test scenario, which should match this diagram, we should be able to check specific cells.
