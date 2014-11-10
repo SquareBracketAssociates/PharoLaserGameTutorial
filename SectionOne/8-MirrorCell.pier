@@ -184,32 +184,12 @@ Run the tests and they should pass.
 
 !!! Alternate Design
 
-@@todo BTC-2014-06-18 I think the following is a distraction that is not needed at this time.  Look at moving later to an "improvement" section.
+% BTC-2014-07-05 Removed Cell>>initialize and BlankCell>>initializeExitSides from here since they are discussed in their original form later on.
 
-For the initialization we could also define the ==initialize== method as follows:
+We notice that ==setSegmentOffFor:== can be used to make ==initializeActiveSegments== more readable and intention revealing than poking ==false== values directly into the ==exitSides== dictionary.
 
-[[[
-Cell>>initialize
+@@dothis We make the following modification.
 
-	super initialize.
-	self initializeActiveSegments.
-	self exitSides: Dictionary new.
-	self initializeExitSides
-]]]
-
-And define only one method ==initializeExitSides== in ==BlankCell== and each future subclasses of ==Cell==.
-
-[[[
-BlankCell>>initializeExitSides
-
-	self exitSides at: #north put: #south.
-	self exitSides at: #south put: #north.
-	self exitSides at: #east put: #west.
-	self exitSides at: #west put: #east.
-]]]
-
-
-We could use the method ==setSegmentOffFor:==
 
 [[[
 Cell>>initializeActiveSegments

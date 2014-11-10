@@ -145,9 +145,55 @@ This is a good occasion to save your code.
 
 !!! About our initialize methods
 
-It looks like we defined our initialization methods several times, for each cell type, and some parts are exactly the same. This is clearly a sign that we can do better. Colloquially this duplication is a form of 'code smell' (with the idea that bad code smells rotten perfume). Can you propose a solution to this problem without reading ours?
+It looks like we defined our initialization methods several times, for each cell type, and some parts are exactly the same. This is clearly a sign that we can do better. Colloquially, this duplication is a form of 'code smell' (with the idea that bad code smells like rotten perfume). Can you propose a solution to this problem without reading ours?
 
-Our solution is the following: We find ==self exitSides: Dictionary new== common to the three cell classes, so we push that up to the superclass ==initialize== method.
+Our solution is the following: First we notice that calling ==leanLeft== from ==MirrorCell>>initialize== effectively initializes the exit sides, so its appropriate to move it there as follows:
+
+[[[
+MirrorCell>>initialize
+	super initialize.
+	self initializeExitSides.
+]]]
+
+[[[
+MirrorCell>>initializeExitSides
+	self exitSides: Dictionary new.
+	self leanLeft.
+]]]
+
+Next we consider that calling ==initializeExitSides== is common to the ==initialize== method of the three cell classes.  So we push that up to the superclass ==initialize== method. The outcome would be as follows.
+
+
+[[[
+Cell>>initialize
+
+	super initialize.
+	self initializeActiveSegments.
+	self initializeExitSides.
+]]]
+
+[[[
+BlankCell>>initialize
+	super initialize.
+]]]
+
+[[[
+TargetCell>>initialize
+	super initialize.
+]]]
+
+[[[
+MirrorCell>>initialize
+	super initialize.
+]]]
+
+Now actually, an ==intialize== method that only calls its superclass ==initialize== method is redundant, so we can eliminate them.
+
+@@dothis Modify ==Cell>>initialize== as above and remove the other three ==initialize== methods.
+
+Check your tests.
+
+Then we consider the line ==self exitSides: Dictionary new== that is common to the three cell classes, so we push that up to the superclass ==initialize== method.
 
 @@dothis Make the following modifications. 
 
@@ -159,10 +205,6 @@ Cell>>initialize
 	self exitSides: Dictionary new.
 	self initializeExitSides.
 ]]]
-[[[
-Cell>>initializeExitSides
-	"does nothing"
-]]]
 
 [[[
 BlankCell>>initializeExitSides
@@ -173,16 +215,6 @@ BlankCell>>initializeExitSides
 	self exitSides at: #west put: #east
 ]]]
 
-And we can now remove the initialize methods of ==BlankCell==. 
-
-[[[
-MirrorCell>>initialize
-	super initialize.
-	self leanLeft
-]]]
-
-And we can remove the method ==initializeExitSides== from MirrorCell since it is a copy of its superclass.
-
 [[[
 TargetCell>>initializeExitSides
 
@@ -191,9 +223,14 @@ TargetCell>>initializeExitSides
 	self exitSides at: #south put: nil.
 	self exitSides at: #west put: nil.
 ]]]
-And we can remove the initialize method of ==TargetCell==. 
 
-Now we can run again our tests. And we can safely save a new version.
+[[[
+MirrorCell>>initializeExitSides
+
+	self leanLeft.
+]]]
+
+Now we can run again our tests, and then safely save a new version of our packages.
 
 
 
