@@ -1,5 +1,7 @@
 # How to Contribute
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/SquareBracketAssociates/PharoLaserGameTutorial?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## Your first compile 
 
 1. After you fork the authoritive repository https://github.com/SquareBracketAssociates/PharoLaserGameTutorial and clone it to your local machine, run the script that installs Pharo and Pillar.  
