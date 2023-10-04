@@ -4,43 +4,58 @@
 
 From what we've seen so far, the Grid is responsible for holding the cells in a matrix. It must have a provision to add specific cells to specific locations, and it should have a mechanism to address cells at specific locations. The Grid will activate the laser beam.
 
+
 !! Adding a class comment
 
-So let us first add a class comment, for example as follows
+So let us first add a class comment, for example as follows.
 
 [[[
-A grid is holding a matrix of cells. It is responsible for emitting the laser beam. 
+A grid is holding a matrix of cells. It is responsible for providing access to the cells and emitting the laser beam. 
+]]]
+
+
+!! First test
+
+As usual, we'll start with a simple test, for the initial state. We want to start with an inactive laser, and all of the cells should be blank with respect to the number of rows and columns.
+
+@@dothis Define a test for the initial conditions.
+
+[[[
+TestCase subclass: #GridTest	instanceVariableNames: ''	classVariableNames: ''	category: 'LaserGame-Tests'
+]]]
+
+[[[
+GridTest>>testInitialConditions
+	| grid cell |
+	grid := Grid new.
+	self deny: grid laserIsActive.
+	cell := grid at: 1@1. 
+	self assert: cell class = BlankCell.
 ]]]
 
 !! Adding some instance variables
 
-We will add two instance variables, ==cells== and ==laserIsActive== to the ==Grid== class. Create the corresponding accessors. 
+The instance variable ==cells== will hold a dictionary where the keys are points of location within the grid mapping to cells as the values. The instance variable ==laserIsActive== will be a boolean indicating state of the laser beam. Instance variables ==numberOfColumns== and ==numberOfRows== will represent the shape of the matrix. 
+
+@@dothis Modify the class definition of ==Grid== as follows.
 
 [[[
 Object subclass: #Grid
-	instanceVariableNames: 'cells laserIsActive'
+	instanceVariableNames: 'cells laserIsActive numberOfColumns numberOfRows'
 	classVariableNames: ''
 	category: 'LaserGame-Model'
 ]]]
 
-The instance variable ==cells== will contain a dictionary where the keys are points of location within the grid and the values are the cells. 
-The instance variable ==laserIsActive== is a boolean indicating state of the laser beam.
+@@dothis Create the corresponding accessors for the four instance variables. 
 
-We will also add two other instance variables that represent the shape of the matrix. Add the instance variables ==numberOfColumns== and ==numberOfRows== and their respective accessors. 
-
-[[[
-Object subclass: #Grid
-	instanceVariableNames: 'cells laserIsActive'
-	classVariableNames: ''
-	category: 'LaserGame-Model'
-]]]
 
 % http://squeak.preeminent.org/tut2007/html/032.html (rearranged bottom part first)
 
 !! Encapsulating cell accesses
 
-We want to address cells within the grid. Rather than expose how cells are actually stored in our grid, we should provide methods that provide access to and setting of specific cells. Let us define two methods ==at: aPoint== and ==at: aPoint put: aCell==. 
-A point in Pharo is expressed as ==x \@ y== and we can access the x of a point just sending the message ==x== to this point.
+We want to address cells within the grid. Rather than expose how cells are actually stored in our grid by returning the ==cells== dictionary, we should provide methods that provide setting and getting of specific cells. So we provide two alternative ==cells== accessors ==at:== and ==at:put:==. Now the original ==cells== and ==cells:== accessor methods still allow the dictionary implementation to be exposed outside the class.  The convention is to move these to a protocol called 'private', to indicate they should only be used by the ==Grid== class. Note that protocols have no impact on the execution of a protocol. They just help organise things for human understanding.
+
+@@dothis Define the alternative ==cells== accessors. Move the original accessors to a new 'private' protocol.
 
 [[[
 Grid>>at: aPoint
@@ -52,85 +67,85 @@ Grid>>at: aPoint put: aCell
    self cells at: aPoint put: aCell
 ]]]
 
-Note that using a dictionary to store cells to support their accesses based on their location is a quick and dirty way of doing it. The proper way would be to use an array or a matrix and to access directly the cells doing some simple calculation (something in the spirit of ==x \+ y \* line number==). 
-Now using the ==at:== and ==at:put:== messages is nice because we will be able to change this implementation point at anytime in the future without impacting the rest of the program. 
+By convention, method parameters are named to imply the expected class.  Pharo has a built-in class Point, which is expressed as ==x\@y==.  We can access the 'x' part of a point just sending the message ==x== to this point (e.g. inspecting ==(2@3) x== shows ==2==).
+
+Note that using a dictionary to store cells to support their access based on their ==Point== location is a quick and dirty way of doing it. This is okay for a first pass, but the proper way would be to use an array or a matrix and to access directly the cells doing some simple calculation (something in the spirit of ==x \+ y \* line number==). 
+Now using the ==at:== and ==at:put:== messages is nice because by encapsulating the implementation, we will be able to change the implementation later without impacting the rest of the program. 
+
 
 !! Initializing a Grid
 
 % http://squeak.preeminent.org/tut2007/html/032.html (rearranged top part second)
 
-Now we are ready to initialize a grid. We should set the value of the ==laserIsActive== variable to false and initialize the cells, taking into account the number of rows and columns. So let us start to define the ==initialize== method and see how it goes.
+Now we are ready to initialize a grid. 
+
+@@dothis Define the ==initialize== and ==initializeCells== methods.
 
 [[[
 Grid>>initialize
 
 	super initialize.
-    self laserIsActive: false.
-    self initializeCells
+	self laserIsActive: false.
+	self initializeCells
 ]]]
 
-So now we should define ==initializeCells==. We should iterate over all the positions and create a corresponding cell.
 
+% Note the direct access to numberOfRows below is on purpose.  It gets solved shortly as part of the tutorial.
 [[[
 Grid>>initializeCells
 
 	self cells: Dictionary new.
 	1 to: self numberOfColumns do: [ :col |
 			1 to:  numberOfRows do: [ :row |
-				self at: col@row put: BlankCell new ] ] 
+				self cells at: col@row put: BlankCell new ] ] 
 ]]]
 
-But wait we indeed defined the accessors for ==numberOfColumns== and ==numberOfRows== but we did not initialize them. 
-So two solutions either we change the ==initialize== method to add the following
+
+
+But wait, while we defined the accessors for ==numberOfColumns== and ==numberOfRows==, we did not initialize them. 
+There are two general solutions. Either we can change the ==initialize== method as follows:
+
+
 
 [[[
 Grid>>initialize
 
-	super initialize.
+    super initialize.
     self laserIsActive: false.
-	self numberOfColumns: 10.
+    self numberOfColumns: 10.
     self numberOfRows: 10.
     self initializeCells
 ]]]
 
-or we can use lazy initialization. Since we never used that in practice, let us redefine the getter to implement a lazy initialisation. 
-Pay attention that it can only work if you consistently use getters and never directly access the instance variables else you could get the uninitialized value (==nil==)
-
-
-[[[Grid>>numberOfRows
-	^ numberOfRows ifNil: [ numberOfRows := 5 ]
-]]]
-
+or we can use lazy initialization as follows:
 
 [[[
+Grid>>numberOfRows
+	^ numberOfRows ifNil: [ numberOfRows := 3 ]
+]]]
+% Later we test non-default 4x4 size.
+[[[
 Grid>>numberOfColumns
-	^ numberOfColumns ifNil: [ numberOfColumns := 5 ]
+	^ numberOfColumns ifNil: [ numberOfColumns := 3 ]
 ]]]
 
 
+In a live programming environment like Pharo, lazy initialization is often used, so let us redefine the getters in this manner. 
+Pay attention that this only works if we consistently use getters and never directly access the instance variables else you could get the uninitialized value (==nil==)
+
+@@dothis Redefine the ==numberOfRows== and ==numberOfColumns== getters to use lazy initialization as shown above.
 
 
-+Running the test brings the preview debugger.>file://figures/10-RowDebugPreview.pdf|width=60|label=RowDebugPreview+
 
+Run our unit tests to see how things are going. We were expecting them to be all green, but we're not quite there. Clicking on the failed test brings up a debugger like that shown by Figure *RowDebugPreview*. Press the 'Debug' button to try to find what went wrong using the debugger.
+Navigate the call stack to understand how you got the problem. Often the problem happens several steps further down the stack. A general rule is to look for one of your application objects.  You should find that to be ==Grid>>initializeCells== as shown Figure *RowDebugger*. 
 
-Now your test should be green. Well not quite as shown by Figure *RowDebugPreview*. Press the 'Debug' button to try to find what got wrong using the debugger.
-Navigate the stack to understand how you got the problem. Often the problem happens several steps further down the stack. 
-You should find that the initializeCells method is where the problem is as shown Figure *RowDebugger*. 
-
-
-+Navigating and finding the problem using the debugger.>file://figures/10-RowDebugger.pdf|width=60|label=RowDebugger+
-
-Now try to address the problem before looking at the solution. 
-
-
-+TargetCell should also inherit from Cell.>file://figures/10-DebuggerNewDefinition.pdf|width=60|label=DebuggerNewDefinition+
 
 % http://squeak.preeminent.org/tut2007/html/033.html (bottom)
 
-We forgot to send ==numberOfRows== to self and the algorithm tried to use the instance variable directly. We knew the variable could have been nil and it was.
-Okay, that's easy enough of a mistake to fix. Here's the corrected ==initializeCells== method. You can fix it right in the debugger. Just press proceed when after you have saved the change and then re-run the unit tests.
+So what went wrong here?  Looking through the instance variables in the bottom left of the debugger shows the value of ==numberOfRows== to be ==nil==, while the value of ==numberOfColumns== is ==5==.  Looking more closely we can see we forgot to send the ==numberOfRows== message to ==self== and the code accessed the instance variable directly, before it was initialized. Okay, that's easy enough a mistake to fix. You can fix it right in the debugger. Just press proceed when after you have saved the change and then re-run the unit tests.
 
-Redefine the method ==initialize== to correctly use the getter for ==numberOfRows== as shown in Figure *DebuggerNewDefinition*.
+@@dothis Redefine the method ==initializeCells== to correctly use the getter for ==numberOfRows== as shown in Figure *DebuggerNewDefinition*.
 
 [[[
 Grid>>initializeCells
@@ -142,22 +157,26 @@ Grid>>initializeCells
 ]]]
 
 
-Now this is the good moment to save our progress. 
++Running the test brings the preview debugger.>file://figures/10-RowDebugPreview.pdf|width=60|label=RowDebugPreview+
 
 
++Navigating and finding the problem using the debugger.>file://figures/10-RowDebugger.pdf|width=60|label=RowDebugger+
 
++Corrected Grid\>\>initializeCells.>file://figures/10-DebuggerNewDefinition.pdf|width=60|label=DebuggerNewDefinition+
+
+
+Rerun the tests and everything passes. This is the good moment to save our progress. 
 
 
 
 !! Discussions: Definition Order
 
 The order in which we define methods is not important from the standpoint of the program execution. Now 
-in some cases we prefer to be able to test as soon as the method is defined if it is working. In such case we start defining the elementary methods or the methods used by others. Then slowly we build on methods already working to define more complex ones. This strategy is bottom up and can work well when we know what are the low-level methods and object representation. In fact we can define tests covering each of these methods and validate our progress systematically.
+in some cases we prefer to be able to test if a method is working as soon as it is defined . In such case we start defining the elementary methods or the methods used by others. Then slowly we build upon methods already working to define more complex ones. This strategy is bottom up and can work well when we know what are the low-level methods and object representation. In fact we can define tests covering each of these methods and validate our progress systematically.
 
-Another strategy is to define more complex methods using methods that do not have been yet defined. When executing a test covering the more complex method we will get a debugger with the exact context and it will help us to define the missing methods. 
+Another strategy is to define complex methods using methods that have not yet been defined. When executing a test covering the more complex method we will get a debugger in exact context of execution that the methods will be used, which helps us to define the missing methods. 
 
-Both strategies have pros and cons. Just be aware of the possibilities and pick the one that fits the best your current process.
-
+Both strategies have pros and cons. Just be aware of the possibilities and pick the one that fits the best your current needs.
 
 
 
@@ -165,53 +184,53 @@ Both strategies have pros and cons. Just be aware of the possibilities and pick 
 
 % http://squeak.preeminent.org/tut2007/html/034.html
 
-Let's enrich the Grid unit test. We'll specify a column and row size and re-test the basics.
+So far so good. But let us think about a possible problem we can encounter. 
+When the ==Grid== class receives the message ==new==, its ==initialize== method is invoked and the cells are added to the dictionary but... Do you see the problem? The cells are initialized based on the default row and column size.
+What will happen when we change the number of rows after the creation of the grid instance? As this question arose, the answer was not clear, but a test can help illuminate this. After we instantiate a new grid, we'll grow its size and see how things go. 
 
+@@dothis Test behavior after growing the grid from the default size.
 [[[
 GridTest>>testNonDefaultGridSizeInitialConditions
 	| grid |
-	grid := Grid new. 
+	grid := Grid new. "Default size is 3x3"
 	grid numberOfColumns: 4.
 	grid numberOfRows: 4.
 	self deny: grid laserIsActive.
 	self assert: (grid at: 1@1) class = BlankCell.
-	self assert: (grid at: 2@3) class = BlankCell.
-	self assert: (grid at: 2@3) isOff.
+	self assert: (grid at: 1@1) isOff.
+	self assert: (grid at: 4@4) class = BlankCell.
+	self assert: (grid at: 4@4) isOff.
 ]]]
 
-So far so good. But well let us think about a possible problem we can encounter. 
-When the ==Grid== class receives the message ==new==, its ==initialize== method is invoked and the cells are added to the dictionary but.
-Do you see the problem? But the cells are initialized based on the row and column numbers defined at the time the method is invoked.
-So what will happen if we change the number of rows after the creation of the grid instance? 
-It will break. Why? Simply because the number of rows will be larger and we will think that we can access cells in this area but in reality
-the dictionary will only cover the values with defined in the lazy accessors. 
-
-Let us write a test to illustrate our problem: Here we create a new grid instance and after set its new size. 
-
-[[[
-GridTest>>testGridSizeLargerThanDefaultInitialConditions
-	| grid |
-	grid := Grid new. 
-	grid numberOfColumns: 15.
-	grid numberOfRows: 15.
-	self deny: grid laserIsActive.
-	self assert: (grid at: 1@1) class = BlankCell.
-	self assert: (grid at: 12@13) class = BlankCell.
-	self assert: (grid at: 12@13) isOff.
-]]]
-
-Run the tests and it will failed as we expected! Exactly a key not found exception is raised. It is raised when we try to access a key that does not exist in a dictionary (as shown in Figure *KeyNotFound*). 
-
-
+Running the tests finds the error "KeyNotFound: key (4@4) not found in Dictionary" shown in Figure *KeyNotFound*.  Why? Because simply setting the number of rows and columns larger doesn't create the new positions.  From the debugger, inspecting the value of ==grid== shows something like Figure *DefaultGridObject*, where you can see the dictionary does not hold (4@4). Only the default positions as defined by the lazy accessors have been created. Trying to retrieve a non-existent key from a dictionary is an error. 
 
 +Accessing a key that does not exist.>file://figures/10-KeyNotFound.pdf|width=60|label=KeyNotFound+
+
++Default grid object.>file://figures/10-defaultGridObject.png|width=60|label=DefaultGridObject+
 
 
 
 
 !!! Improving the instance creation of Grid
 
-We can define the class method as follow (pay attention to select the Class side radio button since this is a class method). 
+Currently, to get instances of the class ==Grid== we are sending it the instance creation message ==new==. This is a ''class-message'' since it is a message sent to a ''class''. What we need is a smarter class-message which sets the number of rows and column during instantiation. 
+
+@@dothis Revise the test to use a more convenient instance creation class-method, and also provide that method. 
+
+% A test size of 15 makes it harder to inspect the variables.
+
+[[[
+GridTest>>testGridSizeLargerThanDefaultInitialConditions
+	| grid |
+	grid := Grid numberOfColumns: 4 numberOfRows: 4.
+	self deny: grid laserIsActive.
+	self assert: (grid at: 1@1) class = BlankCell.
+	self assert: (grid at: 1@1) isOff.
+	self assert: (grid at: 4@4) class = BlankCell.
+	self assert: (grid at: 4@4) isOff.
+]]]
+
+@@note For the next method, pay attention to select the 'Class side' checkbox, and switch back after. If at anytime so wonder 'where did all the methods go', check which ''side'' you are on.
 
 [[[
 Grid class>>numberOfColumns: colInteger numberOfRows: rowInteger
@@ -223,10 +242,16 @@ Grid class>>numberOfColumns: colInteger numberOfRows: rowInteger
 	^ instance 
 ]]]
 
-What this method does is simple: we create a new instance, assign it to a temporary variable, set the value of the rows and columns and return 
-the newly created instance. Do you think it will work? It does not. Why because the ==initialize== method is invoked by the ==new== message in Pharo.
-The solution is to modify the class method to use the message ==basicNew== instead of ==new==. 
 
+
+What this class-method does is create a new grid instance stored in a temporary variable, then it sets the grid size of that instance and returns it. Do you think it will work? Run the tests and you'll find we're not quite there. Indeed its not much different than before. The ==new== message still implicitly invokes the ==initialize== method before the size can be set.  
+The solution is using ==basicNew== which doesn't invoke ==initialize==, so now we can set the grid size before explicitly calling ==initialize==. 
+
+What is the difference between ==new== and ==basicNew==?
+- ==new== automatically sends the message ==initialize== to the instance it creates and it can be overloaded with other behavior. 
+- ==basicNew== just create the instance and return it. It is a primitive creation message and it should never be redefined else you could not build such solution. Note that ==new== in fact uses ==basicNew==. 
+
+@@dothis Revise the instance creation method to use ==basicNew==
 
 [[[
 Grid class>>numberOfColumns: colInteger numberOfRows: rowInteger
@@ -239,46 +264,12 @@ Grid class>>numberOfColumns: colInteger numberOfRows: rowInteger
 	^ instance 
 ]]]
 
-
-
-
-
-What is the difference between ==new== and ==basicNew==?
-- ==new== automatically sends the message ==initialize== to the instance it creates and it can be overloaded with other behavior. 
-- ==basicNew== just create the instance and return it. It is a primitive creation message and it should never be redefined else you could not build such solution. Note that ==new== in fact uses ==basicNew==. 
-
-
-Now we can also rewrite our second test to use the new class creation method.
-
-[[[
-testGridSizeLargerThanDefaultInitialConditions
-	| grid |
-	grid := Grid numberOfColumns: 15 numberOfRows: 15.
-	self deny: grid laserIsActive.
-	self assert: (grid at: 1@1) class = BlankCell.
-	self assert: (grid at: 12@13) class = BlankCell.
-	self assert: (grid at: 12@13) isOff.
-]]]
-
 Run your tests and they should be green this time.
 
 
-!!! Understanding yourself
+!!! Understanding ''yourself''
 
-The previous (suboptimal) method ==numberOfColumns:numberOfRows:== (we put back its definition to help you following) is strictly equivalent to the more compact one following it using the message ==yourself==.
-
-[[[
-Grid class>>numberOfColumns: colInteger numberOfRows: rowInteger
-
-	| instance |
-	instance := self basicNew. 
-	instance numberOfColumns: colInteger.
-	instance numberOfRows: rowInteger.
-	instance initialize.
-	^ instance 
-]]]
-
-The following method is strictly the same but its uses cascade (==;==) to send multiple messages to the same object (here the newly created instance returned by ==self new==. 
+The method ==numberOfColumns:numberOfRows:== works fine, but the repetition of the variable ==instance== is sub-optimal for readability.  An alternative is to ''cascade'' messages with the ==";"== operator, such that multiple messages are sent to the same object. The following method is strictly equivalent to the original above, sending four separate messages to object returned by ==self basicNew==.
 
 [[[
 Grid class>>numberOfColumns: colInteger numberOfRows: rowInteger
@@ -286,38 +277,39 @@ Grid class>>numberOfColumns: colInteger numberOfRows: rowInteger
 	^ self basicNew 
 		numberOfColumns: colInteger;
 		numberOfRows: rowInteger; 
-		initialize; 
+		initialize.
+]]]
+
+That will work since by default, methods (e.g. ==initialize==) return the receiver of the message (from inside the method this is ==self==).  However this is a bit fragile since what if ==initialize== happened to return ==42== instead of the default ==self== value? Then ==numberOfColumns:numberOfRows:== will return 42 and not the newly created grid instance.  
+
+To ensure the new grid instance created by ==self basicNew== is really returned, we send the message ==yourself== as the last message of the cascade. How does this work? Specifically ==yourself== is a message that returns the receiver of the message. Here the receiver is the grid instance that results from ==self basicNew==.
+
+@@dothis Update the instance creation method as follows. 
+[[[
+Grid class>>numberOfColumns: colInteger numberOfRows: rowInteger
+
+	^ self basicNew 
+		numberOfColumns: colInteger;
+		numberOfRows: rowInteger; 
+		initialize;
 		yourself.
 ]]]
 
-How does it work?
-
- ==yourself== is a message returning the receiver of the message. Here the result of the self new expression. We use ==yourself== to write more compact code. Note that the use of ==yourself== ensures the method will really return the receiver of the message (here the new instance of grid) and not the result of the last method as this would be the case with the following potentially buggy method. Why? What if ==initialize== returns 42 instead of the ==self== default value?
-Then ==potentiallySuspectNumberOfColumns:numberOfRows:== will return 42 and not the newly created grid instance.
-
-
-[[[
-Grid class>>potentiallySuspectNumberOfColumns: colInteger numberOfRows: rowInteger
-
-	^ self new 
-		numberOfColumns: colInteger;
-		numberOfRows: rowInteger;
-		initialize
-]]]
-
+Check your tests are green.
 
 
 !! Building a better test context
 
 % http://squeak.preeminent.org/tut2007/html/035.html
 
-With the basics on the cells working, and a minimal test for Grid, we can start to write a much deeper unit test for the ==Grid== class, using broader parts of the overall design. Remember the original diagram used to introduce the game idea? Let's use that for our unit test. Here's the empty diagram and the diagram with the laser firing (see Figure *DoubleSetup*).
+With the basics of the cells working, and a minimal test for Grid, we can start to write a much deeper unit test for the ==Grid== class, using broader parts of the overall design. Remember the original diagram used to introduce the game idea? Let's use that for our unit test. Here's the empty diagram and the diagram with the laser firing (see Figure *DoubleSetup*).
 
 
 
 +A nice context for future tests.>file://figures/10-DoubleSetup.pdf|width=60|label=DoubleSetup+
 
-Define the following method and add a new protocol ''private'' or ''grids''.
+@@todo next line, lets specify rather than provide alternative.  I'm inclined to wards ''grids''.
+@@dothis Define the following method and add a new protocol 'private' or 'grids'.
 [[[
 GridTest>>generateDemoGrid
 
@@ -342,12 +334,14 @@ GridTest>>generateDemoGrid
 We can now add a new test method. A simple check that the target cell is currently off will be fine for now.
 [[[
 GridTest>>testCellInteractions
-
-	self assert: (self generateDemoGrid at: 5@1) isOff
+	| grid cell |
+	grid := self generateDemoGrid.
+	cell := grid at: 5@1.
+	self assert: cell isOff
 ]]]
 
 
-While writing the generator method we found myself getting confused about which part of the ==x\@y== notation to use for rows and columns. That's a tip-off that we should rewrite some of our methods to make this task easier. Maybe we should have written this test before we even wrote the ==at:== and ==at:put:== methods on Grid? Indeed this is a clear advantage of writing test first: they act as the first client of the code and give you a quality control on it. 
+While writing the generator method it was easy to get confused about which part of the ==x\@y== notation to use for rows and columns. That's a tip-off that we should rewrite some of our methods to make this task easier. Maybe we should have written this test before we even wrote the ==at:== and ==at:put:== methods on Grid? Indeed this is a clear advantage of writing test first: they act as the first client of the code and give you a quality control on it. 
 We'll have to remember to go back and fix these names to be more intention revealing.
 
 In the future we should provide a way to print a grid in ascii to debug it and create a grid based on an ascii representation. 
@@ -357,7 +351,7 @@ It is a good point to save your work.
 !! Conclusion 
 Now all the structure elements of a game are in place and tested so we will be able to start working on the beam computation. 
 
-@@note BTC-2014-05-31 Similar to how http://squeak.preeminent.org/tut2007/html/035A.html provides a check sheet, maybe it would be good to direct the reader how to use Monticello to "Compare Changes".
+@@note BTC-2014-05-31 Maybe provide a check-sheet similar to original http://squeak.preeminent.org/tut2007/html/035A.html. Also maybe it would be good to direct the reader how to use Monticello to "Compare Changes".
 
 
 

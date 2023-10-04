@@ -1,3 +1,9 @@
+#### PharoLaserGameTutorial
+
+LaserGame.pdf
+
+#### Pillar
+
 *.aux
 *.html
 *.log
@@ -9,9 +15,11 @@
 *.toc
 # *.pdf   #why are some images pdfs?
 *.pier.pdf
+*.synctex.gz
+auto/
 
 
-#### Pillar & Pharo
+#### Pharo
 
 pillar
 pharo
@@ -19,6 +27,7 @@ pharo-ui
 pharo-vm
 Pharo.changes
 Pharo.image
+package-cache/
 
 
 
@@ -65,3 +74,5 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
+
+
