@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 3</p>
+			<div id="content">
+		<p>
+			We have our unit tests.  Now we need to make the mirror cells move according to our
+			intents.  This is a two-part exercise.  The first part will be to get the Grid model
+			working correctly.  Our new unit tests will pass when we do.  The second part is to
+			translate the mouse-up events into real push messages and see the results visually.
+			That will be cool.
+		</p>
+		<p>
+			We begin with those stub methods we wrote on the Grid class.  Let's work on the
+			push north method first.
+		</p>
+		<p class="code">
+			<b>pushCellNorthFromLocation: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| cell direction vector swapLoc swapCell |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := self at: aPoint.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell class = MirrorCell ifFalse: [^cell].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;direction := GridDirection directionFor: #north.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;vector := direction vector.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;swapLoc := aPoint + vector.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;swapCell := self at: swapLoc.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;swapCell isNil ifTrue: [^cell].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;swapCell class = BlankCell ifFalse: [^cell].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self swapCell: cell with: swapCell.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^swapCell
+		</p>
+		<p>
+			The #swapCell:with: method still needs to be written.  What we are trying to do in the method above
+			is exit when the cell type is wrong or if the adjacent cell is off the edge of the board.
+			The direction code should look familiar.  Let's write the swap cell code.
+		</p>
+		<p class="code">
+			<b>swapCell: aCell with: anotherCell</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| oldLocation newLocation |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;oldLocation := aCell gridLocation copy.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;newLocation := anotherCell gridLocation copy.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self at: newLocation put: aCell.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self at: oldLocation put: anotherCell
+		</p>
+		<p>
+			As we start to think about the other push directions it become
+			apparent that we can refactor our push north method into
+			two instance methods.  One to determine the direction, and the other
+			to do all the condition codes.
+			Here is the refactored method and the new support method.
+		</p>
+		<p class="code">
+			<b>pushCellNorthFromLocation: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| direction |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;direction := GridDirection directionFor: #north.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^self pushCell: direction fromLocation: aPoint.
+		</p>
+		<p class="code">
+			<b>pushCell: aGridDirection fromLocation: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| cell vector swapLoc swapCell |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := self at: aPoint.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell class = MirrorCell ifFalse: [^cell].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;vector := aGridDirection vector.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;swapLoc := aPoint + vector.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;swapCell := self at: swapLoc.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;swapCell isNil ifTrue: [^cell].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;swapCell class = BlankCell ifFalse: [^cell].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self swapCell: cell with: swapCell.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^swapCell
+		</p>
+		<p>
+			It's easy to write the other push directional methods.
+		</p>
+		<p class="code">
+			<b>pushCellEastFromLocation: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| direction |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;direction := GridDirection directionFor: #east.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^self pushCell: direction fromLocation: aPoint.
+		</p>
+		<p class="code">
+			<b>pushCellSouthFromLocation: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| direction |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;direction := GridDirection directionFor: #south.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^self pushCell: direction fromLocation: aPoint.
+		</p>
+		<p class="code">
+			<b>pushCellWestFromLocation: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| direction |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;direction := GridDirection directionFor: #west.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^self pushCell: direction fromLocation: aPoint.
+		</p>
+		<p>
+			When we run our unit tests they pass.
+		</p>
+		<img src="images/608.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="125.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

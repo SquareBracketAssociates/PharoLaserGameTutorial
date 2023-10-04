@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 6</p>
+			<div id="content">
+		<p>
+			We continue by going back to the class side of LaserGame.  Add these methods
+			to assist us with closing any open windows in our develpment image.
+		</p>
+		<p class="code">
+			<b>closeAllWindows</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;"LaserGame closeAllWindows"<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;(SystemWindow windowsIn: World satisfying: [:w | w model canDiscardEdits])<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;do: [:w | w delete]
+		</p>
+		<p class="code">
+			<b>closeAllOpenWindowsMessage</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^'Do you really want to close all windows?' translated
+		</p>
+		<p>
+			These methods will come in handy later.  Add the following new class method.
+		</p>
+		<p class="code">
+			<b>disableFeatures</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Preferences disable: #warnIfNoSourcesFile.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Preferences disable: #warnIfNoChangesFile.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Preferences disable: #cmdDotEnabled.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Preferences compileHardCodedPref: #cmdGesturesEnabled enable: false.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Preferences compileHardCodedPref: #cmdKeysInText enable: false.
+		</p>
+		<p>
+			The method will handle details of want we want to do to our image as it becomes
+			the deployment image.
+			Ordinarily when Squeak launches, it checks for the SqueakV39.sources and
+			Squeak.changes files.  If Squeak does not find these files
+			it pops up a warning dialog for the
+			developer.  We do not want that to happen when we run the deployed image.
+			You also see where we turn off the Command-Period ability.
+		</p>
+		<p>
+			We will call the #disableFeatures method as we prepare an image for deployment.
+		</p>
+		<p>
+			Squeak has a built-in mechanism that will notify selected classes that an image
+			has just been launched.  There are used internally to handle things like detecting the
+			color-depth of the Display, and the file system variances.
+			We will use it to send a special message to our Laser Game whenever a deployed image
+			is launched.  The trick to doing this is to register the class LaserGame to receive the start-up
+			message before we save the deployed image.
+			Add these two class methods to LaserGame.
+		</p>
+		<p class="code">
+			<b>addApplication</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;"LaserGame addApplication"<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Smalltalk addToStartUpList: LaserGame.
+		</p>
+		<p class="code">
+			<b>clearApplication</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;"LaserGame clearApplication"<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Smalltalk removeFromStartUpList: LaserGame.
+		</p>
+		<p>
+			The #addApplication class method will register the LaserGame class with Squeak
+			so that it receives the special #startUp message when the system has launched.
+			The #clearApplication method undoes that registration in case we don't want to keep
+			things that way.  This is handy if we are still experimenting with code in our
+			development image.
+		</p>
+		<p>
+			It can happen that we leave garbage versions of morphs behind which may not have been properly
+			closed or deleted.  When we save our image for deployment we want a way to clean up any extra
+			LaserGame morphs that may inadvertently have been left behind.  We can then answer what should
+			be the sole instance of the LaserGame morph in our deployed image for later direct operations.
+			Add the following new class method on LaserGame.
+		</p>
+		<p class="code">
+			<b>purgeAndAnswerSoleInstance</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;"LaserGame purgeAndAnswerSoleInstance"<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| coll result |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;coll := self allInstances.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;coll size > 1 ifTrue: [2 to: coll size do: [:index |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| morph |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;morph := coll at: index.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;morph delete]].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;result := coll isEmpty<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ifTrue: [nil]<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ifFalse: [coll first].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^result
+		</p>
+		<p>
+			We're now ready to add the #startUp class method to LaserGame.
+		</p>
+		<p class="code">
+			<b>startUp</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| soleInstance |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;soleInstance := self purgeAndAnswerSoleInstance.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;soleInstance isNil ifTrue: [soleInstance := self launchFullWorld].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;GridFactory reSeed.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;soleInstance newGame.
+		</p>
+		<p>
+			When you "compile" this new method, by saving it, Squeak will issue the following
+			warning.
+		</p>
+		<img src="images/770.jpg">
+		<p>
+			Click "Yes" and let it compile.  The #startUp method will be performed once when an image is launched
+			provided that the LaserGame class was registered for notification.
+			With this method we will grab the single instance of our LaserGame morph that will
+			be saved open in our deployed image.  If it does not find an image, it launches a fresh one.
+			We then re-seed the random number generator in our Grid Factory.  The last step is to
+			have the open Laser Game morph start a "new game".  This should make every launch of
+			our deployed Squeak application have a unique game starting condition.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="210.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 2</p>
+		<div id="content">
+		<p>
+			My first thought it that we have evidence here that we've been
+			coding a little too loose here and have not written unit tests
+			to validate all of that recent code incrementally.  Let's look
+			at the debugger and see if we can figure out where we went wrong.
+			Let's look at that Grid>>calculatePath method.
+		</p>
+		<img src="images/168.jpg">
+		<p>
+			This leads us to LaserPathElement>>nextElementIn:.
+		</p>
+		<img src="images/169.jpg">
+		<img src="images/170.jpg">
+		<p>
+			If we examine the instance variables for the current
+			LaserPathElement we find we are on a Mirror Cell with
+			an entrySide = #south.  That sounds like we are in the first cell
+			in our grid.
+		</p>
+		<img src="images/171.jpg">
+		<img src="images/172.jpg">
+		<p>
+			The value for loc confirms it.  The value for dirSym
+			looks correct.  Here's a diagram of what we expected
+			for our first cell in the grid.
+		</p>
+		<img src="images/173.jpg">
+		<p>
+			We expect the laser beam to enter the cell by the #south
+			side and exit by the #east side.  This looks good.
+			The value for newLoc is correct too.
+		</p>
+		<img src="images/174.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="044.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

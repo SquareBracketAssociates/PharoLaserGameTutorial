@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 3</p>
+			<div id="content">
+		<h3>Visual Bug With Push</h3>
+		<p>
+			You may have noticed there's a bug with the visual presentation
+			when pushing cells while the laser beam is active.  We still may want
+			to go back and change the overall idea so that this isn't possible,
+			at a later time in our development.
+			However, I want to go back and fix this bug right now.  It's a lot
+			like what we saw with cell rotation while the beam was active.
+		</p>
+		<p>
+			Here's the situation that can show the bug.
+		</p>
+		<img src="images/634.jpg">
+		<p>
+			Immediately after opening the LaserGame morph, I turned on
+			the laser beam.  I then clicked on the mirror cell at
+			location 4@5 and pushed it West to location 3@5
+			as shown in the picture above.
+			You can see that the target cell is lit but shouldn't be.
+		</p>
+		<p>
+			We should create a unit test to see if this a bug with the model code.
+			Close the LaserGame morph.  We'll get back to it once we have this fixed.
+		</p>
+		<p>
+			In the GridTestCase we didn't create any tests for pushing
+			where we checked the laser too.
+			We should write 2 new test methods.  One to test the grid
+			by firing the laser after the cell is moved and another to
+			test the grid while a cell is moved.
+		</p>
+		<p class="code">
+			<b>testFireLaserAfterMirrorPush</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| grid cell |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;grid := self generateDemoGrid.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid startingCell.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOff].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid at: 5@1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOff].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;grid pushCellWestFromLocation: 4@5.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;grid fireLaser.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid startingCell.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOn].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid at: 3@5.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOn].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid at: 5@1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOff].
+		</p>
+		<p>
+			This test passes.
+		</p>
+		<img src="images/635.jpg">
+		<p>
+			Now we write the unit test that repeats what we did live on the LaserGame morph.
+		</p>
+		<p class="code">
+			<b>testFireLaserDuringMirrorPush</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| grid cell |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;grid := self generateDemoGrid.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;grid fireLaser.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid startingCell.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOn].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid at: 5@1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOn].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;grid pushCellWestFromLocation: 4@5.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid startingCell.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOn].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid at: 3@5.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOn].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid at: 5@1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOff].
+		</p>
+		<p>
+			Run the tests again.  Sure enough it fails.  This is good news.
+			Again, we have constructed a unit test that reproduces a bug.
+		</p>
+		<img src="images/636.jpg">
+		<p>
+			Open up the debugger for the failing test.  Restart the method in
+			the debugger.  We will single-step through the unit test until we get to the
+			push code.
+		</p>
+		<img src="images/637.jpg">
+		<p>
+			Step "Into" this method.
+		</p>
+		<img src="images/638.jpg">
+		<p>
+			When we get to this point...
+		</p>
+		<img src="images/639.jpg">
+		<p>
+			You can see that we should probably be doing something about updating
+			the laser beam path.  Just like we did with the rotation activity.
+		</p>
+		<p>
+			Close the debugger.  Here's the new version of
+			the push code on the Grid class that should solve our
+			problem.
+		</p>
+		<p class="code">
+			<b>pushCell: aGridDirection fromLocation: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| cell vector swapLoc swapCell |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := self at: aPoint.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell class = MirrorCell ifFalse: [^cell].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;vector := aGridDirection vector.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;swapLoc := aPoint + vector.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;swapCell := self at: swapLoc.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;swapCell isNil ifTrue: [^cell].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;swapCell class = BlankCell ifFalse: [^cell].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self clearCellsInPath.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self swapCell: cell with: swapCell.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self laserIsActive ifTrue: [self activateCellsInPath].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^swapCell
+		</p>
+		<p>
+			Rerun the unit tests.  Everything works now.
+		</p>
+		<img src="images/640.jpg">
+		<p>
+			We can relaunch the LaserGame morph and see if the problem is resolved
+			for the visual world too.
+		</p>
+		<img src="images/641.jpg">
+		<p>
+			It works.
+		</p>
+		<p>
+			This is another good breaking point and a place to save your image.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="128.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

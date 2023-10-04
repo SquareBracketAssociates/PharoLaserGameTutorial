@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 3</p>
+		<div id="content">
+		<p>
+			In Squeak, unlike with Inspector windows, the Object Explorer window does not refresh
+			its contents automatically.  So if we start to change things in our morph we
+			will have to refresh the explorer contents manually.
+			The first thing I want to do is turn off the laser.  Click the "Stop"
+			button.  To cause the cells contents to refresh in the explorer,
+			click once on the cells arrow to cause it to collapse.  Then click again
+			and it will expand with refreshed contents.
+		</p>
+		<img src="images/589.jpg">
+		<p>
+			There's something interesting going on.  With the laser off, all
+			the cells are off <i>except for the target cell</i>.
+		</p>
+		<p>
+			We should be careful about our troubleshooting here.  I just introduced
+			2 variables into our test situation.  The first one was that we rotated a mirror.
+			The second one was that we turned off the laser.  Although the target cell remains
+			lit, it may be for unrelated reasons.  It's a bug and we have to learn more about it.
+			I just wanted to try that step to see what would
+			happen.
+		</p>
+		<p>
+			Let's re-think that unit test.  Here's the existing method.
+		</p>
+		<p class="code">
+			<b>testFireLaserAfterMirrorRotation</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| grid cell |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;grid := self generateDemoGrid.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;grid fireLaser.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [grid laserIsActive].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid startingCell.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOn].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid at: 5@1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOn].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;grid stopLaser.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid startingCell.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOff].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid at: 4@1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOff].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell rotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;grid fireLaser.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid at: 4@1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOn].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid at: 5@1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOff].
+		</p>
+		<p>
+			The test rotates the mirror while the laser beam is off.
+			That's not what we did.
+			Time to write an additional test.  Here's the added test.
+		</p>
+		<p class="code">
+			<b>testFireLaserDuringMirrorRotation</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| grid cell |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;grid := self generateDemoGrid.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;grid fireLaser.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [grid laserIsActive].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid startingCell.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOn].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid at: 5@1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOn].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid at: 4@1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell rotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOn].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid at: 5@1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOff].
+		</p>
+		<p>
+			And the good news is that this unit test produces a failure.  We have
+			reproduced a bug with a new unit test.
+		</p>
+		<img src="images/590.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="120.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 2</p>
+			<div id="content">
+		<p>
+			Time to draw the target cell contents.
+			This one's a little more work than the mirror.
+			It has several visual components.  First,
+			there's a cross-hairs.  Then there's a circle
+			(like a target) in the center.  And then the
+			circle is filled-in with either of 2 colors
+			depending on whether the cell is On or Off.
+			These new methods are on the TargetCellRenderer class.
+		</p>
+		<p>
+			We can draw the static portion of the contents
+			and then fill-in the circle.  Here's the
+			#renderContents method for our
+			TargetCellRenderer.
+		</p>
+		<img src="images/250.jpg">
+		<p>
+			Drawing the target outlines is done in two steps.
+		</p>
+		<img src="images/251.jpg">
+		<p>
+			Drawing the crosshairs is a lot like drawing the mirrors.
+			Note that we have defined some new color methods that need
+			to get filled in before we run.
+		</p>
+		<img src="images/252.jpg">
+		<p>
+			Drawing circles are a little different.  We need to specify
+			the radius and locate the circle by its center.
+		</p>
+		<img src="images/253.jpg">
+		<p>
+			Fill-in of the circle can be done by a common method where
+			the only change would be the fill-in color.
+			Here's how we'll call the method.
+		</p>
+		<img src="images/254.jpg">
+		<img src="images/255.jpg">
+		<p>
+			And now the circle fill-in.
+		</p>
+		<img src="images/256.jpg">
+		<p>
+			We need to define new class methods on LaserGameColors
+			to handle the new color requests.
+		</p>
+		<img src="images/257.jpg">
+		<img src="images/258.jpg">
+		<img src="images/259.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="063.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

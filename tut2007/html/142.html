@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 4</p>
+			<div id="content">
+		<p>
+			Add the following instance methods to our LaserGame class.
+		</p>
+		<p class="code">
+			<b>findLaserPathCounter</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^self allMorphs detect: [:m | m knownName = 'laserPath'] ifNone: []
+		</p>
+		<p class="code">
+			<b>updateCounters</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| led |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;led := self findLaserPathCounter.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;led notNil ifTrue: [<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self laserActive<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ifTrue: [led <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;highlighted: true;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value: self grid laserBeamPath size]<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ifFalse: [led<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;highlighted: false;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value: 0]<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
+		</p>
+		<p>
+			Modify these methods to update our counter...
+		</p>
+		<p class="code">
+			<b>fireLaser</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self laserActive<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ifTrue: [self grid stopLaser]<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ifFalse: [self grid fireLaser].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self drawGameBoard.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self changed.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self updateFireButtonLabel.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self updateCounters.
+		</p>
+		<p class="code">
+			<b>mouseUp: evt forMorph: aSketchMorph cell: aCell</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| renderer pixelPositionWithinBoard cellForRedraw |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;renderer := CellRenderer rendererFor: aCell grid: self grid form: self boardForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pixelPositionWithinBoard := self boardRelativePositionFor: evt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cellForRedraw := renderer mouseUpWithinBoardOffset: pixelPositionWithinBoard.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self redrawCell: cellForRedraw.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self drawGameBoard.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self updateCounters.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self changed
+		</p>
+		<p>
+			By clicking the "Fire" button on and off you will see the counter change.
+			Also, when you move a cell the path length changes.
+		</p>
+		<img src="images/675.jpg">
+		<p>
+			Save your work as version 5.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="143.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

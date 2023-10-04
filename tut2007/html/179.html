@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 5</p>
+		<div id="content">
+		<p>
+			We still have one failing unit test.
+		</p>
+		<img src="images/731.jpg">
+		<p>
+			Here's the unit test method that is
+			failing.
+		</p>
+		<p class="code">
+			<b>testCellOffsetCalculations</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| grid form cellLoc cell renderer offset |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;grid := GridFactory demoGrid.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;form := Form extent: (LaserGame boardExtentFor: grid) depth: Display depth.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;form fillColor: (Color r: 0.820 g: 0.820 b: 0.820).<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cellLoc := 1@1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid at: cellLoc.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;renderer := CellRenderer rendererFor: cell grid: grid form: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;offset := renderer offsetWithinGridForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [offset = (0@0)].<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cellLoc := 2@1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid at: cellLoc.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;renderer := CellRenderer rendererFor: cell grid: grid form: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;offset := renderer offsetWithinGridForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [offset = (30@0)].<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cellLoc := 1@2.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid at: cellLoc.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;renderer := CellRenderer rendererFor: cell grid: grid form: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;offset := renderer offsetWithinGridForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [offset = (0@30)].<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cellLoc := 2@2.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid at: cellLoc.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;renderer := CellRenderer rendererFor: cell grid: grid form: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;offset := renderer offsetWithinGridForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [offset = (30@30)].
+		</p>
+		<p>
+			We're failing for cell location 2@1, expecting the offset to be 30@0.
+			Instead we are getting 40@0.
+			The actual returned result is correct.  We need to change the test.
+		</p>
+		<p>
+			There's also a second failure later in the test for cell location 1@2,
+			expecting an offset to be 0@30.  Again, we should be getting 0@40 now
+			and that's what the code is actually answering.  We need to change this part
+			of the test too.
+		</p>
+		<p>
+			There's a third and final failure in the test at cell location 2@2.  Again,
+			the actual returned result of 40@40 is correct.
+			Here's the revised test method accounting for all three of these
+			changes.
+		</p>
+		<p class="code">
+			<b>testCellOffsetCalculations</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	| grid form cellLoc cell renderer offset |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	grid := GridFactory demoGrid.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	form := Form extent: (LaserGame boardExtentFor: grid) depth: Display depth.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	form fillColor: (Color r: 0.820 g: 0.820 b: 0.820).<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	cellLoc := 1@1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	cell := grid at: cellLoc.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	renderer := CellRenderer rendererFor: cell grid: grid form: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	offset := renderer offsetWithinGridForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self should: [offset = (0@0)].<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	cellLoc := 2@1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	cell := grid at: cellLoc.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	renderer := CellRenderer rendererFor: cell grid: grid form: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	offset := renderer offsetWithinGridForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self should: [offset = (40@0)].<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	cellLoc := 1@2.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	cell := grid at: cellLoc.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	renderer := CellRenderer rendererFor: cell grid: grid form: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	offset := renderer offsetWithinGridForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self should: [offset = (0@40)].<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	cellLoc := 2@2.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	cell := grid at: cellLoc.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	renderer := CellRenderer rendererFor: cell grid: grid form: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	offset := renderer offsetWithinGridForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self should: [offset = (40@40)].
+		</p>
+		<p>
+			After making this final code change, all the unit tests pass once again.
+			We found a combination of test errors and a bug in the logic
+			that decides which rotation region to select.
+		</p>
+		<p>
+			Save the code as version 11.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="180.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

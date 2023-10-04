@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 3</p>
+			<div id="content">
+	<h3>Bug With Target Cell</h3>
+		<p>
+			Our next bug to fix is where the target cell on our LaserGame morph
+			remains "lit", if the laser is active <i>and</i> we rotate a
+			mirror cell in such a way that the path of the laser beam can no
+			longer reach the target cell.  Here's the situation.  I fired the laser,
+			the target became lit and then rotated the mirror cell adjacent to the
+			target cell, in the same row.  The target remains lit.
+		</p>
+		<img src="images/582.jpg">
+		<p>
+			This is obviously a bug.  There's also the issue of how we expect the
+			user interface to handle cell push and rotation activity while the
+			laser is active.  We never really stated any specific guidelines about
+			this behavior when initially describing the game.  That is, there's no
+			prior requirement that says a user should or should not be able to adjust
+			cells while the laser is active.
+		</p>
+		<p>
+			My own preference would be to inhibit the modification of cells on the grid
+			while the laser is active.  That makes it too easy to solve.  And maybe we'll do
+			that.  Maybe we'll add a provision to inhibit cell rotation or pushing in this
+			situation.  But first we'll fix the bug that shows the target cell still being
+			active when it clearly shouldn't be.
+		</p>
+		<p>
+			The first question to ask ourselves is whether this is a bug in the model code or
+			something unusual about the graphics code.  We may have already tested this specific
+			behavior in a model unit test.  Here's our existing test case method.
+		</p>
+		<img src="images/583.jpg">
+		<p>
+			According to this unit test the target cell should not be active right now.
+			Let's check some things out.  A simple check to see if it's a problem
+			with the morph redrawing itself would be to temporarily cover it up.
+			I created a Workspace window and placed it so the part of the board where
+			we find the target cell is occluded.
+		</p>
+		<img src="images/584.jpg">
+		<p>
+			When we close the Workspace window the LaserGame morph will repaint.
+		</p>
+		<img src="images/582.jpg">
+		<p>
+			Nope.  Problem still there.  Let's inspect the morph itself.  Command-Click on
+			the LaserGame morph.  The halos around it will appear.
+		</p>
+		<img src="images/585.jpg">
+		<p>
+			Click on the gray wrench halo and you will be presented with a Debug menu.
+		</p>
+		<img src="images/586.jpg">
+		<p>
+			Choose "explore morph" to open up an object explorer on our morph.
+			Drag the object explorer window over to the side if it's covering
+			our LaserGame morph.  I resized the window to make it wider too.
+			If you click once on the arrow to the left of "root", the first layer
+			of internals are revealed.
+		</p>
+		<img src="images/587.jpg">
+		<p>
+			Click on the arrow next to "grid" and then inside the grid on the arrow
+			next to "cells".  You can see the objects that are in the grid cells dictionary.
+		</p>
+		<img src="images/588.jpg">
+		<p>
+			Look at that.  The target cell at location 5@1 is on!
+			That shouldn't be.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="119.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 4</p>
+			<div id="content">
+		<p>
+			Since we are visually inspecting the results of drawing our
+			laser beam on the target cell we should really find
+			a way to check for the potential
+			future condition where the laser beam enters
+			the target cell from the north or east side.
+			Moving mirrors around will never accomplish this.
+			The easiest way to do this is use some code that exists
+			on the Grid class to swap the target cell location with
+			another cell.
+		</p>
+		<p>
+			Command-Click on your LaserGame morph and from the halos select
+			the inspect action from the debug halo.
+			In that open inspector window type the code to swap the location
+			of the two cells we choose.
+		</p>
+		<img src="images/704.jpg">
+		<p>
+			Now you need to cause the game to redraw the cells
+			that were secretly swapped.  The easy way to do that is momentarily
+			hover the cursor over both cells.  You should see them
+			correctly repaint in their new swapped locations.
+			You can now close the inspector window.
+		</p>
+		<p>
+			Now fire up the laser and move mirrors
+			around to ensure that the other 2 sides of the target cell
+			handle the laser beam drawing correctly.
+		</p>
+		<img src="images/705.jpg">
+		<img src="images/706.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="164.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

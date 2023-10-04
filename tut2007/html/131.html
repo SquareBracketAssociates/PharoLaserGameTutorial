@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 4</p>
+			<div id="content">
+		<p>
+			On Grid we can now write methods that check for permission to push in
+			all 4 directions.
+		</p>
+		<p class="code">
+			<b>canPushCellNorthFromLocation: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| direction |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;direction := GridDirection directionFor: #north.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^self canPushCell: direction fromLocation: aPoint.
+		</p>
+		<p class="code">
+			<b>canPushCellEastFromLocation: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| direction |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;direction := GridDirection directionFor: #east.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^self canPushCell: direction fromLocation: aPoint.
+		</p>
+		<p class="code">
+			<b>canPushCellSouthFromLocation: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| direction |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;direction := GridDirection directionFor: #south.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^self canPushCell: direction fromLocation: aPoint.
+		</p>
+		<p class="code">
+			<b>canPushCellWestFromLocation: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| direction |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;direction := GridDirection directionFor: #west.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^self canPushCell: direction fromLocation: aPoint.
+		</p>
+		<p>
+			With that model code ready we switch gears and work on the graphics side.
+			We can map those same 4 direction push permission requests
+			right back to our click region push hierarchy.
+			Here are 4 new class methods.  One for each push click region.
+		</p>
+		<p>
+			New class method on CellClickRegionPushNorth.
+		</p>
+		<p class="code">
+			<b>canPushCell: aCell withinGrid: aGrid</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^aGrid canPushCellNorthFromLocation: aCell gridLocation
+		</p>
+		<p>
+			New class method on CellClickRegionPushEast.
+		</p>
+		<p class="code">
+			<b>canPushCell: aCell withinGrid: aGrid</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^aGrid canPushCellEastFromLocation: aCell gridLocation
+		</p>
+		<p>
+			New class method on CellClickRegionPushSouth.
+		</p>
+		<p class="code">
+			<b>canPushCell: aCell withinGrid: aGrid</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^aGrid canPushCellSouthFromLocation: aCell gridLocation
+		</p>
+		<p>
+			And the new class method on CellClickRegionPushWest.
+		</p>
+		<p class="code">
+			<b>canPushCell: aCell withinGrid: aGrid</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^aGrid canPushCellWestFromLocation: aCell gridLocation
+		</p>
+		<p>
+			We're using polymorphism here and letting the click region classes
+			work out the direction.
+			Now we write a new class method on CellClickRegionInside to send this method to the
+			region.
+		</p>
+		<p class="code">
+			<b>canActOnCellAtPoint: aPoint cell: aCell withinGrid: aGrid</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| pushRegion |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pushRegion := self pushRegionForPoint: aPoint.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^pushRegion canPushCell: aCell withinGrid: aGrid
+		</p>
+		<p>
+			The CellClickRegionOutside class handles requests for rotation.
+			This part is easy.  It's always the same answer.  Here's the
+			class method as implemented on CellClickRegionOutside.
+		</p>
+		<p class="code">
+			<b>canActOnCellAtPoint: aPoint cell: aCell withinGrid: aGrid</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^true
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="132.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

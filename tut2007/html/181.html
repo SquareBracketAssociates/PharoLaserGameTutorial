@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 5</p>
+		<div id="content">
+		<p>
+			Add the following instance methods to the LaserGame class.
+		</p>
+		<p class="code">
+			<b>makeMirrorsCounterMorph</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| count |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;count := LedMorph new<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;digits: 3;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extent: 3 * 10 @ 15;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setBalloonText: ''.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;count color: (Color r: 0.674 g: 0.674 b: 0.96).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;count name: 'mirrors'.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^ self wrapPanel: count label: 'Mirrors'
+		</p>
+		<p class="code">
+			<b>makeActiveMirrorsCounterMorph</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| count |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;count := LedMorph new<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;digits: 3;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extent: 3 * 10 @ 15;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setBalloonText: ''.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;count color: (Color r: 0.674 g: 0.674 b: 0.96).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;count name: 'activeMirrors'.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^ self wrapPanel: count label: 'Active Mirrors'
+		</p>
+		<p class="note">
+			Before proceeding, close any open LaserGame morphs you may have.  The next section of code changes some
+			of the active dimensions of the game morph and can get event processing pretty messed
+			up if a game board is open.
+		</p>
+		<p>
+			The panel for our controls needs to be a little wider because of the larger tag
+			in the active mirrors counter.  Modify the #panelWidth method.
+		</p>
+		<p class="code">
+			<b>panelWidth</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^110
+		</p>
+		<p>
+			Next, modify the #addCountersToPanel: method to add our new counters.
+		</p>
+		<p class="code">
+			<b>addCountersToPanel: panel</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	panel<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		addMorph: self makeLaserPathCounterMorph<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		fullFrame: (LayoutFrame<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				fractions: (0 @ 0 corner: 1 @ 0)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				offsets: (4 @ 4 corner: -8 @ 44));<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		addMorph: self makeMovesCounterMorph<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		fullFrame: (LayoutFrame<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				fractions: (0 @ 0 corner: 1 @ 0)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				offsets: (4 @ 48 corner: -8 @ 92));<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		addMorph: self makeMirrorsCounterMorph<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		fullFrame: (LayoutFrame<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				fractions: (0 @ 0 corner: 1 @ 0)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				offsets: (4 @ 96 corner: -8 @ 140));<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		addMorph: self makeActiveMirrorsCounterMorph<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		fullFrame: (LayoutFrame<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				fractions: (0 @ 0 corner: 1 @ 0)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				offsets: (4 @ 144 corner: -8 @ 188))
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="182.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

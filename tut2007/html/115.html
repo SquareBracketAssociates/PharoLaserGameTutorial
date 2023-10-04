@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 3</p>
+			<div id="content">
+				<p>
+					Handling the mouse-up event in our rotate click-regions is easy since we
+					already wrote the code on the mirror cells.
+					Here's our clockwise handler.
+				</p>
+				<img src="images/562.jpg">
+				<p>
+					Counter-clockwise is equally simple.
+				</p>
+				<img src="images/563.jpg">
+				<p>
+					To complete the work we need to go back to the MirrorCellRenderer and send the
+					messages to process the mouse-up event and redraw the cell.
+				</p>
+				<img src="images/564.jpg">
+				<p>
+					The last step is to go back to the LaserGame morph and complete the sequence where
+					we began our journey.
+				</p>
+				<img src="images/565.jpg">
+				<p>
+					We need to add a special accessor method to the CellRenderer class.  This instance method should be
+					added.
+				</p>
+				<p class="code">
+					<b>cell</b><br>
+					&nbsp;&nbsp;&nbsp;&nbsp;^self grid at: self cellLocation.
+				</p>
+				<p>
+					Open up your LaserGame morph if it's not already open and try clicking in the
+					rotate regions of mirror cells.  It works.
+				</p>
+				<p>
+					This is a good place to save your image and take a break.  We have a lot
+					of good things happening in our little game.  You may have noticed while
+					playing with your LaserGame morph that there's some clean-up issues we'll
+					have to deal with.  The hint arrows aren't getting cleaned up very well and
+					we see them hanging around after the cursor leaves the cell.  Also,
+					if you tried firing the laser and moving mirrors around you probably noticed
+					that we have additional work to do regarding what happens to the laser and
+					cell states when a mirror moves.
+				</p>
+				<p>
+					Still, this looks like a fun little game is starting to develop.
+				</p>
+			</div>
+			<div id="paging">
+				<a class="index" href="index.html">Index Page</a>
+				<a class="forward" href="116.html">Next Page</a>
+				<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a>
+				</p>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 1</p>
+			<div id="content">
+		<h3>Grid Unit Test</h3>
+		<p>
+			Write a unit test to validate the initial conditions
+			for a Grid.  Again, create the new class GridTestCase
+			as a subclass of TestCase and then add methods.
+			Here's our first test method.
+			We'll be adding more to this method later.
+		</p>
+		<img src="images/118.jpg">
+		<p>
+			Let's run our unit tests (including the new one
+			we just created) and see how things are going.
+		</p>
+		<img src="images/119.jpg">
+		<p>
+			We have a failure in our new Grid test method.
+			Click on the failed method in the test runner and
+			a debugger opens up for us.
+		</p>
+		<img src="images/120.jpg">
+		<p>
+			Click once on the debug button to open up the debugger
+			call stack.  The method #initializeCells seems to be where
+			our problem lies.
+			There it is.  We forgot to send #numberOfRows to self and
+			the algorithm tried to use the instance variable directly.
+			We knew the variable could have been nil and it was.
+		</p>
+		<img src="images/121.jpg">
+		<p>
+			Okay, that's easy enough of a mistake to fix.  Here's the corrected
+			#initializeCells method for Grid.  You can fix it right in the debugger.
+			Just close it when after you have saved the change and then re-run the
+			unit tests.
+		</p>
+		<img src="images/122.jpg">
+		<p>
+			Rerun and everything passes.
+		</p>
+		<img src="images/123.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="034.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

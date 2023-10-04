@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 4</p>
+			<div id="content">
+		<p>
+			We will have to either adjust how the laser beam is drawn, the offsets, or
+			adjust the position of the target cell.
+			If we adjust the position of the target cell then we may still
+			have an alignment problem when the laser beam meets at the mirrors.
+			If we adjust the drawing of the laser we may still have an issue with
+			alignment at the mirrors.
+		</p>
+		<p>
+			So it seems we will be served best by working on the laser beam on our
+			mirror cells before we correct this.
+		</p>
+		<p>
+			However, there is a refactoring opportunity we should take.
+			There's a lot of commonality in the code for both the target
+			and blank cells when it came to drawing the laser beam.  Let's clean that up.
+		</p>
+		<p>
+			The #renderLaserVertical and #renderLaserHorizontal methods are identical
+			between the blank cell and target cell.  Copy the methods to the common
+			superclass CellRenderer and then delete the methods from the two subclasses.
+		</p>
+		<p>
+			The methods #renderLaserVerticalCenter, #renderLaserVerticalSplatter,
+			#renderLaserHorizontalCenter and #renderLaserHorizontalSplatter are also
+			identical between the two classes.  Copy these methods up to the CellRenderer
+			class and then delete them from the BlankCellRenderer and the TargetCellRenderer.
+		</p>
+		<p>
+			Compare the methods #renderLaserHorizontalMask:color: in the target cell and blank cell classes.
+			Here's the blank cell version.
+		</p>
+		<p class="code">
+			<b>renderLaserHorizontalMask: aMaskForm color: aColor</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| cellPosn scaledBeam scale trimmedBeam offset |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cellPosn := self offsetWithinGridForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;scale := CellRenderer cellExtent * 6.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;scaledBeam := aMaskForm scaledToSize: scale.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;trimmedBeam := Form extent: (CellRenderer cellExtent x)@(scaledBeam height) depth: scaledBeam depth.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;scaledBeam<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;displayOn: trimmedBeam<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;at: 0@0<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clippingBox: trimmedBeam boundingBox<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule: Form paint<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fillColor: nil.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;offset := 0@(4 + (CellRenderer cellExtent y - trimmedBeam height) // 2).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;trimmedBeam<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;displayOn: self targetForm<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;at: (cellPosn + offset)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clippingBox: self targetForm boundingBox<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule: Form oldPaint<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fillColor: aColor
+		</p>
+		<p>
+			The target cell code...
+		</p>
+		<p class="code">
+			<b>renderLaserHorizontalMask: aMaskForm color: aColor</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| cellPosn scaledBeam scale trimmedBeam offset masked |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	cellPosn := self offsetWithinGridForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	scale := CellRenderer cellExtent * 6.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	scaledBeam := aMaskForm scaledToSize: scale.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	trimmedBeam := Form extent: (CellRenderer cellExtent x)@(scaledBeam height) depth: scaledBeam depth.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	scaledBeam<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		displayOn: trimmedBeam<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		at: 0@0<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		clippingBox: trimmedBeam boundingBox<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		rule: Form paint<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		fillColor: nil.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	offset := 0@(4 + (CellRenderer cellExtent y - trimmedBeam height) // 2).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	masked := self maskOffHorizontalOn: trimmedBeam.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	masked<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		displayOn: self targetForm<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		at: (cellPosn + offset)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		clippingBox: self targetForm boundingBox<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		rule: Form oldPaint<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		fillColor: aColor
+		</p>
+		<p>
+			The only real difference is that the target cell creates another mask form
+			and then uses that new mask for the final drawing.
+			It would be a simple matter to write the #maskOffHorizontalOn: method
+			for the blank cell and have it answer the original mask.  If we did
+			that then we could use the same code for the #renderLaserHorizontalMask:color:
+			method in the two subclasses.
+		</p>
+		<p>
+			Here's the new #maskOffHorizontalOn: instance method for the
+			BlankCellRenderer.
+		</p>
+		<p class="code">
+			<b>maskOffHorizontalOn: aMask</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	^aMask
+		</p>
+		<p>
+			Now we can copy the version of #renderLaserHorizontalMask:color:
+			that the target cell class was using and put it in the CellRenderer class
+			and then delete the methods from both the subclasses.
+			Be sure to leave the #maskOffHorizontalOn: as it exists on the target cell renderer class.
+		</p>
+		<p>
+			We can do the same thing for the vertical methods now.  Add a new instance method
+			#maskOffVerticalOn: to the BlankCellRenderer.
+		</p>
+		<p class="code">
+			<b>maskOffVerticalOn: aMask</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	^aMask
+		</p>
+		<p>
+			Copy the version of the #renderLaserVerticalMask:color: method from the target cell renderer
+			up to the common super class CellRenderer and then delete it from both the blank and target
+			cell renderers.
+		</p>
+		<p>
+			As a check, turn the laser off and on on our LaserGame morph and verify
+			that everything still works as expected.
+		</p>
+		<img src="images/706.jpg">
+		<p>
+			Save your work as version 9.
+		</p>
+		<img src="images/712.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="166.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 4</p>
+			<div id="content">
+		<p>
+			We're going to re-factor some of our update code.  Begin by
+			creating a new instance method as follows.
+		</p>
+		<p class="code">
+			<b>updateGameBoardAndControls</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self drawGameBoard.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self updateFireButtonLabel.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self updateCounters.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self changed
+		</p>
+		<p>
+			Modify our #mouseUp:forMorph:cell: instance method to use this new
+			update code.
+		</p>
+		<p class="code">
+			<b>mouseUp: evt forMorph: aSketchMorph cell: aCell</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| renderer pixelPositionWithinBoard cellForRedraw |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;renderer := CellRenderer rendererFor: aCell grid: self grid form: self boardForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pixelPositionWithinBoard := self boardRelativePositionFor: evt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cellForRedraw := renderer mouseUpWithinBoardOffset: pixelPositionWithinBoard.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self redrawCell: cellForRedraw.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self incrementMoves.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self updateGameBoardAndControls
+		</p>
+		<p>
+			Open up a new LaserGame morph to check how we're doing.
+		</p>
+		<img src="images/677.jpg">
+		<p>
+			Next, we're going to add a "New Game" button.
+			The existing control panel looks crowded for a third button.
+			The existing ones do not need to be so large.  I'd like
+			to make them both smaller and put them together
+			horizontally in the same row.  Then we could add a second
+			row with a new buttton.
+		</p>
+		<p>
+			While we're in here changing around our button code, we should revisit
+			how we have the "Quit" button coded.  If we make the button smaller and
+			maybe a little closer to the "Fire" button to make more room on the
+			control panel, we could find the user accidently hitting the "Quit"
+			button sometimes.  Modify the #quitGame method to confirm the user's
+			choice before actually exiting the game.
+		</p>
+		<p class="code">
+			<b>quitGame</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;(self confirm: 'Are you sure you want to quit?') ifTrue: [self delete]
+		</p>
+		<p>
+			The code to layout the buttons is only going to get messier to read if
+			we add a 2nd row and third button.
+			Let's refactor a bit here too.
+			Add the following instance method to calclulate the layout-frame
+			for a control panel button if we specify the row and column for it.
+		</p>
+		<p class="code">
+			<b>buttonLayoutFrameForRow: fromBottom column: fromLeft</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| buttonHeight buttonWidth xOffset xOrigin yOrigin xCorner yCorner yOffset |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;buttonHeight := 20.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;buttonWidth := 40.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;xOffset := (self panelWidth - (2 * buttonWidth)) // 3.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;yOffset := 10.<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;xOrigin := xOffset * fromLeft.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;xOrigin := xOrigin + ((fromLeft - 1) * buttonWidth).<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;yOrigin := yOffset * fromBottom.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;yOrigin := yOrigin + (fromBottom * buttonHeight).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;yOrigin := yOrigin negated.<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;xCorner := xOrigin + buttonWidth.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;yCorner := yOrigin + buttonHeight.<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^LayoutFrame<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fractions: (0 @ 1 corner: 0 @ 1)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;offsets: (xOrigin@yOrigin corner: xCorner@yCorner)
+		</p>
+		<p>
+			We need to create the "New Game" button.
+		</p>
+		<p class="code">
+			<b>makeNewGameButton</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^self makeButton: 'New' action: #newGame state: nil
+		</p>
+		<p>
+			Next we modify the #addButtonsToPanel: method to use the new
+			layout technique for all our control
+			panel buttons, including the new one.
+		</p>
+		<p class="code">
+			<b>addButtonsToPanel: panel</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| layout |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;layout := self buttonLayoutFrameForRow: 1 column: 1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;panel addMorph: self makeQuitGameButton fullFrame: layout.<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;layout := self buttonLayoutFrameForRow: 1 column: 2.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;panel addMorph: self makeFireLaserButton fullFrame: layout.<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;layout := self buttonLayoutFrameForRow: 2 column: 1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;panel addMorph: self makeNewGameButton fullFrame: layout.<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^panel
+		</p>
+		<p>
+			For now, just add a stub method to handle the new game request.
+		</p>
+		<p class="code">
+			<b>newGame</b>
+		</p>
+		<p>
+			We have a little more refactoring to do.  Add a new instance method
+			on LaserGame.
+		</p>
+		<p class="code">
+			<b>initializeDirty</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self dirty: Dictionary new
+		</p>
+		<p>
+			We're going to use that in the initialization of "dirty" and when
+			we create a new game.
+			Here's the modified #dirty method.
+		</p>
+		<p class="code">
+			<b>dirty</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;dirty isNil ifTrue: [self initializeDirty].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^dirty
+		</p>
+		<p>
+			Open up a new LaserGame morph to check how we're doing.
+		</p>
+		<img src="images/678.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="145.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

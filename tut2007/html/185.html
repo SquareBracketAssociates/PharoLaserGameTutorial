@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 5</p>
+		<div id="content">
+		<p>
+			Our next step is modify the Grid class definition.  We need to add an instance
+			variable, "movesStack".
+		</p>
+		<p class="note">
+			Close any open LaserGame morphs you may have open.
+		</p>
+		<p class="code">
+			Object subclass: #Grid<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	instanceVariableNames: 'cells laserIsActive numberOfColumns numberOfRows laserBeamPath movesStack'<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	classVariableNames: ''<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	poolDictionaries: ''<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	category: 'Laser-Game-Model'
+		</p>
+		<p>
+			Create some accessor methods for our new instance variable.
+			I'm going to go ahead use <i>lazy initialization</i> with the getter method.
+			These methods are instance methods on the Grid class.
+		</p>
+		<p class="code">
+			<b>movesStack: aCollection</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	movesStack := aCollection
+		</p>
+		<p class="code">
+			<b>movesStack</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	movesStack isNil ifTrue: [self movesStack: OrderedCollection new].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	^movesStack
+		</p>
+		<p>
+			The "movesStack" is where we will store every valid cell operation the user performs.
+			When we want to perform an undo we remove the last entry from the stack.
+		</p>
+		<p>
+			Our next step is to refactor the push actions on our Grid class.
+			We can reduce the work down to a single parameterized method.
+			Make the following additions and changes to these Grid instance methods.
+		</p>
+		<p class="code">
+			<b>stackAction: aSymbol forCell: aCell</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self movesStack add: aSymbol->(aCell gridLocation)
+		</p>
+		<p class="code">
+			<b>pushCellAction: aDirectionSymbol fromLocation: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	| direction cell swappedCell |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	cell := self at: aPoint.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	direction := GridDirection directionFor: aDirectionSymbol.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	swappedCell := self pushCell: direction fromLocation: aPoint.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	swappedCell gridLocation = cell gridLocation ifFalse: [<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		self stackAction: aDirectionSymbol forCell: cell].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	^swappedCell
+		</p>
+		<p class="code">
+			<b>pushCellEastFromLocation: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	^self pushCellAction: #east fromLocation: aPoint
+		</p>
+		<p class="code">
+			<b>pushCellNorthFromLocation: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	^self pushCellAction: #north fromLocation: aPoint
+		</p>
+		<p class="code">
+			<b>pushCellSouthFromLocation: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	^self pushCellAction: #south fromLocation: aPoint
+		</p>
+		<p class="code">
+			<b>pushCellWestFromLocation: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	^self pushCellAction: #west fromLocation: aPoint
+		</p>
+		<p class="code">
+			<b>rotateCellClockwiseAt: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	| cell |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	cell := self at: aPoint.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self clearCellsInPath.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	(self at: aPoint) rotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self laserIsActive ifTrue: [self activateCellsInPath].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self stackAction: #clockwise forCell: cell
+		</p>
+		<p class="code">
+			<b>rotateCellCounterClockwiseAt: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	| cell |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	cell := self at: aPoint.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self clearCellsInPath.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	(self at: aPoint) rotateCounterClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self laserIsActive ifTrue: [self activateCellsInPath].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self stackAction: #counterClockwise forCell: cell
+		</p>
+		<p>
+			Now we write the undo method.
+		</p>
+		<p class="code">
+			<b>undo</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	| actionAssociation symbol location reverseAction arguments |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self movesStack isEmpty ifTrue: [^false].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	actionAssociation := self movesStack removeLast.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	symbol := actionAssociation key.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	location := actionAssociation value.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	reverseAction := ReverseLaserGameAction reverseActionSymbolFor: symbol.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	arguments := Array with: location.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self perform: reverseAction withArguments: arguments.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self movesStack removeLast.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	^true
+		</p>
+		<p>
+			Undo will answer a boolean value to indicate its success at doing an undo operation.
+			The first check it makes is to see if the "movesStack" is empty.  If it is, then
+			there is no undo action possible.
+			We then pull the last entry off the stack.  The entries are Association
+			objects placed there by the #stackAction:forCell: method we saw earlier.
+			The association has the original action system and cell location for that action.
+			We then utilize the ReverseLaserGameAction logic to get the <i>
+				instance method name we need to execute
+			</i> to perform the undo.
+			Note that after we perform the action, the undo action is now on the
+			stack.  Since we don't want that to stay, we pop it off the stack before we answer
+			"true" that we completed the undo request.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="186.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

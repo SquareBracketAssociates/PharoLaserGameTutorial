@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 3</p>
+		<div id="content">
+		<h3>Creating Custom Forms</h3>
+		<p>
+			Our goal is to create visual "hints" as the user hovers
+			the cursor over certain game cells.  For the Mirror Cells we
+			can show "hints" when clockwise and counter-clockwise rotation
+			is possible, and then the cell can be pushed either north, east, south or west.
+			The easiest way to do this is utilize the click-region code we just wrote
+			and draw the hints as forms on top of the game board.
+		</p>
+		<p>
+			We will want a repository of these forms and we will of course
+			need the forms themselves.  Let's begin by drawing some forms for
+			our eventual use.  The easiest forms to draw are arrows.  We
+			will begin with those.
+		</p>
+		<p>
+			Using a new open workspace, we will write some basic drawing steps to
+			render our experimental arrow on the display.
+		</p>
+		<img src="images/373.jpg">
+		<p>
+			This workspace code describes an arrow as a series of connected points.
+			The points are defined in the "pts" variable.
+			A white form large enough to contain the arrow is created.
+			Using a black pen, the arrow outline is drawn onto the form.
+			The last line draws our form, containing the arrow drawing, onto the
+			display.
+		</p>
+		<img src="images/374.jpg">
+		<p>
+			Add a line of code to color fill the outer region of the form with black.
+		</p>
+		<img src="images/372.jpg">
+		<p>
+			We now have a white arrow on a black background.
+		</p>
+		<img src="images/375.jpg">
+		<p>
+			To show our progress, draw the intermediate form and the new final form.
+			The last two steps are to reverse the form so that black and white
+			exchange with each other.  This is done because in the next step
+			only the pixels that are black will be painted onto the display.
+			The final arrow gets filled in with gray.
+		</p>
+		<img src="images/376.jpg">
+		<p>
+			Before you execute this code be certain to "restore display" from the
+			World menu.
+		</p>
+		<img src="images/377.jpg">
+		<p>
+			Our experimental gray arrow is shown without the distracting
+			surrounding rectangle.
+			This form is considerable larger than we will need.  I'd like to work
+			at this scale for these forms and then shrink them down before we use them.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="082.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

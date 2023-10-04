@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 5</p>
+			<div id="content">
+				<h3>Adding More Game Stats</h3>
+				<p>
+					Our next enhancement is to add a way to track some more
+					game statistics for the player.
+					I'd like to present a counter that shows how many mirrors
+					are on the grid and another counter to show how many are
+					active when the laser is on.
+				</p>
+				<p>
+					We begin by putting stub methods on the Grid class and then write unit tests to
+					exercise those methods.
+					Add these two instance methods to the Grid class.
+				</p>
+				<p class="code">
+					<b>numberOfMirrors</b><br>
+					&nbsp;&nbsp;&nbsp;&nbsp;^0
+				</p>
+				<p class="code">
+					<b>numberOfActiveMirrors</b><br>
+					&nbsp;&nbsp;&nbsp;&nbsp;^0
+				</p>
+				<p>
+					Now we construct a new unit test.  For the tests we will use the
+					standard grid for all our unit tests so far.
+				</p>
+				<table>
+					<tr>
+						<td>
+							<img src="images/020.jpg">
+						</td>
+						<td>
+							<img src="images/021.jpg">
+						</td>
+					</tr>
+				</table>
+				<p>
+					This test grid has 10 mirrors.  When the laser is fired it
+					has 3 active mirrors.  Let's write the unit tests to check this.
+				</p>
+				<p>
+					On the GridTestCase add these two test methods.
+				</p>
+				<p class="code">
+					<b>testNumberOfMirrorsCounter</b><br>
+					&nbsp;&nbsp;&nbsp;&nbsp;| grid count |<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;grid := self generateDemoGrid.<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;count := grid numberOfMirrors.<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;self should: [count = 10].
+				</p>
+				<p class="code">
+					<b>testNumberOfActiveMirrorsCounter</b><br>
+					&nbsp;&nbsp;&nbsp;&nbsp;| grid count |<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;grid := self generateDemoGrid.<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;count := grid numberOfActiveMirrors.<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;self should: [count = 0].<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;grid fireLaser.<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;count := grid numberOfActiveMirrors.<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;self should: [count = 3].
+				</p>
+				<p>
+					Of course we don't expect these to run just yet.  Now we add the real functional
+					methods to our Grid class to count the mirrors.
+					Here's the instance method that correctly counts the number of mirrors
+					in the grid.
+				</p>
+				<p class="code">
+					<b>numberOfMirrors</b><br>
+					&nbsp;&nbsp;&nbsp;&nbsp;^(self cells select: [:each | each class = MirrorCell]) size
+				</p>
+				<p>
+					Here's the other method we will need.
+				</p>
+				<p class="code">
+					<b>numberOfActiveMirrors</b><br>
+					&nbsp;&nbsp;&nbsp;&nbsp;^(self cells select: [:each | (each class = MirrorCell) and: [each isOn]]) size
+				</p>
+				<p>
+					When we run the unit tests they now pass.
+					Our next step is add counters to the LaserGame morph that show these
+					values as the game is played.
+				</p>
+			</div>
+			<div id="paging">
+				<a class="index" href="index.html">Index Page</a>
+				<a class="forward" href="181.html">Next Page</a>
+				<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a>
+				</p>
+			</div>
+		</div>
+	</body>
+</html>

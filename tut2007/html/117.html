@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 3</p>
+			<div id="content">
+		<p>
+			Our immediate task is to devise a strategy to handle refresh
+			of our grid cells when the cursor travels quickly.
+		</p>
+		<p>
+			A couple ideas come to mind.  By far the simplest solution is to
+			automatically redraw all the cells in the game board before any one
+			cell has a hint drawn over it.  This would assure a clean slate before
+			drawing.  The only drawback is the performance cost with drawing all
+			the cells that were never impacted by a cursor visit.
+		</p>
+		<p>
+			A more elaborate approach could be to keep a "dirty" flag for each
+			cell which is set whenever a cursor hint is drawn on the cell.  Then,
+			just before a cell hint is drawn, sweep through all the cells on the game board
+			and for those that have their "dirty" flag set, clear the flag and redraw that cell.
+			We could probably store the "dirty" flag for every cell in the game morph.
+		</p>
+		<p>
+			Between those two approaches I'm okay with trying out the more elaborate approach
+			since it would not be difficult to code.  I'm also guessing that the sweep/detect/clean-up
+			algorithm would not have much of a performance hit.
+		</p>
+		<p>
+			We have to add the "dirty" flag to the LaserGame morph.
+			It doesn't make sense to put it on the Cell objects since this
+			is not really a
+			"model" behavior but rather a behavior of the graphics system.  Also,
+			we cannot put the instance variable on the CellRenderer class hierarchy
+			because those objects are created
+			<i>on-the-fly</i> and cannot be counted on to retain state information.
+			The most logical place is the LaserGame class itself since it's managing the
+			events anyway.
+		</p>
+		<p>
+			Let's begin by adding an instance variable to the LaserGame class.
+		</p>
+		<img src="images/576.jpg">
+		<p>
+			We want this instance to hold a Dictionary of all the dirty cells.
+			Write some simple accessors for the variable and use <i>lazy initialization</i>
+			to set the value to an initialized empty Dictionary.
+		</p>
+		<p class="code">
+			<b>dirty: aDictionary</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;dirty := aDictionary<br>
+			<br>
+			<br>
+			<b>dirty</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;dirty isNil ifTrue: [self dirty: Dictionary new].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^dirty
+		</p>
+		<p>
+			We need methods to mark a cell as dirty as well as clean.  We also need a way to test if
+			a cell is dirty.  Here are the three new instance methods on LaserGame class.
+		</p>
+		<p class="code">
+			<b>setDirty: aCell</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self dirty at: aCell gridLocation put: true<br>
+			<br>
+			<br>
+			<b>setClean: aCell</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self dirty removeKey: aCell gridLocation ifAbsent: []<br>
+			<br>
+			<br>
+			<b>isDirty: aCell</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^self dirty at: aCell gridLocation ifAbsent: [false]
+		</p>
+		<p>
+			We can now write the cell sweep clean method on LaserGame.
+		</p>
+		<p class="code">
+			<b>sweepDirtyCells</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| cell renderer |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;1 to: self grid numberOfColumns do: [:x |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1 to: self grid numberOfRows do: [:y |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cell := self grid at: x@y.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(self isDirty: cell) ifTrue: [<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;renderer := CellRenderer rendererFor: cell grid: self grid form: self boardForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;renderer redrawCell.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self setClean: cell<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]]].
+		</p>
+		<p>
+			We now modify the hint drawing code to sweep old dirty cells and to mark the current cell as
+			dirty.
+		</p>
+		<p class="code">
+			<b>mouseMoveWhileButtonUp: evt forMorph: aSketchMorph</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| cell renderer pixelPositionWithinBoard |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := self cellForEvent: evt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;renderer := CellRenderer rendererFor: cell grid: self grid form: self boardForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pixelPositionWithinBoard := self boardRelativePositionFor: evt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self sweepDirtyCells.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;renderer showPositionHintFromWithinBoardOffset: pixelPositionWithinBoard.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self setDirty: cell.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self changed
+		</p>
+		<p>
+			We should delete the code for #redrawCell from the mirror cell renderer and put it
+			in the general superclass CellRenderer.
+		</p>
+		<img src="images/579.jpg">
+		<p>
+			As a final step we can clean up the diagnostics code in the renderers.
+		</p>
+		<img src="images/577.jpg"><br>
+		<img src="images/578.jpg">
+		<p>
+			Note the cell redraw code was also removed from the hint drawing method since
+			it is no longer needed.
+			You should be able to move your cursor around over the top of the LaserGame morph
+			now and no longer see the ghost arrows as before.
+		</p>
+		<img src="images/580.jpg">
+		<p>
+			Oops.  We still have one case where we can get the ghost arrow.  When
+			the cursor leaves the grid entirely we need to perform a sweep.
+		</p>
+		<img src="images/581.jpg">
+		<p>
+			You should now be able to manuver your cursor/mouse around your
+			LaserGame morph, even quickly, and see the hint arrows only appear
+			while you are over specific mirror cells.
+			Our next task is to deal with the laser beam status while rotating mirrors.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="118.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 3</p>
+			<div id="content">
+		<p>
+			It's time to draw the hint forms for when the user wants to
+			rotate a mirror cell.  We'll need arrows with arcs.
+			Once again we'll use a workspace for experimenting
+			with drawing our forms.  The goal will be to draw
+			this:
+		</p>
+		<img src="images/462.jpg">
+		<p>
+			In a workspace we'll create this arrow one step at a time.
+			We begin with a larger final output form because of the arc.
+			And we'll tighten up the arrow dimensions but similar to
+			how we drew the south arrows before.  Note that we don't want much of
+			any "stem" on our arrow.
+		</p>
+		<img src="images/463.jpg">
+		<p>
+			Here's our new arrow.
+		</p>
+		<img src="images/464.jpg">
+		<p>
+			The Arc class draws arcs by quadrant.  Not as nice as we would like but
+			we can make this work.  Here's the code for the first part of our
+			outside arc.
+		</p>
+		<img src="images/465.jpg">
+		<p>
+			And the drawing.
+		</p>
+		<img src="images/466.jpg">
+		<p>
+			Let's draw the rest of the outside arc and the inside arc pieces.
+		</p>
+		<img src="images/467.jpg">
+		<p>
+			And the drawing.  Notice that we are clipped on the right side because
+			of the size of our output form.  That's not an issue.  The final form
+			will have even less of a complete arc on the right half.
+		</p>
+		<img src="images/468.jpg">
+		<p>
+			Let's draw a line that cuts the arc off.
+		</p>
+		<img src="images/469.jpg">
+		<p>
+			Here's how it turned out.
+		</p>
+		<img src="images/470.jpg">
+		<p>
+			Now that our arc is enclosed we can fill it in.
+		</p>
+		<img src="images/471.jpg"><br>
+		<img src="images/472.jpg">
+		<p>
+			Okay.  We don't need the line anymore, it was there to close off the arc so
+			we could fill in the black area.  The easiest way to erase the line
+			is to draw over it with a white line.  However if we make the line
+			<i>really wide</i> it will erase the remaining arc segments too.
+		</p>
+		<img src="images/473.jpg">
+		<p>
+			And there's our curved arrow.
+		</p>
+		<img src="images/474.jpg">
+		<p>
+			That's the counter-clockwise arrow.  It might be a simple matter to make a
+			clockwise one.  All we have to do is add a step to flip the final form.
+		</p>
+		<img src="images/475.jpg"><br>
+		<img src="images/476.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="100.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 1</p>
+			<div id="content">
+		<h3>Run Our First Unit Test</h3>
+		<p>
+			Even though we know the answers will be wrong for the #isOn and #isOff
+			instance methods, because we haven't made them do anything but answer
+			a hard-coded "false", we should go back and run the unit test.
+			Enough code has been written on this class already that we want to be
+			sure we created the object we expected and get results expected even when
+			they are wrong.
+		</p>
+		<p>
+			If you go back to the open menu (from the World menu) you can choose
+			"Test Runner".
+		</p>
+		<img src="images/053.jpg">
+		<p>
+			The SUnit test runner will open.  If you scroll the far left list pane
+			all the way down you will find our Laser-Game-Tests category.  Select
+			that and BlankCellTestCase will be highlighted in the adjacent list pane.
+		</p>
+		<img src="images/054.jpg">
+<!--- Thanks to Matthew Fulmer for hint to add the following text.  --->
+		<p class="note">
+			If you do not see "Laser-Game-Tests" in the list pane of the Test Runner,
+			you probably made a mistake creating the test case class.
+			The class BlankCellTestCase must be a subclass of TestCase.
+			You may want to go back and check your work from <a href="015A.html">this page</a>.
+		</p>
+		<p>
+			Click once on the "Run Selected" button and the test runner will
+			execute our new test case and report that it failed.
+		</p>
+		<img src="images/055.jpg">
+		<p>
+			Click once on the name of the failed test method and a debugger will
+			open.
+		</p>
+		<img src="images/056.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="019.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

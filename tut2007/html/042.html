@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 2</p>
+			<div id="content">
+		<h3>Grid Unit Test Activated</h3>
+		<img src="images/021.jpg">
+		<p>
+			Let's go back to our enhanced Grid Unit Test
+			and add some code that exercises all this stuff.
+			We can activate the cells in the laser beam path
+			and then check if the target cell is on.
+		</p>
+		<img src="images/161.jpg">
+		<p>
+			Let's run our tests and see what happens.
+		</p>
+		<img src="images/162.jpg">
+		<p>
+			No joy.  There's an error.  Looks like
+			the problem is that the cell has a nil gridLocation.
+			If you inspect the cell you will see it is
+			a Blank Cell.  I wonder if we forgot to
+			ensure that the blank cells have their locations
+			set when the initial grid is created?  Here's the #initializeCells
+			method on our Grid class.
+		</p>
+		<img src="images/163.jpg">
+		<p>
+			Sure enough, the code that initializes the grid with
+			blank cells does not use the method we wrote to
+			add cells.  It accesses the cells dictionary
+			directly through the accessor.
+			Here's the method we should have been using.
+		</p>
+		<img src="images/164.jpg">
+		<p>
+			Fix the initialization method.
+		</p>
+		<img src="images/165.jpg">
+		<p>
+			Close the debugger if it's still open.  Let's rerun our unit tests.
+		</p>
+		<img src="images/166.jpg">
+		<p>
+			Something is wrong.  The tests never finish running.
+			Type a Command-. (Command Period) to interrupt
+			Squeak and see where we are hung up.
+		</p>
+		<img src="images/167.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="043.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

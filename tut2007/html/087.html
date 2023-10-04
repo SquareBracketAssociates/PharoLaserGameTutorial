@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 3</p>
+		<div id="content">
+		<p>
+			For the next step we need to do some math.  We need
+			to be able to determine which one of the 4 "push" segments
+			a point is actually in.  There's a unit test to check
+			our work, but now we need to work out the math to make it
+			happen.
+		</p>
+		<p>
+			Let's review some basic principles.  The Squeak graphics coordinate
+			system has its origin in the upper left corner of the display.
+			As you travel across the screen to the right your X values increase.
+			As you travel across the screen heading down your Y values increase.
+			This can be a little confusing since it's inverted for the Y-axis
+			from what you normally think of when drawing lines.
+		</p>
+		<p>
+			I'm going to flip over our little cross-hatch diagram to make it
+			easier to keep the math straight.
+		</p>
+		<img src="images/406.jpg">
+		<img src="images/410.jpg">
+		<p>
+			The push regions end up like this for our flipped over diagram.
+			We haven't really changed anything here.  The North push side is still on the
+			side farthest from the 0 position in the y-axis.
+		</p>
+		<img src="images/411.jpg">
+		<p>
+			There are 2 line segments in our diagram.  One that begins in the lower
+			left corner and heads up and to the right and the other that
+			begins in the upper left corner and heads down and to the right.
+			Let's call the first line our "heading-up" line and the second line
+			our "heading down" line.
+		</p>
+		<p>
+			Recall that the equation for a straight line is
+		</p>
+		<p class="code">
+			y = mx + b
+		</p>
+		<p>
+			Let's solve for the values of the "heading=up" line equation.
+		</p>
+		<p class="code">
+			x1 = 10<br>
+			y1 = 10<br>
+			<br>
+			x2 = 20<br>
+			y2 = 20<br>
+			<br>
+			dy = y2 - y1<br>
+			dy = 20 - 10<br>
+			dy = 10<br>
+			<br>
+			dx = x2 - x1<br>
+			dx = 20 - 10<br>
+			dx = 10<br>
+			<br>
+			m = dy / dx<br>
+			m = 10 / 10<br>
+			m = 1<br>
+		</p>
+		<p>
+			To solve for "b" we plug in one of our known points.
+		</p>
+		<p class="code">
+			y = mx + b<br>
+			x = 10<br>
+			y = 10<br>
+			10 = m(10) + b<br>
+			m = 1<br>
+			10 = 1(10) + b<br>
+			10 - 10 = b<br>
+			b = 0
+		</p>
+		<p>
+			The equation for our "heading-up" line is
+		</p>
+		<p class="code">
+			y = mx + b<br>
+			y = 1(x) + 0<br>
+			y = x
+		</p>
+		<p>
+			Now we solve for the equation of our "heading-down" line.
+		</p>
+		<p class="code">
+			x1 = 10<br>
+			y1 = 20<br>
+			<br>
+			x2 = 20<br>
+			y2 = 10<br>
+			<br>
+			dy = y2 - y1<br>
+			dy = 10 - 20<br>
+			dy = -10<br>
+			<br>
+			dx = x2 - x1<br>
+			dx = 20 - 10<br>
+			dx = 10<br>
+			<br>
+			m = dy / dx<br>
+			m = -10 / 10<br>
+			m = -1<br>
+		</p>
+		<p>
+			To solve for "b" we once again plug in one of our known points.
+		</p>
+		<p class="code">
+			y = mx + b<br>
+			x = 10<br>
+			y = 20<br>
+			20 = m(10) + b<br>
+			m = -1<br>
+			20 = -1(10) + b<br>
+			20 + 10 = b<br>
+			b = 30
+		</p>
+		<p>
+			The equation for our "heading-down" line is
+		</p>
+		<p class="code">
+			y = mx + b<br>
+			y = -1(x) + 30<br>
+			y = 30 - x
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="088.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

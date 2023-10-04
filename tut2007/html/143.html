@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 4</p>
+			<div id="content">
+		<h3>Add Move Counter And Randomizer</h3>
+		<p>
+			We're going to keep adding enhancements to our LaserGame.
+			Here's how it looks today.
+		</p>
+		<img src="images/675.jpg">
+		<p>
+			We will be adding 2 new features.  The first will be
+			a Moves counter.  The moves counter will show the total
+			number of cell clicks on the game board.
+			The idea is that the player will want to minimize this
+			count as they solve the puzzle.
+		</p>
+		<p>
+			The second feature will be to add a random game generator.
+			This will allow us to include a "New Game" button which
+			will generate a new randomized mix of Mirror Cells on
+			our board game grid.
+		</p>
+		<p>
+			Let's get started.  The first thing to do is add a way to keep track
+			of the moves count.  We will accomplish this by adding a new
+			instance variable "moves" to the LaserGame class definition.
+		</p>
+		<img src="images/676.jpg">
+		<p>
+			Create the accessors that includes #moves and #moves:.  The #initialize
+			method should be modified to set "moves" to zero.
+		</p>
+		<p class="code">
+			<b>initialize</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;super initialize.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self moves: 0.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self grid: GridFactory demoGrid.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self boardForm: (Form extent: (self class boardExtentFor: self grid) depth: Display depth).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self boardForm fillColor: LaserGameColors gameBoardBackgroundColor.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self setExtent.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self setupMorphs.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self drawGameBoard.
+		</p>
+		<p>
+			Now we add something to create a control panel to display the "moves".
+		</p>
+		<p class="code">
+			<b>makeMovesCounterMorph</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| count |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;count := LedMorph new<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;digits: 3;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extent: 3 * 10 @ 15;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setBalloonText: ''.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;count color: (Color r: 0.674 g: 0.674 b: 0.96).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;count name: 'moves'.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^ self wrapPanel: count label: 'Moves'
+		</p>
+		<p>
+			Modify the #addCountersToPanel: method to include the new panel.
+		</p>
+		<p class="code">
+			<b>addCountersToPanel: panel</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;panel<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;addMorph: self makeLaserPathCounterMorph<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fullFrame: (LayoutFrame<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fractions: (0 @ 0 corner: 1 @ 0)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;offsets: (4 @ 4 corner: -8 @ 44));<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;addMorph: self makeMovesCounterMorph<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fullFrame: (LayoutFrame<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fractions: (0 @ 0 corner: 1 @ 0)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;offsets: (4 @ 48 corner: -8 @ 92))
+		</p>
+		<p>
+			Since we'll be updating the moves counter we'll need a new instance method
+			to help us find it.
+		</p>
+		<p class="code">
+			<b>findMovesCounter</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^self allMorphs detect: [:m | m knownName = 'moves'] ifNone: []
+		</p>
+		<p>
+			Modify the method that updates our counters.
+		</p>
+		<p class="code">
+			<b>updateCounters</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| led |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;led := self findLaserPathCounter.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;led notNil ifTrue: [<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self laserActive<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ifTrue: [led <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;highlighted: true;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value: self grid laserBeamPath size]<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ifFalse: [led<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;highlighted: false;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value: 0]<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;led := self findMovesCounter.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;led notNil ifTrue: [<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;led<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;highlighted: false;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value: self moves asString]
+		</p>
+		<p>
+			Add in a new instance method to increment the moves counter.
+		</p>
+		<p class="code">
+			<b>incrementMoves</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self moves: self moves + 1
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="144.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

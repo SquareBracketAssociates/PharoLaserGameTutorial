@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 3</p>
+			<div id="content">
+		<p>
+			Close the Snapshot Browser.  Let's go back an examine the Monticello browser.
+			I resized it to be wider.  We want to save our package definition in a
+			repository.  Since this is the first time we are doing this we will go through the
+			steps of creating a repository as a folder on our hard drive.  This folder will
+			contain all versions of the Laser Game package we intend to save.
+		</p>
+		<img src="images/650.jpg">
+		<p>
+			Before we add the definition of the new repository to Monticello we need to have
+			the physical folder.  I'll create a new folder called "Projects".  In there I will
+			save any Monticello project I create.  It will be the repository folder.
+		</p>
+		<img src="images/651.jpg">
+		<p>
+			Back inside Squeak we can click on the "+Repository" button.
+			It will pop up a menu asking us to choose the type of repository.
+			For this tutorial work I will choose "directory".
+		</p>
+		<img src="images/652.jpg">
+		<p>
+			Squeak presents a dialog window for us to select the directory we intend to
+			use for our repository.
+		</p>
+		<img src="images/653.jpg">
+		<p>
+			After you complete this step you will see our new repository definition in the list
+			of available repositories for our Laser Game package.  The other repository
+			in the list is the default one created for all Monticello packages.
+			You may have noticed that there were quite a few interesting choices in the pop-up
+			menu for repository type.  I often use FTP when I want to publish my code to
+			an FTP server and then share it with other developers working on the same projects.
+		</p>
+		<img src="images/654.jpg">
+		<p>
+			With the repository selected, we should now click the "Save" button.
+			Monticello pop open a window for us to edit version information about our package.
+			By default it assigned the package-version name "Laser-Game-sbw.1".  Monticello figured
+			out my developer initials from Squeak and assigned the number "1" as the first version
+			number.
+		</p>
+		<img src="images/655.jpg">
+		<p>
+			You can also type a comment about the package before you press "Accept".
+		</p>
+		<img src="images/656.jpg">
+		<p>
+			Monticello takes a snapshot of the code included in the package to be
+			versioned and writes it to the repository.  A confirmation window is
+			presented.  Also, you can see that our package now shows the current
+			version number in the packages list.
+		</p>
+		<p>
+			You can close both of these windows.
+			Later we will show how you can load or review a previously saved
+			version of your package.
+		</p>
+		<p class="note">
+			The basic LaserGame is complete and can be used within the Squeak environment.
+			The following sections of this tutorial all add enhancements and features
+			to this base we have just created.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="129A.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

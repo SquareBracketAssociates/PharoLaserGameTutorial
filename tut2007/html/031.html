@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 1</p>
+			<div id="content">
+		<h3>Grid</h3>
+		<p>
+			From what we've seen so far,
+			the Grid is responsible for holding the cells
+			in a matrix.  It must have a provision to
+			add specific cells to specific locations, and
+			it should have a mechanism to address cells
+			at specific locations.  The Grid will activate the
+			laser beam.
+		</p>
+		<p>
+			We will create 2 instance variables,
+			"cells" and "laserIsActive".  Create accessors
+			for both.  The instance variable "cells"
+			will contain a dictionary where the keys are points of
+			location within the Grid and the values are the cells.
+			The instance variable "laserIsActive"
+			is a boolean indicating state of the laser beam.
+		</p>
+		<img src="images/110.jpg">
+		<p>
+			Add 2 more instance variables to simplify things in later operations:
+			"numberOfColumns" and "numberOfRows".  Write accessors for these too.
+			We'll deal with initialization in a moment.
+		</p>
+		<img src="images/111.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="032.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

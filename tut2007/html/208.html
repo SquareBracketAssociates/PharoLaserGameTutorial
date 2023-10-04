@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 6</p>
+		<div id="content">
+		<h3>Next Steps Towards Deployment</h3>
+		<p>
+			We have some hooks in place that provide a way to have our Laser Game morph
+			be the visible morph in the Squeak world.  And the existing code handles
+			correct centering when someone re-sizes the main Squeak window.  We can probably
+			tighten all of that up but let's push onwards closer to a stand-alone Laser Game application.
+		</p>
+		<p>
+			The concept here is that we will continue to develop with the existing Squeak image
+			and also make a new second Squeak image for the deployed application.  There will then be two Squeak
+			images as far as our Laser Game development efforts is concerned.  And they should behave differently.
+			The development image will be exactly as we have been operating so far and the deployed image will always
+			launch with our game running in "full world" mode.  Also, we want to do everything we can to disable
+			user access to the regular Squeak menus and other development facilities when running the deployed image.
+		</p>
+		<p>
+			Let's begin by changing a few methods on our LaserGame class.  I want to modify the
+			#fullWorld: class method.  It's not a "code" change.  I just want to change the comment
+			to set the value to "true" instead.  This seems like a more helpful setup.
+		</p>
+		<p class="code">
+			<b>fullWorld: aBoolean</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;"LaserGame fullWorld: false"<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;FullWorld := aBoolean
+		</p>
+		<p>
+			Next we will add two new class methods to LaserGame.  These "worker" methods
+			are useful for launching the game in either the full world or standard mode.
+		</p>
+		<p class="code">
+			<b>launchStandard</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;"LaserGame launchStandard"<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| morph |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self fullWorld: false.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;morph := self new.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;morph openInHand.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^morph
+		</p>
+		<p class="code">
+			<b>launchFullWorld</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;"LaserGame launchFullWorld"<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| morph |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self fullWorld: true.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;morph := self new.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;morph openInWorld.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^morph
+		</p>
+		<p>
+			When we attempt to restrict the user's access to standard Squeak actions
+			that should include disabling the Command-. (Command Period) capability.
+			Currently, when a user performs a Command-. Squeak will drop into the debugger.
+			This is obviously something we will curtail.
+		</p>
+		<p>
+			As it turns out, there's a Preference we can set in our progamming
+			that enables and disables this capability.  We will design things so that the
+			launched application will have this feature disabled.  That means we can
+			detect the presence of the feature being disabled or not to know if we are
+			running a development mode.
+		</p>
+		<p>
+			Add the following instance method to LaserGame.
+		</p>
+		<p class="code">
+			<b>quitGameExitSqueakCheck</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;"Use the Preferences cmdDotEnabled as an indicator that we are run-time or not."<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Preferences cmdDotEnabled ifFalse: [Smalltalk quitPrimitive]
+		</p>
+		<p>
+			When this method is called if we detect that command-dot is disabled, we assume we are not
+			in the developer image.  You'll see how we use this next.
+			Add another new instance method to LaserGame.
+		</p>
+		<p class="code">
+			<b>quitGameAction</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self delete.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self class fullWorld ifTrue: [self class fullWorld: false].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self quitGameExitSqueakCheck
+		</p>
+		<p>
+			When we call this method we are expecting to perform a game quit action.  We delete/close the morph
+			and then if we find we are in full world mode we turn that off.  That's just a handy thing we will use as we
+			develop.  Most importantly we then call the #quitGameExitSqueakCheck
+			method which we already saw would cause Squeak to exit if this is the non-development
+			image.
+		</p>
+		<p>
+			Now we modify the existing #xxx LaserGame instance method to utilize this sequence.
+		</p>
+		<p class="code">
+			<b>quitGame</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;(self confirm: 'Are you sure you want to quit?') ifTrue: [self quitGameAction]
+		</p>
+		<p>
+			The way we have this designed, unless we disable command-. in our development image, the Quit action of
+			our game will act essentially as it always is.  It will have the additional behavior of exiting
+			Squeak if this is the deployed image.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="209.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

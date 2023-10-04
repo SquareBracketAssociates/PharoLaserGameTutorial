@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 3</p>
+			<div id="content">
+		<p>
+			The next change we need to make is to have the cell rotate messages include the grid.
+			Let's take a look at the mouse-up code, where it all begins, in the LaserGame morph.
+		</p>
+		<p class="code">
+			<b>mouseUp: evt forMorph: aSketchMorph cell: aCell</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| renderer pixelPositionWithinBoard |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;renderer := CellRenderer rendererFor: aCell grid: self grid form: self boardForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pixelPositionWithinBoard := self boardRelativePositionFor: evt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;renderer mouseUpWithinBoardOffset: pixelPositionWithinBoard.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self changed
+		</p>
+		<p>
+			The LaserGame object has an instance variable for the grid so we could modify the
+			#mouseUpWithinBoardOffset: to include an additional argument of the grid.  Before we do
+			that we should look at the CellRenderer class.
+		</p>
+		<p class="code">
+			Object subclass: #CellRenderer<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;instanceVariableNames: 'cellLocation grid targetForm'<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;classVariableNames: ''<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;poolDictionaries: ''<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;category: 'Laser-Game-Graphics'
+		</p>
+		<p>
+			The renderers also know about the grid.  So we don't need to include it as an argument
+			to our #mouseUpWithinBoardOffset: message after all.  Have a look at the
+			#mouseUpWithinBoardOffset: instance method on the MirrorCellRenderer class.
+		</p>
+		<p class="code">
+			<b>mouseUpWithinBoardOffset: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| cellPosn offsetWithinCell regionClass |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cellPosn := self offsetWithinGridForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;offsetWithinCell := aPoint - cellPosn.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;regionClass := CellClickRegion clickRegionForPoint: offsetWithinCell. <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;regionClass mouseUpWithinCellAtPoint: offsetWithinCell cell: self cell.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self redrawCell
+		</p>
+		<p>
+			The region class hierarchy doesn't contain any information about grids.  So here's where
+			we would begin to pass along the grid as an argument in our method calls.
+			The #mouseUpWithinCellAtPoint:cell: method will have to change.  There are 3
+			implementers of this method.  Each will have to be replaced with a new method.
+		</p>
+		<img src="images/597.jpg">
+		<p>
+			Let's create these 3 new methods right away and then change the renderer code to use them
+			instead.  After that we'll delete the old unused methods.
+			Here's the new class method on the CellClickRegion class.
+		</p>
+		<p class="code">
+			<b>mouseUpWithinCellAtPoint: aPoint cell: aCell withinGrid: aGrid</b>
+		</p>
+		<p>
+			Here's the new class method for the CellClickRegionInside class.
+		</p>
+		<p class="code">
+			<b>mouseUpWithinCellAtPoint: aPoint cell: aCell withinGrid: aGrid</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| pushRegion |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pushRegion := self pushRegionForPoint: aPoint.
+		</p>
+		<p>
+			Note that we're not going to do anything with the inside click region and this new parameter
+			just yet.  Most importantly, here's the new class method for our CellClickRegionOutside class.
+		</p>
+		<p class="code">
+			<b>mouseUpWithinCellAtPoint: aPoint cell: aCell withinGrid: aGrid</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| rotateRegion |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;rotateRegion := self rotateRegionForPoint: aPoint.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;rotateRegion mouseUpForCell: aCell
+		</p>
+		<p>
+			Now we use this new method back on the MirrorCellRenderer class.  Here's the modification
+			to our existing instance method.
+		</p>
+		<p class="code">
+			<b>mouseUpWithinBoardOffset: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| cellPosn offsetWithinCell regionClass |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cellPosn := self offsetWithinGridForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;offsetWithinCell := aPoint - cellPosn.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;regionClass := CellClickRegion clickRegionForPoint: offsetWithinCell. <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;regionClass mouseUpWithinCellAtPoint: offsetWithinCell cell: self cell withinGrid: self grid.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self redrawCell
+		</p>
+		<p>
+			After we have made this change we can go back and look for senders of the old
+			#mouseUpWithinCellAtPoint:cell: method.  There shouldn't be any.  When you've confirmed
+			that, you can then delete the 3 old implementers.
+		</p>
+		<p>
+			We're now ready to push the grid argument further until we get to the code that actually
+			does the rotation.  Here's the code for the CellClickRegionOutside where we need to do our next
+			work.
+		</p>
+		<img src="images/598.jpg">
+		<p>
+			The #mouseUpForCell: methods are the next to be changed.  You can see this is
+			where the work
+			needs to happen.
+		</p>
+		<img src="images/599.jpg">
+		<p>
+			Here are the 2 new class methods.
+		</p>
+		<img src="images/600.jpg"><br>
+		<img src="images/601.jpg">
+		<p>
+			Go back and call these new methods...
+		</p>
+		<img src="images/602.jpg">
+		<p>
+			Then, after confirming there are no longer any senders of the old #mouseUpForCell: methods, delete them.
+			There's one last change.  Since we're not impacting other cells on the board we need to redraw
+			whenever someone changes a cell now.  Here's the modified method.
+		</p>
+		<img src="images/603.jpg">
+		<p>
+			Open up a LaserGame morph and try it out.  You can rotate a cell while the laser is active
+			and it works as we expect.  For fun, don't forget to try and rotate the cells on the
+			bottom row and watch the target cell state change.
+			We'll want to deal with the idea of prohibiting cell changes while the laser beam is
+			active later on in our development work.
+		</p>
+		<p>
+			This is another good breaking point to save your image.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="122.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,143 @@
+<!-- Localized -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Notes</p>
+			<div id="content">
+				<h3>Notes</h3>
+				<h3>Commentary About The Tutorial</h3>
+				<p>
+					First of all, I must say thank you to everyone that has contributed feedback containing corrections.
+					I've also received feedback with clarified text to use in certain places.  And of
+					course I want to thank those who have taken the trouble to actually <i>do the tutorial</i>
+					and provide feedback on areas that were confusing or in error.
+					All very helpful.
+				</p>
+				<p>
+					The praise and feedback have all validated my efforts.
+				</p>
+				<p>
+					Since the the time the tutorial went public, on June 30th, there's been quite a bit of "buzz"
+					within the Squeak community.
+					Most of it has been very positive.  A few comments here and there have been critical
+					of choices made in the tutorial.  But even those have been fundamentally supportive
+					of the work.
+					However, I do believe I should share more about my motivations to produce this tutorial and
+					set the context of how I expect it to be seen and experienced.
+				</p>
+				<p>
+					Also, this project has been in the planning stage for me for quite a while.  I've been waiting
+					for Squeak 3.9 to become mature and stable.  I've avoided add-ons to the base simply because I think
+					the common Squeak beginner would not seek these out.  And frankly, many of the add-ons
+					(including ones I've written and published) are buggy, incomplete and sometimes conflict with
+					each other.  I know about the efforts to create a Squeak Universe (an excellent idea) and the
+					Developer's Image.  And I love the work Craig is doing on Spoon.
+					Those are great projects.  But I think the base Squeak 3.9
+					is great.  I started using Squeak and 
+					<a href="../../index.html">publishing goodies</a> for it in 1987.  Before there even was
+					the venerable Morphic.  It's come a long way and has a great future.
+				</p>
+				<p>
+					These were my goals for this tutorial, by personal priority.
+					<ol>
+						<li>Grow the community of experienced Squeak and Smalltalk practitioners.</li>
+						<li>Lay down the foundation for a book I've wanted to write since early 1992.</li>
+						<li>Provide working materials for a class and/or workshop I'd like to teach.  I taught programming
+							for a while at a State Technical College back in Cincinnati many years ago and very much enjoyed it.
+						</li>
+						<li>Make a contribution to the Squeak community that makes a difference and gets noticed.
+							<img class="tight" src="images/wave.gif" height="22" width="25" border="0">
+							This last
+							one is selfish.
+						</li>
+					</ol>
+				</p>
+				<p>
+					I also wanted to create a how-to that is very pragmatic.  I'm really not a Smalltalker that
+					spends a lot of energy keeping up with the latest trends and goodies.
+					But I do consider myself a craftsman in this art.  An artisan, if that's not too bold.
+					And I believe that anyone that has developed skills should share and teach.  I've been paid to write Smalltalk
+					code professionally for close to 20 years now.  I see it as a personal responsibility to mentor.
+				</p>
+				<p>
+					The target audience is not the complete Smalltalk and Squeak newbie.  Although with some of
+					the feeback I've received, maybe it should be.  That would require some rework.  It's a possibility
+					I'm considering.
+				</p>
+				<p>
+					My belief is that there's value in showing a programmer a
+					process of development with a non-academic real-world result.  Well, okay, it's a game.  But it's
+					an application realized from idea through delivery by careful development.
+					There's real value in learning that skill.
+				</p>
+				<p>
+					By all means, I encourage feedback.  I'm pretty busy and cannot promise to respond to everything.
+					And the truth is that my family was out of town for about a month so I had free time every evening and weekend
+					to work on this tutorial "like crazy".  That period is days away from ending.  So free time to enhance
+					and push this tutorial further along will be harder to come-by.
+				</p>
+				<p>
+					There's always risk, to my way of looking at things, in public statements about goals.  Say you would like to
+					do something and you set an expectation that you will.
+					However, I do want to communicate the road-map I see for this tutorial as it continues to develop.
+					Near-term I see the following as reasonable goals for this tutorial.  This is early July 2007, let's see how it
+					goes.
+				</p>
+				<p>
+					<ul>
+						<li>Create Laser Game as a stand-alone application.</li>
+						<li>Create Laser Game as a web application.</li>
+						<li>Add preferences support.  This would include
+							<ol>
+								<li>quit prompt option</li>
+								<li>customized colors</li>
+								<li>size of game board</li>
+								<li>choose which click-region rotates/pushes</li>
+								<li>others...</li>
+							</ol>
+						</li>
+						<li>Save and load/resume games</li>
+						<li>Publish best scores in a public manner for sharing and comparison by users.</li>
+						<li>Laser animation. I took a crack at this idea on July 4th but was very unhappy with the result and tossed the code out.
+							This needs to be done with BitBlt and not with little Morphs like I tried.  Too slow.
+							I'll revisit this topic later.
+						</li>
+						<li>Sound.</li>
+						<li>Networked 2-player game option.</li>
+					</ul>
+					</ul>
+				</p>
+				<p>
+					The goal of a simple networked game as basis for a tutorial has <i>always</i>
+					been the real basis for this project.  So I hope to get there.
+				</p>
+				<p>
+					Enjoy the tutorial.
+				</p>
+				<p align="right">
+					Stephan B. Wessels<br>
+					July 5th, 2007
+				</p>
+			</div>
+			<div id="paging">
+				<a class="index" href="index.html">Index Page</a>
+				<a class="forward" href="notes.html">Notes Page</a>
+				<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a>
+				</p>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 5</p>
+		<div id="content">
+		<p>
+			We're not done yet.  The CellClickRegionTestCase class has the following instance method.
+		</p>
+		<p class="code">
+			<b>testClicksInIgnoreRegion</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| pt regionClass |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pt := 1@1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;regionClass := CellClickRegion clickRegionForPoint: pt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [regionClass = CellClickRegionIgnore].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pt := 39@39.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;regionClass := CellClickRegion clickRegionForPoint: pt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [regionClass = CellClickRegionIgnore].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pt := 3@3.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;regionClass := CellClickRegion clickRegionForPoint: pt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [regionClass = CellClickRegionIgnore].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pt := 10@10.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;regionClass := CellClickRegion clickRegionForPoint: pt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self shouldnt: [regionClass = CellClickRegionIgnore].
+		</p>
+		<p>
+			This has the same brittleness.  Here's the re-coded method.
+		</p>
+		<p class="code">
+			<b>testClicksInIgnoreRegion</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| pt regionClass |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pt := 1@1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;regionClass := CellClickRegion clickRegionForPoint: pt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [regionClass = CellClickRegionIgnore].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pt := CellRenderer cellExtent - (1@1).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;regionClass := CellClickRegion clickRegionForPoint: pt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [regionClass = CellClickRegionIgnore].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pt := CellRenderer ignoreRegionOffset - (1@1).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;regionClass := CellClickRegion clickRegionForPoint: pt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [regionClass = CellClickRegionIgnore].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pt := CellClickRegionOutside regionRectangle topLeft.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;regionClass := CellClickRegion clickRegionForPoint: pt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self shouldnt: [regionClass = CellClickRegionIgnore].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pt := CellClickRegionInside regionRectangle topLeft.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;regionClass := CellClickRegion clickRegionForPoint: pt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self shouldnt: [regionClass = CellClickRegionIgnore].
+		</p>
+		<p>
+			I also added another check to the test.
+			When we run the unit tests everything continues to pass.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="193.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

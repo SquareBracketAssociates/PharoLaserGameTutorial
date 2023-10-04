@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 4</p>
+			<div id="content">
+		<h3>Better Cursor Management</h3>
+		<p>
+			One of the things I don't like about the current implementation of our LaserGame morph is that
+			the cursor arrow gets in the way when your moving around over a mirror cell.  The hint
+			arrows draw themselves on the cell but in some situations it's difficult to see them because
+			the mirror cell is relatively small and the cursor/arrow is almost the same size.
+		</p>
+		<p>
+			Doing something to improve the cursor visibility while it's over the mirror cell and while
+			these hint arrows are visible would be a good thing.
+		</p>
+		<p>
+			We're going to create another form.  It's a simple form and will provide a simple
+			cross-hair.
+			We will use this new cross-hair form as our cursor while hovering over the mirror cell
+			hint drawings.
+		</p>
+		<p>
+			Add some new class methods to the LaserGameForms class.
+		</p>
+		<p class="code">
+			<b>drawCrossHair</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;"LaserGameForms initializeCachedForms"<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| form pen startPoint endPoint line lineLength inset |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;lineLength := 10.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;form := Form extent: CellRenderer cellExtent depth: 32.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;form fillColor: Color transparent.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pen := Form extent: 1@1 depth: 1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pen fillColor: Color black.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;inset := ((form width - lineLength) // 2)@((form height - lineLength) // 2).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;startPoint := (inset x)@(form height // 2).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;endPoint := (form width - (inset x))@(form height // 2).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;line := Line from: startPoint to: endPoint withForm: pen.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;line displayOn: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;startPoint := (form width // 2)@(inset y).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;endPoint := (form width // 2)@(form height - (inset y)).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;line := Line from: startPoint to: endPoint withForm: pen.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;line displayOn: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^form
+		</p>
+		<p>
+			The class method #drawCrossHair creates a small form with a small black cross hair in its center.
+			We will now modify the #initializeCachedForms class method to use this new drawing method
+			to create the #crossHair cached form.
+		</p>
+		<p class="code">
+			<b>initializeCachedForms</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;"LaserGameForms initializeCachedForms"<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| form |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;CachedForms := Dictionary new.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;form := self arrowFormFromPointsArray: self northArrowPoints.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;CachedForms at: #north put: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;form := self arrowFormFromPointsArray: self eastArrowPoints.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;CachedForms at: #east put: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;form := self arrowFormFromPointsArray: self southArrowPoints.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;CachedForms at: #south put: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;form := self arrowFormFromPointsArray: self westArrowPoints.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;CachedForms at: #west put: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;form := self drawCounterClockwiseArrow.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;CachedForms at: #counterClockwise put: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;form := self drawClockwiseArrow.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;CachedForms at: #clockwise put: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;form := self drawCrossHair.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;CachedForms at: #crossHair put: form.
+		</p>
+		<p>
+			Next we add a class method to answer the cached cross-hair form.
+		</p>
+		<p class="code">
+			<b>crossHair</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;CachedForms isNil ifTrue: [self initializeCachedForms].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^CachedForms at: #crossHair
+		</p>
+		<p>
+			We're going to add one more class method to the LaserGameForms class.
+			This is an #initialize class method.  Here's why this is important.
+			As we extend the code in the #initializeCachedForms method, remember that we
+			need to be certain to re-initialize those cached forms otherwise our
+			new forms will not be present in the cached dictionary.  The trick is
+			that when we load a new version of code, either via a file-in of
+			a Change Set or a project load from Monticello, we need to cause these
+			cached forms to get re-initialized.  When a package loads into memory
+			all the classes loaded have any #initialize class method executed right after
+			the load or install.  In this way we can ensure that our cached forms are
+			reset if the new version of code were to change the form definitions in any way.
+			Here's our new #initialize class method.
+		</p>
+		<p class="code">
+			<b>initialize</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;super initialize.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;LaserGameForms initializeCachedForms
+		</p>
+		<p>
+			Our next step is to figure out how to use this new cross-hair form.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="135.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

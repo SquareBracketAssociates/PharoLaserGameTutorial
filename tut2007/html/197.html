@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 5</p>
+		<div id="content">
+		<h3>Better Hint Arrows Alignment</h3>
+		<p>
+			Since we're fixing annoying little bugs, I have another one to go after.
+			The drawing of the hint arrows has always been a little funny.  The arrows
+			never appear where I think they should within a mirror cell.  With these new
+			larger (50 x 50) cells, it's even more obvious that the arrows are off-center.
+			I'd like to fix that.
+		</p>
+		<p>
+			This problem originates from the early work where we created the various arrow forms.
+			We started out with arbitrary white forms that were big enough to hold whatever arrow shape
+			we created.  And then we saved those forms.  The issue is that the arrows themselevs were
+			never drawn to be centered within the white rectangles and so the black portion of the arrow
+			forms, the part we use, is almost always way off-center.
+		</p>
+		<p>
+			Our path to correction is to add some code to prune back the finished rectangle to
+			be just large enough
+			to hold the completed arrow.  We can then save that trimmed form.  Once we get the
+			form sized correctly it's a simple matter to go back and fix the arrow offset calculations
+			within the renderers.
+		</p>
+		<p>
+			Let's begin.  The first thing we will do is to add some extension methods to the
+			Form class.  Open a class browser on the Form class and create a new protocol
+			named "*Laser-Game".  This will cause methods we create as part of this
+			protocol to be included in our Monticello package.
+		</p>
+		<img src="images/746.jpg">
+		<p>
+			Now add the following instance methods to that protocol.
+		</p>
+		<p class="code">
+			<b>anyOfColor: aColor inColumn: int</b><br>&nbsp;&nbsp;&nbsp;&nbsp;
+			| color |<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			1 to: self height do: [:row |<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			color := self colorAt: int@row.<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			color = aColor ifTrue: [^true]].<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			^false
+		</p>
+		<p class="code">
+			<b>anyOfColor: aColor inRow: int</b><br>&nbsp;&nbsp;&nbsp;&nbsp;
+			| color |<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			1 to: self width do: [:column |<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			color := self colorAt: column@int.<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			color = aColor ifTrue: [^true]].<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			^false
+		</p>
+		<p class="code">
+			<b>firstColumnOfColorFromLeft: aColor</b><br>&nbsp;&nbsp;&nbsp;&nbsp;
+			| x |<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			x := 1.<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			[self anyOfColor: aColor inColumn: x] whileFalse: [<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			x := x + 1.<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			x >= self width ifTrue: [^nil]].<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			^x
+		</p>
+		<p class="code">
+			<b>firstColumnOfColorFromRight: aColor</b><br>&nbsp;&nbsp;&nbsp;&nbsp;
+			| x |<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			x := self width.<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			[self anyOfColor: aColor inColumn: x] whileFalse: [<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			x := x - 1.<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			x <= 1 ifTrue: [^nil]].<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			^x
+		</p>
+		<p class="code">
+			<b>firstRowOfColorFromBottom: aColor</b><br>&nbsp;&nbsp;&nbsp;&nbsp;
+			| y |<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			y := height.<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			[self anyOfColor: aColor inRow: y] whileFalse: [<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			y := y - 1.<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			y <= 1 ifTrue: [^nil]].<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			^y
+		</p>
+		<p class="code">
+			<b>firstRowOfColorFromTop: aColor</b><br>&nbsp;&nbsp;&nbsp;&nbsp;
+			| y |<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			y := 1.<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			[self anyOfColor: aColor inRow: y] whileFalse: [<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			y := y + 1.<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			y >= self height ifTrue: [^nil]].<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			^y
+		</p>
+		<p class="code">
+			<b>tightRectangleAroundColor: aColor</b><br>&nbsp;&nbsp;&nbsp;&nbsp;
+			| left right top bottom |<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			left := self firstColumnOfColorFromLeft: aColor.<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			right := self firstColumnOfColorFromRight: aColor.<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			top := self firstRowOfColorFromTop: aColor.<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			bottom := self firstRowOfColorFromBottom: aColor.<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			^left@top corner: right@bottom
+		</p>
+		<p>
+			These methods will answer a rectangle that is close-in around a form
+			with a given color.  This will work in our case since we are using
+			single pixel depth forms of black on white.
+			Also, these methods aren't too careful about what happens when we don't
+			find the color we want.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="198.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

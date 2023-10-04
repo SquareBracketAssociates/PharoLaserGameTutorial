@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 1</p>
+			<div id="content">
+		<h3>Abstract Class Cell</h3>
+		<p>
+			This was all straight-forward.  But what about the behavior that is similar to
+			the Blank Cell?  We'll need the same instance variables
+			"activeSegments" and "exitSides".  The behavior of how these values are set
+			will be different.  We want to re-use the code as much as possible.
+			This is a good case for an abstract class that would define what the two
+			cells have in common.  Let's create an abstract class called Cell.
+		</p>
+		<img src="images/078.jpg">
+		<p>
+			Our next step is to move BlankCell under our new abstract class Cell.
+			We should remove the two instance variables from BlankCell.
+		</p>
+		<img src="images/079.jpg">
+		<p>
+			The accessors also need to be moved up to the new abstract class.
+			There's a built-in tool in Squeak that will copy methods up and down
+			a class hierarchy.  However there is no tool to move the methods.
+			The 3rd-party tool Refactoring Browser provides this capability and
+			is a very powerful package to install for Squeak.  However we do not
+			currently have this installed and will proceed without it.
+		</p>
+		<p>
+			The accessors #activeSegments #activeSegments: #exitSides #exitSides:
+			need to be moved to the new class.  Also, the initialize methods need
+			to be integrated into the new class.
+			For a direct and simple situation like this, the easiest
+			technique is to simply copy the code for these methods between the two
+			classes by copy-and-paste and then delete them from the
+			BlankCell class.  I find this task easy to do if you open up
+			2 browsers.  One for each class.
+		</p>
+		<p>
+			Here is a view of the class browser for Cell showing the names of
+			the accessor methods that have been moved up from BlankCell.
+		</p>
+		<img src="images/080.jpg">
+		<p>
+			Here are the accessing methods still defined on BlankCell.
+			As we look at these we can see already that much more code will
+			get promoted to the new super class soon.
+		</p>
+		<img src="images/081.jpg">
+		<p>
+			The initialize methods show the first place where the two classes
+			differ.  Have a look at the initialize methods for Cell.
+		</p>
+		<img src="images/082.jpg">
+		<img src="images/083.jpg">
+		<p>
+			The #initializeActiveSegments method will work for any of these cells
+			because they all have 4 segments with a default condition of false.
+			This method clearly belongs on the super class.
+		</p>
+		<p>
+			The #initializeExitSides does not because it defines
+			part of what makes
+			the BlankCell unique from the other cells.  Here's how the initialize
+			methods turn out for BlankCell.
+		</p>
+		<img src="images/084.jpg">
+		<img src="images/085.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="026.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

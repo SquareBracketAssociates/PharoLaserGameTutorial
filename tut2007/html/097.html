@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 3</p>
+			<div id="content">
+			<p>Back when we wrote code to detect the mouse events, particularly,
+			while the button was up, we needed one more piece of code.
+			You probably noticed that the update is not automatic when we move
+			our mouse/cursor over one of our cells.  We can remedy that by adding
+			one line of code.
+			</p>
+			<p>
+			One the LaserGame class, modify this instance method:
+			</p>
+					<p class="code">
+			<b>mouseMoveWhileButtonUp: evt forMorph: aSketchMorph</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| cell renderer pixelPositionWithinBoard |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := self cellForEvent: evt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;renderer := CellRenderer rendererFor: cell grid: self grid form: self boardForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pixelPositionWithinBoard := self boardRelativePositionFor: evt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;renderer showPositionHintFromWithinBoardOffset: pixelPositionWithinBoard.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self changed
+		</p>
+		<p>
+			We added one line of code.  We added the "self changed" at the end.  By doing this the
+			update actions should happen whenever we enter one of our cells.
+			</p>
+		<p>
+			The drawing of the arrow will require that we repaint the background of
+			our cell in, as well as its contents, each time we draw an arrow.
+			This is evident when we move the cursor around in the cell and draw arrows in
+			more than one direction, one after the other.  Here's a version of code that solves
+			much of the arrow drawing.
+		</p>
+		<img src="images/455.jpg">
+		<p>
+			When we move the cursor around in the game board, over the mirror cells, we
+			see different arrows.
+		</p>
+		<img src="images/456.jpg">
+		<p>
+			This looks pretty good but it's obvious that we also need
+			code to delete the arrow when we leave the cell.
+			Actually, we should clean up when we leave the inside region.
+			After all, we should only see arrows in the cell where
+			our cursor presently is, and only then if it's a mirror cell
+			and we are in one of the push regions.  We'll want to take that
+			cell background blanking and re-rendering code and extract it
+			to its own method.  We can then call it when we leave the cell.
+		</p>
+		<img src="images/457.jpg">
+		<p>
+			We call this method from here...
+		</p>
+		<img src="images/458.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="098.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

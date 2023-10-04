@@ -1,0 +1,305 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 5</p>
+		<div id="content">
+		<p>
+			We can now apply the same technique to the other test case.  Here are our previous notes for
+			CellClickOutsideRegionRotateTestCase.
+		</p>
+		<p>
+			<table>
+				<tbody>
+					<tr>
+						<td>
+							<img class="tight" src="images/501.jpg">
+						</td>
+						<td>
+							<table>
+								<thead>
+									<tr>
+										<th>Label</th>
+										<th>Point</th>
+										<th>Rotate</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>A</td>
+										<td>10@10</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>B</td>
+										<td>30@10</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>C</td>
+										<td>10@20</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>D</td>
+										<td>30@20</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>E</td>
+										<td>10@30</td>
+										<td>Counter Clock Wise</td>
+									</tr>
+									<tr>
+										<td>F</td>
+										<td>30@30</td>
+										<td>Counter Clock Wise</td>
+									</tr>
+									<tr>
+										<td>G</td>
+										<td>4@4</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>H</td>
+										<td>36@4</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>I</td>
+										<td>4@20</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>J</td>
+										<td>36@20</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>K</td>
+										<td>4@36</td>
+										<td>Counter Clock Wise</td>
+									</tr>
+									<tr>
+										<td>L</td>
+										<td>36@36</td>
+										<td>Counter Clock Wise</td>
+									</tr>
+									<tr>
+										<td>M</td>
+										<td>6@10</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>N</td>
+										<td>32@18</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>O</td>
+										<td>12@32</td>
+										<td>Counter Clock Wise</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</p>
+		<p>
+			The existing method.
+		</p>
+		<p class="code">
+			<b>testClicksInRotateRegions</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| pt regionClass testTable cls rotateRegion |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pt := 5@5.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;regionClass := CellClickRegion clickRegionForPoint: pt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [regionClass = CellClickRegionOutside].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;testTable := {<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10@10->CellClickRegionRotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;30@10->CellClickRegionRotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10@20->CellClickRegionRotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;30@20->CellClickRegionRotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10@30->CellClickRegionRotateCounterClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;30@30->CellClickRegionRotateCounterClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4@4->CellClickRegionRotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;36@4->CellClickRegionRotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4@20->CellClickRegionRotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;36@20->CellClickRegionRotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4@36->CellClickRegionRotateCounterClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;36@36->CellClickRegionRotateCounterClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6@10->CellClickRegionRotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;32@18->CellClickRegionRotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12@32->CellClickRegionRotateCounterClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;testTable do: [:assoc |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pt := assoc key.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cls := assoc value.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rotateRegion := regionClass rotateRegionForPoint: pt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self should: [rotateRegion = cls]]
+		</p>
+		<p>
+			We'll do the same thing we did for the "inside" region.  One big difference however is that
+			we will need both the inside and outside region rectangles.  I'll call them
+			"outRect" and "inRect".
+		</p>
+		<p>
+			<table>
+				<tbody>
+					<tr>
+						<td>
+							<img class="tight" src="images/501.jpg">
+						</td>
+						<td>
+							<table>
+								<thead>
+									<tr>
+										<th>Label</th>
+										<th>Point</th>
+										<th>Rotate</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>A</td>
+										<td>inRect topLeft</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>B</td>
+										<td>inRect topRight</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>C</td>
+										<td>inRect leftCenter</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>D</td>
+										<td>inRect rightCenter</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>E</td>
+										<td>inRect bottomLeft</td>
+										<td>Counter Clock Wise</td>
+									</tr>
+									<tr>
+										<td>F</td>
+										<td>inRect bottomRight</td>
+										<td>Counter Clock Wise</td>
+									</tr>
+									<tr>
+										<td>G</td>
+										<td>outRect topLeft</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>H</td>
+										<td>outRect topRight</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>I</td>
+										<td>outRect leftCenter</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>J</td>
+										<td>outRect rightCenter</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>K</td>
+										<td>outRect bottomCenter</td>
+										<td>Counter Clock Wise</td>
+									</tr>
+									<tr>
+										<td>L</td>
+										<td>outRect bottomRight</td>
+										<td>Counter Clock Wise</td>
+									</tr>
+									<tr>
+										<td>M</td>
+										<td>(outRect topLeft x + 2)@(inRect topLeft y)</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>N</td>
+										<td>inRect rightCenter + (2@-2)</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>O</td>
+										<td>inRect bottomLeft + (2@2)</td>
+										<td>Counter Clock Wise</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</p>
+		<p>
+			The "M" test point was the only tricky one in the table.  Again, it's easy
+			to understand the test when the points are described this way.
+			Let's modify the method.
+		</p>
+		<p class="code">
+			<b>testClicksInRotateRegions</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| pt regionClass testTable cls rotateRegion inRect outRect |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;inRect := CellClickRegionInside regionRectangle.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;outRect := CellClickRegionOutside regionRectangle.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pt := outRect topLeft + (1@1).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;regionClass := CellClickRegion clickRegionForPoint: pt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [regionClass = CellClickRegionOutside].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;testTable := {<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inRect topLeft&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->CellClickRegionRotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inRect topRight&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->CellClickRegionRotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inRect leftCenter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->CellClickRegionRotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inRect rightCenter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->CellClickRegionRotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inRect bottomLeft&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->CellClickRegionRotateCounterClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inRect bottomRight&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->CellClickRegionRotateCounterClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outRect topLeft&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->CellClickRegionRotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outRect topRight&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->CellClickRegionRotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outRect leftCenter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->CellClickRegionRotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outRect rightCenter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->CellClickRegionRotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outRect bottomCenter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->CellClickRegionRotateCounterClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outRect bottomRight&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->CellClickRegionRotateCounterClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(outRect topLeft x + 2)@(inRect topLeft y)&nbsp;&nbsp;->CellClickRegionRotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inRect rightCenter + (2@-2)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->CellClickRegionRotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inRect bottomLeft + (2@2)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->CellClickRegionRotateCounterClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;testTable do: [:assoc |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pt := assoc key.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cls := assoc value.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rotateRegion := regionClass rotateRegionForPoint: pt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self should: [rotateRegion = cls]]
+		</p>
+		<p>
+			Once again when we run the unit tests they still pass.  This change works fine.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="192.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

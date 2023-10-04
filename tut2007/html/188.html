@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+					<p class="section">Section 5</p>
+	<div id="content">
+		<h3>Reset (and a bug fix)</h3>
+		<p>
+			Addind a Reset capability is very straight-forward once the Undo capability
+			is completed.  The purpose of the Reset function is to reset the game board
+			back to the beginning.  This will allow the user to start over on any given
+			game board.  All the cells are reset to their starting conditions and the
+			moves the user made are erased.
+		</p>
+		<p>
+			Before we do this however, I noticed a bug with our latest code that is easy to fix.
+			When you first open up a new LaserGame morph, the Mirrors counter shows zero.  This is
+			incorrect.  Modify the #xxx instance method on LaserGame to fix this problem.
+			We need to update the counters when we launch.
+		</p>
+		<p class="code">
+			<b>initializeForGrid: aGrid</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	super initialize.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self moves: 0.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self grid: aGrid.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self boardForm: (Form extent: (self class boardExtentFor: self grid) depth: Display depth).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self boardForm fillColor: LaserGameColors gameBoardBackgroundColor.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self setExtent.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self setupMorphs.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self drawGameBoard.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self updateCounters.
+		</p>
+		<p>
+			Now we resume with implementation of Reset.
+			Put a stub method on Grid.
+		</p>
+		<p class="code">
+			<b>reset</b>
+		</p>
+		<p>
+			It doesn't do anything.  No we write the unit test for Reset on the GridTestCase.
+			We will use this familiar test setup again.
+		</p>
+		<img src="images/020.jpg">
+		<p class="code">
+			<b>testResetGrid</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	| grid cell |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	grid := self generateDemoGrid.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	cell := grid at: 4@4.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self should: [cell class = BlankCell].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	grid pushCellEastFromLocation: 3@3.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	grid pushCellSouthFromLocation: 4@3.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	cell := grid at: 3@3.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self should: [cell class = BlankCell].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	cell := grid at: 4@3.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self should: [cell class = BlankCell].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	cell := grid at: 4@4.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self should: [cell class = MirrorCell].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self should: [grid movesStack size = 2].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	grid reset.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	cell := grid at: 4@4.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self should: [cell class = BlankCell].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self should: [grid movesStack isEmpty].
+		</p>
+		<p>
+			We now go add the capability to Grid to actually make this happen.  Change the
+			#reset method on Grid.
+		</p>
+		<p class="code">
+			<b>reset</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;[self undo] whileTrue: []
+		</p>
+		<p>
+			The process to reset is easy.  We just unwind the Undo stack until it's empty.
+		</p>
+		<p>
+			Now we add a button to the LaserGame morph.
+			Add or modify these methods.
+		</p>
+		<p class="code">
+			<b>makeResetButton</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	^self makeButton: 'Reset' action: #reset state: nil
+		</p>
+		<p class="code">
+			<b>addButtonsToPanel: panel</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	| layout |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	layout := self buttonLayoutFrameForRow: 1 column: 1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	panel addMorph: self makeQuitGameButton fullFrame: layout.<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	layout := self buttonLayoutFrameForRow: 1 column: 2.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	panel addMorph: self makeFireLaserButton fullFrame: layout.<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	layout := self buttonLayoutFrameForRow: 2 column: 1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	panel addMorph: self makeNewGameButton fullFrame: layout.<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	layout := self buttonLayoutFrameForRow: 2 column: 2.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	panel addMorph: self makeUndoButton fullFrame: layout.<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	layout := self buttonLayoutFrameForRow: 3 column: 1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	panel addMorph: self makeResetButton fullFrame: layout.<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	^panel
+		</p>
+		<p class="code">
+			<b>reset</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self grid reset.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self grid stopLaser.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self moves: 0.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self activeCellLocation: nil.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self initializeDirty.	<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self updateGameBoardAndControls
+		</p>
+		<p>
+			Open up the new LaserGame morph and see how it works.
+		</p>
+		<img src="images/740.jpg">
+		<p>
+			Once again, verify all the unit tests pass and then version the Laser-Game package as version 15
+			and the LaserGame-Tests package as version 2.
+		</p>
+		<img src="images/739.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="189.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

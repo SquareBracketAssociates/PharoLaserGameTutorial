@@ -1,0 +1,219 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Laser Game, Development Example, Smalltalk">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Laser Game - Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-616147-2");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+	<body class="index">
+		<h1>Laser Game - A Development Example for Squeak 3.9</h1>
+		<center>
+			<table class="index">
+				<thead>
+				</thead>
+				<tbody>
+					<tr>
+						<td style="background-color: #fdf3ef">
+							<table>
+								<caption>Section 1</caption>
+								<thead>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<ol>
+												<li><a href="000.html">Introduction</a></li>
+												<li><a href="001.html">Installation</a></li>
+												<li><a href="008.html">Game Overview</a></li>
+												<li><a href="009.html">Discovery Of Objects</a></li>
+												<li><a href="011.html">Test Driven Development</a></li>
+												<li><a href="012.html">Define The Project For Our Game</a></li>
+												<li><a href="015.html">Create Some Model Classes</a></li>
+												<li><a href="015A.html">Unit Test The Original Model</a></li>
+												<li><a href="018.html">Run Our First Unit Test</a></li>
+												<li><a href="024.html">Mirror Cell</a></li>
+												<li><a href="025.html">Abstract Cell Class</a></li>
+												<li><a href="027.html">Unit Test For Mirror Cell</a></li>
+												<li><a href="028.html">New Methods For Mirror Cell</a></li>
+												<li><a href="029.html">Target Cell</a></li>
+												<li><a href="030.html">Target Cell Unit Test</a></li>
+												<li><a href="031.html">Grid</a></li>
+												<li><a href="033.html">Grid Unit Test</a></li>
+												<li><a href="035.html">Making A Deeper Grid Unit Test</a></li>
+											</ol>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+						<td style="background-color: #fdf3e8">
+							<table>
+								<caption>Section 2</caption>
+								<thead>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<ol>
+												<li><a href="035B.html">Leaving Notes In Your Code</a></li>
+												<li><a href="036.html">Laser Beam Path</a></li>
+												<li><a href="038.html">Direction Vectors</a></li>
+												<li><a href="039.html">Unit Test For Grid Direction Hierarchy</a></li>
+												<li><a href="040.html">Back To The Laser Beam Path</a></li>
+												<li><a href="041.html">Path Calculation</a></li>
+												<li><a href="042.html">Grid Unit Test Activated</a></li>
+												<li><a href="048A.html">The Smalltalk-Way To Do A Case Statement</a></li>
+												<li><a href="049.html">Game Graphics</a></li>
+												<li><a href="051.html">Rendering The Cells</a></li>
+												<li><a href="053.html">LaserGame Morph</a></li>
+												<li><a href="055.html">A Factory For Grids</a></li>
+												<li><a href="061.html">Management of Colors</a></li>
+												<li><a href="064.html">Progress So Far</a></li>
+												<li><a href="065.html">Back to the LaserGame Morph</a></li>
+												<li><a href="068.html">Adding Controls</a></li>
+												<li><a href="073.html">A Unit Test To Demonstrate A Bug</a></li>
+											</ol>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+						<td  style="background-color: #fffde9">
+							<table>
+								<caption>Section 3</caption>
+								<thead>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<ol>
+												<li><a href="074.html">Interacting With Cells</a></li>
+												<li><a href="078.html">Handle Mouse Events</a></li>
+												<li><a href="080.html">Detecting Mirror Cell Click Regions</a></li>
+												<li><a href="081.html">Creating Custom Forms</a></li>
+												<li><a href="086.html">Determine Push Regions</a></li>
+												<li><a href="093.html">Drawing Push Hints On The Game Board</a></li>
+												<li><a href="095.html">Using "Halt Once"</a></li>
+												<li><a href="101.html">Determine Rotate Regions</a></li>
+												<li><a href="107.html">Rotate A Mirror Cell</a></li>
+												<li><a href="111.html">Click And Rotate A Cell</a></li>
+												<li><a href="116.html">Clean Up Left-Over Hints</a></li>
+												<li><a href="118.html">Bug With Target Cell</a></li>
+												<li><a href="122.html">Push A Cell</a></li>
+												<li><a href="125.html">Push Cells With The Mouse</a></li>
+												<li><a href="127.html">Visual Bug With Push</a></li>
+												<li><a href="128.html">Source Management With Monticello</a></li>
+											</ol>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td style="background-color: #f0feeb">
+							<table>
+								<caption>Section 4</caption>
+								<thead>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<ol>
+												<li><a href="130.html">Communicate With Arrow Colors</a></li>
+												<li><a href="134.html">Better Cursor Management</a></li>
+												<li><a href="137.html">Making Larger Cells</a></li>
+												<li><a href="139.html">Add A Counter and Window Colors</a></li>
+												<li><a href="143.html">Add Move Counter And Randomizer</a></li>
+												<li><a href="147.html">A Bigger Game Board</a></li>
+												<li><a href="149.html">Drawing The Laser Beam</a></li>
+												<li><a href="156.html">Laser On Blank Cell</a></li>
+												<li><a href="159.html">Laser On Target Cell</a></li>
+												<li><a href="166.html">Laser On Mirror Cell</a></li>
+											</ol>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+						<td style="background-color: #f0f6fe">
+							<table>
+								<caption>Section 5</caption>
+								<thead>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<ol>
+												<li><a href="174.html">A Missed Bug</a></li>
+												<li><a href="180.html">Adding More Game Stats</a></li>
+												<li><a href="183.html">Undo</a></li>
+												<li><a href="187A.html">Modify Package Definition</a></li>
+												<li><a href="188.html">Reset (and a bug fix)</a></li>
+												<li><a href="189.html">Showing Laser Home Visually</a></li>
+												<li><a href="190.html">A Less Brittle Unit Test Design</a></li>
+												<li><a href="197.html">Better Hint Arrows Alignment</a></li>
+												<li><a href="200.html">Minor Cosmetic Tweaks</a></li>
+											</ol>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+						<td style="background-color: #ede4f1">
+							<table>
+								<caption>Section 6</caption>
+								<thead>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<ol>
+												<li><a href="205.html">Prepare For Application Deployment</a></li>
+												<li><a href="208.html">Next Steps Towards Deployment</a></li>
+												<li><a href="214.html">A Double-Clickable Mac Application</a></li>
+												<li><a href="218.html">Better Lock-Down Steps</a></li>
+											</ol>
+											<a href="notes.html">Notes</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</center>
+		<a class="forward" href="000.html" style="color: #000;">Next Page</a>
+		<p>Copyright &copy; 2007, 2008, 2009 Stephan B Wessels.
+			Comments, bug reports and other feedback is welcome via e-mail: <a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a>.
+		</p>
+		<p>
+			The use of this tutorial is free.  If you would like to make
+			a donation in any amount please use the secure PayPal button.
+		</p>
+		<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+			<input type="hidden" name="cmd" value="_s-xclick">
+			<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+			<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
+			<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+">
+		</form>
+	</body>
+</html>

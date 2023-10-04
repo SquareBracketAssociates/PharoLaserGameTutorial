@@ -1,0 +1,92 @@
+<!-- Localized -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Notes</p>
+			<div id="content">
+		<h3>Notes</h3>
+		<h3>Tutorial Source Code</h3>
+		<p>
+			The source for this tutorial is available in
+			Monticello packages.  Package links are in the table below.  Download and
+			save them to your hard disk.  You will have to strip off the ".zip" file extensions from the downloaded files.
+		</p>
+		<p>
+			<table class="packages">
+				<caption>Monticello Packages</caption>
+				<thead>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<a href="../Laser-Game-sbw-published.mcz">Application</a>
+						</td>
+						<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+						<td>
+							<a href="../LaserGame-Tests-sbw-published.mcz">Unit Tests</a>
+						</td>
+						<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					</tr>
+				</tbody>
+			</table>
+		</p>
+		<p>
+			It can be installed in a fresh Squeak 3.9 image.
+			You should install the Application first if you also intend to
+			install the Unit Tests.
+		</p>
+		<p>
+			Alternatively you can begin with a fresh Squeak image and just install
+			the Change Sets for the Laser Game tutorial.  There are 2 Change Sets contained in
+			<a href="../LaserGameChangeSets.zip">one ZIP file</a>.  
+			Uncompress the ZIP file first and copy them into the directory where
+			you have your fresh Squeak image.
+			From a fresh Squeak image, using the FileList, select the "Laser-Game.1.cs" ChangeSet and click
+			on the "Install" button.  After that Change Set installs, which contains all of the model
+			and graphics Squeak code, select the other Change Set, "LaserGame-Tests.1.cs", and install it.  Be sure
+			to save your
+			image afterwards.
+		</p>
+		<p>
+			Create a Workspace window with the following code and
+			execute to begin the game.
+		</p>
+		<p class="code">
+			(LaserGame<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;fullWorld: false;<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;new)<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;position: 20@230;<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;openInWorld
+		</p>
+<!---
+The file is 57 MB.  Too big.
+		<p>
+			This tutorial is available as a <a href="../tut2007.zip">ZIP download</a>.
+		</p>
+--->
+	<p>
+	A downloadable Mac OS X application for this game is available
+	<a href="../Laser%20Game.zip">here</a>.
+	</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="notes.html">Notes Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

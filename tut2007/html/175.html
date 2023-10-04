@@ -1,0 +1,212 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 5</p>
+			<div id="content">
+		<p>
+			Let's work on our bugs.  Click on the first failing unit test and open up the
+			debugger.
+		</p>
+		<img src="images/726.jpg">
+		<p>
+			We're testing a point at 20@10 for a CellClickRegionInside and expected to see
+			CellClickRegionPushWest as the answer but instead received CellClickRegionPushSouth.
+			This could just be a bug in the unit test.
+		</p>
+		<p>
+			When we tested our inside click region logic earlier in our design
+			we used a table like this to check results.  The version of the table
+			below is how it looks after we corrected errors we found long ago
+			in our test design.
+		</p>
+		<p>
+			<table>
+				<tbody>
+					<tr>
+						<td>
+							<img class="testImage" src="images/408.jpg">
+						</td>
+						<td>
+							<table>
+								<thead>
+									<tr>
+										<th>Label</th>
+										<th>Point</th>
+										<th>Push</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>A</td>
+										<td>10@10</td>
+										<td>East</td>
+									</tr>
+									<tr>
+										<td>B</td>
+										<td>20@10</td>
+										<td>West</td>
+									</tr>
+									<tr>
+										<td>C</td>
+										<td>15@15</td>
+										<td>North</td>
+									</tr>
+									<tr>
+										<td>D</td>
+										<td>10@20</td>
+										<td>North</td>
+									</tr>
+									<tr>
+										<td>E</td>
+										<td>20@20</td>
+										<td>North</td>
+									</tr>
+									<tr>
+										<td>F</td>
+										<td>11@13</td>
+										<td>East</td>
+									</tr>
+									<tr>
+										<td>G</td>
+										<td>14@16</td>
+										<td>North</td>
+									</tr>
+									<tr>
+										<td>H</td>
+										<td>19@17</td>
+										<td>West</td>
+									</tr>
+									<tr>
+										<td>I</td>
+										<td>15@1</td>
+										<td>South</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</p>
+		<p>
+			The trouble is of course that our cells are bigger now.  We now
+			have a cell that's 40 x 40 instead of 30 x 30.  With an "inside" region that's 10
+			pixels from the edges, the new table dimensions should be as follows.
+		</p>
+		<p>
+			<table>
+				<tbody>
+					<tr>
+						<td>
+							<img class="testImage" src="images/727.jpg">
+						</td>
+						<td>
+							<table>
+								<thead>
+									<tr>
+										<th>Label</th>
+										<th>Point</th>
+										<th>Push</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>A</td>
+										<td>10@10</td>
+										<td>East</td>
+									</tr>
+									<tr>
+										<td>B</td>
+										<td>30@10</td>
+										<td>West</td>
+									</tr>
+									<tr>
+										<td>C</td>
+										<td>20@20</td>
+										<td>North</td>
+									</tr>
+									<tr>
+										<td>D</td>
+										<td>10@30</td>
+										<td>North</td>
+									</tr>
+									<tr>
+										<td>E</td>
+										<td>30@30</td>
+										<td>North</td>
+									</tr>
+									<tr>
+										<td>F</td>
+										<td>11@13</td>
+										<td>East</td>
+									</tr>
+									<tr>
+										<td>G</td>
+										<td>19@21</td>
+										<td>North</td>
+									</tr>
+									<tr>
+										<td>H</td>
+										<td>29@27</td>
+										<td>West</td>
+									</tr>
+									<tr>
+										<td>I</td>
+										<td>20@1</td>
+										<td>South</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</p>
+		<p>
+			Change the unit test accordingly and re-run.
+		</p>
+		<p class="code">
+			<b>testClicksInPushRegions</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	| pt regionClass pushRegion testTable cls |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	pt := 11@11.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	regionClass := CellClickRegion clickRegionForPoint: pt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self should: [regionClass = CellClickRegionInside].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	testTable := {<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		10@10->CellClickRegionPushEast.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		30@10->CellClickRegionPushWest.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		20@20->CellClickRegionPushNorth.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		10@30->CellClickRegionPushNorth.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		30@30->CellClickRegionPushNorth.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		11@13->CellClickRegionPushEast.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		19@21->CellClickRegionPushNorth.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		29@27->CellClickRegionPushWest.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		20@1->CellClickRegionPushSouth<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		}.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	testTable do: [:assoc |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		pt := assoc key.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		cls := assoc value.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		pushRegion := regionClass pushRegionForPoint: pt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		self should: [pushRegion = cls]]
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="176.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

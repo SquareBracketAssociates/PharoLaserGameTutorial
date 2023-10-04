@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 4</p>
+			<div id="content">
+	<h3>Laser On Blank Cell</h3>
+		<p>
+			We can now draw the laser beam on the blank cells.  That's the easiest case.
+			The work will divide into a vertical and horizontal drawing technique.
+			Here's the new horizontal laser beam drawing techniaue for a given
+			mask form and given color.  These are new instance
+			methods on the BlankCellRenderer class.
+		</p>
+		<p class="code">
+			<b>renderLaserHorizontalMask: aMaskForm color: aColor</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| cellPosn scaledBeam scale trimmedBeam offset |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cellPosn := self offsetWithinGridForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;scale := CellRenderer cellExtent * 6.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;scaledBeam := aMaskForm scaledToSize: scale.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;trimmedBeam := Form extent: (CellRenderer cellExtent x)@(scaledBeam height) depth: scaledBeam depth.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;scaledBeam<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;displayOn: trimmedBeam<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;at: 0@0<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clippingBox: trimmedBeam boundingBox<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule: Form paint<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fillColor: nil.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;offset := 0@(4 + (CellRenderer cellExtent y - trimmedBeam height) // 2).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;trimmedBeam<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;displayOn: self targetForm<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;at: (cellPosn + offset)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clippingBox: self targetForm boundingBox<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule: Form oldPaint<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fillColor: aColor
+		</p>
+		<p>
+			To use this we have to paint the laser beam from the two mask components in the order of
+			splatter mask then center mask.
+			Here are the rest of the horizonal laser beam drawing instance methods.
+		</p>
+		<p class="code">
+			<b>renderLaserHorizontalSplatter</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;renderLaserHorizontalMask: LaserGameForms splatterBeamMask <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color: LaserGameColors laserBeamSplatterColor
+		</p>
+		<p class="code">
+			<b>renderLaserHorizontalCenter</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;renderLaserHorizontalMask: LaserGameForms centerBeamMask <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color: LaserGameColors laserBeamCenterColor
+		</p>
+		<p class="code">
+			<b>renderLaserHorizontal</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self renderLaserHorizontalSplatter.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self renderLaserHorizontalCenter.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="157.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

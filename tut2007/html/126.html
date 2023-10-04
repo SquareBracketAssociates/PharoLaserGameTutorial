@@ -1,0 +1,181 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 3</p>
+			<div id="content">
+		<p>
+			Before we get too carried away, and since I'm fairly certain we will
+			have graphics clean-up code to write just like we did with mirror cell
+			rotation, let's put a "self halt" inside one of the push methods and
+			then carefully single-step through the code to see if we discover anything
+			we may not be handling quite correctly.
+			Let's put the halt in here:
+		</p>
+		<img src="images/612.jpg">
+		<p>
+			Now we will want to push a mirror cell north and see what happens.
+			Let's choose the mirror cell at location 1@2 and push it north.
+			Be careful as you do this since you only want to trigger a push north
+			event.
+		</p>
+		<img src="images/613.jpg">
+		<p>
+			Our debugger opens up.  Navigate into the #pushCellNorthFromLocation: method via the "Into"
+			button.  The value for the direction temporary variable looks correct.
+		</p>
+		<img src="images/614.jpg">
+		<p>
+			Step into the #pushCell:fromLocation method and then continue to step "Over"
+			until you get to the method that wants to swap cells.  Step into that method.
+		</p>
+		<img src="images/615.jpg">
+		<p>
+			Continue to step "Over" until we complete the swap method. The value for aCell looks
+			correct.  It's now at location 1@1.
+		</p>
+		<img src="images/616.jpg">
+		<p>
+			Continue to press "Over" and even go past the method where we inserted our initial "self halt".
+			Eventually you get back to the MirrorCellRenderer object.
+		</p>
+		<img src="images/617.jpg">
+		<p>
+			Something doesn't look right in here.  That #redrawCell method is being issued to
+			the mirror cell renderer.  But if you inspect the "cellLocation" variable
+			you can see that this is a mirror cell renderer that still thinks it's for a
+			mirror cell at location 1@2.  That's where we used to be.
+		</p>
+		<img src="images/618.jpg">
+		<p>
+			The #redrawCell isn't going to work since we think we're a renderer for a mirror cell but
+			in fact are now pointing to a blank cell.
+			Clearly, the MirrorCellRenderer is going to have to handle situations where the
+			cell got changed underneath it.
+		</p>
+		<p>
+			We're going to modify a few methods so that we are always aware of the cell we
+			are dealing with when we need to do a redraw.
+			The easiest way to follow this is to begin at the high end of the event process and
+			examine every portion of the methods doing the work related to the event all the
+			way down to the actual push and rotate methods.
+			Begin with the LaserGame instance method #mouseUp:forMorph:cell:.
+			Here is the existing method.
+		</p>
+		<p class="code">
+			<b>mouseUp: evt forMorph: aSketchMorph cell: aCell</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| renderer pixelPositionWithinBoard |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;renderer := CellRenderer rendererFor: aCell grid: self grid form: self boardForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pixelPositionWithinBoard := self boardRelativePositionFor: evt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;renderer mouseUpWithinBoardOffset: pixelPositionWithinBoard.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self drawGameBoard.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self changed
+		</p>
+		<p>
+			In the Class Browser click on the "implementors" button and choose #mouseUpWithinBoardOffset:.
+			There are 2 implementors.
+		</p>
+		<img src="images/619.jpg">
+		<p>
+			Change the CellRenderer method so that it answers the current cell.
+		</p>
+		<img src="images/620.jpg">
+		<p>
+			The MirrorCellRenderer method should answer whatever we get back from the message we send
+			to the "regionClass".  Remove the #redrawCell code because we intend to handle that request
+			back at the LaserGame soon.
+		</p>
+		<img src="images/621.jpg">
+		<p>
+			Back at the LaserGame #mouseUp:forMorph:cell: instance method  we should now capture the answered
+			cell and do special redraw operations on it.
+		</p>
+		<img src="images/622.jpg">
+		<p>
+			The #redrawCell: method is new and we haven't worked out yet what we want it to do.
+		</p>
+		<img src="images/623.jpg">
+		<p>
+			Back to the MirrorCellRenderer class.  We need to chase down the implementors of the
+			#mouseUpWithinCellAtPoint:cell:withinGrid: methods to make sure they
+			now answer the involved cell.  There are 3 implementors.
+		</p>
+		<img src="images/624.jpg">
+		<p>
+			The CellClickRegion class method needs to be code as:
+		</p>
+		<p class="code">
+			<b>mouseUpWithinCellAtPoint: aPoint cell: aCell withinGrid: aGrid</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^aCell
+		</p>
+		<p>
+			Here's the new version for CellClickRegionInside of the class method.
+			We just added the return ^.
+		</p>
+		<p class="code">
+			<b>mouseUpWithinCellAtPoint: aPoint cell: aCell withinGrid: aGrid</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| pushRegion |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pushRegion := self pushRegionForPoint: aPoint.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^pushRegion mouseUpForCell: aCell withinGrid: aGrid
+		</p>
+		<p>
+			The change to the class method for CellClickRegionOutside is similar.
+		</p>
+		<p class="code">
+			<b>mouseUpWithinCellAtPoint: aPoint cell: aCell withinGrid: aGrid</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| rotateRegion |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;rotateRegion := self rotateRegionForPoint: aPoint.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^rotateRegion mouseUpForCell: aCell withinGrid: aGrid
+		</p>
+		<p>
+			Now we look at the implementors of the #mouseUpForCell:withinGrid: method
+			to make sure they answer the involved cell for redraw too.
+			There's 6 implementors.
+		</p>
+		<img src="images/625.jpg">
+		<p>
+			Modify all 6 so that they return the result of their operation.  They should look
+			like this.
+		</p>
+		<img src="images/626.jpg"><br>
+		<img src="images/627.jpg"><br>
+		<img src="images/628.jpg"><br>
+		<img src="images/629.jpg"><br>
+		<img src="images/630.jpg"><br>
+		<img src="images/631.jpg">
+		<p>
+			The rotation methods can just answer the cell without worrying about
+			drilling down any lower.
+			I took the "self halt" out of the push north.
+			Now we write the redraw cell code on LaserGame.
+		</p>
+		<img src="images/632.jpg">
+		<p>
+			That was a lot to change.  Let's open up a new LaserGame morph and try it out.
+		</p>
+		<p>
+			It works!  I moved around a few cells and rotated some cells, all while the laser
+			beam was active and got the target to light up.
+		</p>
+		<img src="images/633.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="127.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

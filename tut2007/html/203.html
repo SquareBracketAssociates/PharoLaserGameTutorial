@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 5</p>
+		<div id="content">
+		<h4>Fix Size Of Default LaserGame Morph</h4>
+		<p>
+			If you open up a LaserGame morph from the standard menu "from alphabetical list"...
+		</p>
+		<img src="images/756.jpg">
+		<img src="images/757.jpg">
+		<p>
+			Find the LaserGame morph in the alphabetical list (under L, of course).
+			The default sized morph is too small.
+		</p>
+		<img src="images/758.jpg">
+		<p>
+			The height of our game morph is not enough to support all the goodies
+			we have in our control panel.  Control panel counters and buttons are overlapped.
+			Besides, the board is really too small and needs
+			more cells to make it interesting.
+			So let's fix that.
+		</p>
+		<p>
+			It's a worthwhile journey to conduct a directed exploration into how this works in Squeak.
+			We'll discover how the game morph is getting launched and how to change its size.
+			So where do we begin?  That first menu is known as the World Menu.
+			Open up a class hierarchy browser and with your mouse over the system categories pane, type
+			a Command-F.  This pops up a class find dialog.
+		</p>
+		<img src="images/759.jpg">
+		<p>
+			Type "WorldMenu" in the dialog and click on the "Accept" button.
+			Squeak will find two classes that contain "WorldMenu".
+		</p>
+		<img src="images/760.jpg">
+		<p>
+		Click on "TheWorldMenu" and Squeak will find TheWorldMenu class in your class browser.
+		<p>
+		<img src="images/761.jpg">
+		<p>
+			There's an instance method named #alphabeticalMorphMenu.  Here's the method contents.
+		</p>
+		<p class="code">
+			<b>alphabeticalMorphMenu</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| list splitLists menu firstChar lastChar subMenu |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;list := Morph withAllSubclasses select: [:m | m includeInNewMorphMenu].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;list := list asArray sortBy: [:c1 :c2 | c1 name < c2 name].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;splitLists := self splitNewMorphList: list depth: 3.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;menu := MenuMorph new defaultTarget: self.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;1 to: splitLists size<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;do: <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[:i | <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;firstChar := i = 1 <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ifTrue: [$A]<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ifFalse: <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[((splitLists at: i - 1) last name first asInteger + 1) <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;asCharacter].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lastChar := i = splitLists size <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ifTrue: [$Z]<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ifFalse: [(splitLists at: i) last name first].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subMenu := MenuMorph new.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(splitLists at: i) do: <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[:cl | <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subMenu <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add: cl name<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target: self<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;selector: #newMorphOfClass:event:<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;argument: cl].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;menu add: firstChar asString , ' - ' , lastChar asString subMenu: subMenu].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^menu
+		</p>
+		<p>
+			If you examine this code carefully you will find there's an instance
+			method that is defined as the selector for the operation that gets performed
+			when someone chooses a morph from the alphabetical menu.  That method is
+			#newMorphOfClass:event:.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="204.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

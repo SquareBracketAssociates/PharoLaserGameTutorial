@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 2</p>
+			<div id="content">
+				<p>
+					The mirror cells will draw their contents
+					differently depending on which way they lean.
+				</p>
+				<img src="images/232.jpg">
+				<p>
+					Create empty stub methods for #renderContentsLeanLeft and #renderContentsLeanRight
+					for now.
+				</p>
+				<p>
+					We can use a method to answer the amount the mirror
+					will be inset from the corners.  This method
+					can be used by both the left and right leaning methods.
+				</p>
+				<img src="images/233.jpg">
+				<p>
+					Here's our first attempt at drawing the left leaning mirror.
+					The right leaning code hasn't been written yet but will need
+					to have the empty method defined before we rerun our workspace.
+				</p>
+				<img src="images/234.jpg">
+				<p>
+					Try the workspace code and let's see what happens.
+				</p>
+				<img src="images/235.jpg">
+				<p>
+					That's not bad.  There's a few minor issues where it
+					looks like the mirror is not quite in the center of the cell,
+					but for a first attempt this looks great.
+					Here's the lean right version of the method.
+				</p>
+				<img src="images/236.jpg">
+				<p>
+					Here's the new drawing.
+				</p>
+				<img src="images/237.jpg">
+				<p>
+					Let's compare this to the original diagram we used
+					before we had any code written.
+				</p>
+				<img src="images/020.jpg">
+			</div>
+			<div id="paging">
+				<a class="index" href="index.html">Index Page</a>
+				<a class="forward" href="061.html">Next Page</a>
+				<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a>
+				</p>
+			</div>
+		</div>
+	</body>
+</html>

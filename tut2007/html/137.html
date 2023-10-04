@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 4</p>
+			<div id="content">
+		<h3>Making Larger Cells</h3>
+		<p>
+			For our next enhancement I want to change the size of our cells.
+			Making them bigger will make the game cells easier to see, as well
+			as any hint arrows within the mirror cells.  It should also "illuminate"
+			(pardon the pun) any issues we may have with unintended constants in
+			our code.
+		</p>
+		<p class="note">
+			Close any open LaserGame morphs you may have open before beginning the next section.
+		</p>
+		<p>
+			The easiest change is to redefine the constant that declares the size of our
+			cells.  Change the class method on our CellRenderer class.
+		</p>
+		<p class="code">
+			<b>cellExtent</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^40@40
+		</p>
+		<p>
+			Let's open up a new LaserGame morph and see what this does for us.
+		</p>
+		<img src="images/666.jpg">
+		<p>
+			That's pretty good.  The Target Cell circle looks like it didn't scale with the new larger cell.
+			Let's examine the code that draws the Target Cell.
+			Before we change the code that draws the Target Cell we should close the
+			LaserGame morph.
+		</p>
+		<p>
+			Here is the existing instance method that draws the circle on our TargetCellRenderer class.
+		</p>
+		<p class="code".
+		<b>drawCircleOutline</b><br>
+		&nbsp;&nbsp;&nbsp;&nbsp;| delta offset fillForm circle |<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;delta := CellRenderer cellExtent - 1.<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;offset := self offsetWithinGridForm.<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;circle := Circle new.<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;fillForm := Form extent: 2@2 depth: 8.<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;fillForm fillColor: LaserGameColors targetCenterColor.<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;circle form: fillForm.<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;circle radius: 7.<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;circle center: (offset + (delta // 2)).<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;circle displayOn: self targetForm.
+		</p>
+		<p>
+			The radius is hard-coded at 7.  We should probably make the radius dependent on the
+			over-all size of our cell.
+			I'm inclined to pull the radius calculation out into a separate method because
+			we should use it for our circle fill color code too.
+			Here's a new instance method to calculate the radius for us.
+		</p>
+		<p class="code">
+			<b>radius</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^(self class cellExtent x // 2 - 8) min: 10
+		</p>
+		<p>
+			This calculation uses the size of the cell to calculate a new radius.  Notice that
+			I put a "clamp" in the final result.  We're going to restrict the radius to be no larger
+			than 10.
+		</p>
+		<p>
+			Now we go back and use this radius calculation in our #drawCircleOutline method.
+		</p>
+		<p class="code">
+			<b>drawCircleOutline</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| delta offset fillForm circle |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;delta := self class cellExtent - 1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;delta := CellRenderer cellExtent - 1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;offset := self offsetWithinGridForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;circle := Circle new.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;fillForm := Form extent: 2@2 depth: 8.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;fillForm fillColor: LaserGameColors targetCenterColor.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;circle form: fillForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;circle radius: self radius.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;circle radius: 7.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;circle center: (offset + (delta // 2)).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;circle displayOn: self targetForm.
+		</p>
+		<p>
+			I also changed the "delta := CellRenderer cellExtent - 1." calculation
+			to use the class method available from our hierarchy.  Let's open up another
+			new LaserGame morph and see how we're doing.
+		</p>
+		<img src="images/667.jpg">
+		<p>
+			The circle is bigger.  We need to modify the fill color code to account for the change in our radius.
+			Here is the modified method.
+		</p>
+		<p class="code">
+			<b>renderInnerCircleColor: aColor</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| circle fillForm offset delta |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;delta := CellRenderer cellExtent - 1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;offset := self offsetWithinGridForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;circle := Circle new.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;fillForm := Form extent: 4@4 depth: 8.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;fillForm fillColor: aColor.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;circle form: fillForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;circle radius: self radius - 4.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;circle center: (offset + (delta // 2) - 1).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;circle displayOn: self targetForm.
+		</p>
+		<p>
+			We deleted the "circle radius: 3." line and replaced with a new
+			calculation using the radius calculation from before.
+			With our LaserGame morph still around all we have to do is click on the "Fire/Stop"
+			button to see our new color fill code working.
+		</p>
+		<img src="images/668.jpg">
+		<img src="images/669.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="138.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

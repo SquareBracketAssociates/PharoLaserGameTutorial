@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 5</p>
+		<div id="content">
+		<p>
+			Following the pattern we have done before on this project,
+			we now will write the class methods that use this new
+			hierarchy.  In this case, we're going to do something
+			a little unusual.  We're going to answer <i>the actual method names</i>
+			to execute when an undo action takes place.
+		</p>
+		<p>
+			On the ReverseLaserGameAction class add the following two class methods.
+		</p>
+		<p class="code">
+			<b>reverseActionClassFor: aSymbol</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^self subclasses detect: [:cls | cls actionSymbol = aSymbol]
+		</p>
+		<p class="code">
+			<b>reverseActionSymbolFor: aSymbol</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| cls |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cls := self reverseActionClassFor: aSymbol.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^cls reverseActionSymbol
+		</p>
+		<p>
+			We will use the #reverseActionSymbolFor: class method to decide which methods
+			to execute when we perform an undo action.
+		</p>
+		<p>
+			Time to write a unit test.
+			Add the following instance method to our GridTestCase class.
+		</p>
+		<p class="code">
+			<b>testUndoActions</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	| undoAction |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	undoAction := ReverseLaserGameAction reverseActionSymbolFor: #north.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self should: [undoAction = #pushCellSouthFromLocation:].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	undoAction := ReverseLaserGameAction reverseActionSymbolFor: #east.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self should: [undoAction = #pushCellWestFromLocation:].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	undoAction := ReverseLaserGameAction reverseActionSymbolFor: #south.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self should: [undoAction = #pushCellNorthFromLocation:].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	undoAction := ReverseLaserGameAction reverseActionSymbolFor: #west.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self should: [undoAction = #pushCellEastFromLocation:].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	undoAction := ReverseLaserGameAction reverseActionSymbolFor: #clockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self should: [undoAction = #rotateCellCounterClockwiseAt:].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	undoAction := ReverseLaserGameAction reverseActionSymbolFor: #counterClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	self should: [undoAction = #rotateCellClockwiseAt:].
+		</p>
+		<p>
+			We don't expect this to pass just yet but it does help us to see where we want to go with our
+			undo design implementation.
+		</p>
+		<p>
+			Back to the decision hierarchy we created.
+			Add the following two class methods to the ReversePushCellEastLaserGameAction class.
+		</p>
+		<p class="code">
+			<b>actionSymbol</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^#east
+		</p>
+		<p class="code">
+			<b>reverseActionSymbol</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^#pushCellWestFromLocation:
+		</p>
+		<p>
+			Add these class methods to the ReversePushCellNorthLaserGameAction class.
+		</p>
+		<p class="code">
+			<b>actionSymbol</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^#north
+		</p>
+		<p class="code">
+			<b>reverseActionSymbol</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^#pushCellSouthFromLocation:
+		</p>
+		<p>
+			Add these class methods to ReversePushCellSouthLaserGameAction.
+		</p>
+		<p class="code">
+			<b>actionSymbol</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^#south
+		</p>
+		<p class="code">
+			<b>reverseActionSymbol</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^#pushCellNorthFromLocation:
+		</p>
+		<p>
+			Add these class methods to ReversePushCellWestLaserGameAction.
+		</p>
+		<p class="code">
+			<b>actionSymbol</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	^#west
+		</p>
+		<p class="code">
+			<b>reverseActionSymbol</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	^#pushCellEastFromLocation:
+		</p>
+		<p>
+			ReverseRotateClockwiseLaserGameAction
+		</p>
+		<p class="code">
+			<b>actionSymbol</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	^#clockwise
+		</p>
+		<p class="code">
+			<b>reverseActionSymbol</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	^#rotateCellCounterClockwiseAt:
+		</p>
+		<p>
+			ReverseRotateCounterClockwiseLaserGameAction
+		</p>
+		<p class="code">
+			<b>actionSymbol</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	^#counterClockwise
+		</p>
+		<p class="code">
+			<b>reverseActionSymbol</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;	^#rotateCellClockwiseAt:
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="185.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

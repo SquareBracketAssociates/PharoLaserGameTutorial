@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 4</p>
+			<div id="content">
+		<p>
+			Now we write the code to draw the horizontal laser on our target cell.
+		</p>
+		<p class="code">
+			<b>renderLaserHorizontalSplatter</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;renderLaserHorizontalMask: LaserGameForms splatterBeamMask <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color: LaserGameColors laserBeamSplatterColor
+		</p>
+		<p class="code">
+			<b>renderLaserHorizontalCenter</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;renderLaserHorizontalMask: LaserGameForms centerBeamMask <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color: LaserGameColors laserBeamCenterColor
+		</p>
+		<p class="code">
+			<b>renderLaserHorizontal</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self renderLaserHorizontalSplatter.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self renderLaserHorizontalCenter.
+		</p>
+		<p class="code">
+			<b>renderLaserHorizontalMask: aMaskForm color: aColor</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| cellPosn scaledBeam scale trimmedBeam offset masked |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cellPosn := self offsetWithinGridForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;scale := CellRenderer cellExtent * 6.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;scaledBeam := aMaskForm scaledToSize: scale.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;trimmedBeam := Form extent: (CellRenderer cellExtent x)@(scaledBeam height) depth: scaledBeam depth.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;scaledBeam<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;displayOn: trimmedBeam<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;at: 0@0<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clippingBox: trimmedBeam boundingBox<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule: Form paint<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fillColor: nil.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;offset := 0@(4 + (CellRenderer cellExtent y - trimmedBeam height) // 2).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;masked := self maskOffHorizontalOn: trimmedBeam.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;masked<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;displayOn: self targetForm<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;at: (cellPosn + offset)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clippingBox: self targetForm boundingBox<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule: Form oldPaint<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fillColor: aColor
+		</p>
+		<p>
+			The #renderLaserHorizontalMask:color: method is a little different from
+			the once used on the blank cell.  There's a new step.  The
+			final mask form is masked twice.
+			Here's the method that does that.
+		</p>
+		<p class="code">
+			<b>maskOffHorizontalOn: aMask</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| newMask halfExtent halfRect offset |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;halfExtent := (aMask width // 2)@(aMask height).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;newMask := Form extent: aMask extent depth: aMask depth.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;newMask fillColor: Color white.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;(self cell activeSegments at: #west)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ifTrue: [offset := 0]<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ifFalse: [offset := halfExtent x].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;halfRect := (aMask boundingBox origin + (offset@0)) extent: halfExtent.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;aMask<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;displayOn: newMask<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;at: offset@0<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clippingBox: halfRect<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule: Form paint<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fillColor: Color black.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^newMask
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="161.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

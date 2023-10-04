@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 3</p>
+			<div id="content">
+		<p>
+			Knowing the push region allows us to display
+			the visual "hint" as we move the cursor
+			around inside our game board.
+			We need a new method on CellClickRegion to handle
+			the position hint message.
+		</p>
+<!-- Thanks to Has van der Krieken for finding a bug in the following diagram.  -->
+		<img src="images/428.jpg">
+		<p>
+			The basic cell click region will ignore the request.
+			The inside cell click region will respond.
+		</p>
+		<img src="images/429.jpg">
+		<p>
+			We can re-use the code pattern from before to log the
+			hint on the Transcript for now.
+			Eventually we will draw our arrows.
+			The hook to send this message needs to be added.
+			Back to the mirror cell renderer.
+		</p>
+		<img src="images/430.jpg">
+		<p>
+			There we have it.  When we move the mouse around inside the mirror cells
+			we can see the name of the push hint appear in the Transcript window.
+		</p>
+		<img src="images/431.jpg">
+		<p>
+			Note that moving the pointer around inside blank cells and the
+			target cell produces no hints messages.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="093.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 6</p>
+			<div id="content">
+		<h3>Prepare For Application Deployment</h3>
+		<p>
+			What will we need to do if we want our Laser Game to be a stand-alone
+			application written in Squeak?
+			The overall concept is that we will ensure that only our game morph is open on the screen.
+			Since the user has the ability to resize the Squeak World we need to make it look as
+			if the only "window" visible is our game morph regardless of size.
+		</p>
+		<p>
+			Let's add the capability of making our Laser Game behave as if it's the only morph
+			in the Squeak World.  We will do this by first adding a "flag" we can use to tell us
+			when we want to run in Full World.  That is, when we will be the only object visible.
+		</p>
+		<p>
+			Open up a class hierarchy browser on LaserGame.  Ensure you have no methods selected.  We're going to
+			modify the existing class definition.  We will add a new Class Variable named "FullWorld".
+			Save this change in the class definition.
+		</p>
+		<p class="code">
+			Morph subclass: #LaserGame<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			instanceVariableNames: 'grid boardForm activeCellLocation dirty moves'<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			classVariableNames: 'FullWorld'<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			poolDictionaries: ''<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			category: 'Laser-Game-Graphics'
+		</p>
+		<p>
+			We will write accessing methods for this new class variable.  Make it so the default
+			condition is "false".  Here are the new class methods for the LaserGame class.
+		</p>
+		<p class="code">
+			<b>fullWorld: aBoolean</b><br>&nbsp;&nbsp;&nbsp;&nbsp;
+			"LaserGame fullWorld: true"<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			FullWorld := aBoolean
+		</p>
+		<p>
+			I added a comment statement in the method.  If we click once inside the double-quotes
+			that define the comment, adjacent to and inside by one of the double-quotes, the code
+			inside the comment will be selected.  We could then execute that little snippet of code
+			when we need to set the value to True.
+		</p>
+		<p class="code">
+			<b>fullWorld</b><br>&nbsp;&nbsp;&nbsp;&nbsp;
+			FullWorld isNil ifTrue: [self fullWorld: false].<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			^FullWorld
+		</p>
+		<p>
+			Now we make changes to instance methods on LaserGame.  Change this method first.
+		</p>
+		<p class="code">
+			<b>setWindowColors</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| targetForFill |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self class fullWorld<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ifTrue: [<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self color: Color transparent.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;targetForFill := World<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ifFalse: [<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self color: (Color r: 0.369 g: 0.369 b: 0.505).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;targetForFill := self<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;targetForFill fillWithRamp: self windowColorRamp oriented: 0.3@0.8
+		</p>
+		<p>
+			We're checking if the Full World flag is set.  If not, we do what we have done before.
+			The temporary variable "targetForFill" is used for the fill statement at then end of the method.
+			When we are not in a Full World situation, that target is the Laser Game morph.
+		</p>
+		<p>
+			However, when the Full World flag <i>is set</i>, we want to get the entire world and fill
+			it with our color ramp.  And if we change our own color to be transparent it looks like
+			we are part of one very large morph now.
+		</p>
+		<p>
+			This is just one step in getting all this work.  But let's see how it works.
+			If you have a LaserGame morph open, close it.  First we should just open up a LaserGame morph
+			to ensure it all still looks and works the same.  Click on some mirror cells and fire the
+			laser to quickly check it out.
+		</p>
+		<p>
+			Before we open our LaserGame morph in a full world mode,
+			we should open up a Workspace window and use the
+			following code to launch our morph.
+		</p>
+		<p class="code">
+			(LaserGame<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;fullWorld: true;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;new)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;position: 20@230;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;openInWorld
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="206.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

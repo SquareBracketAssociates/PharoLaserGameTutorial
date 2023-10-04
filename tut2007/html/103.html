@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 3</p>
+			<div id="content">
+		<p>
+			We need to calculate the test points for the rotation regions.
+			We'll need these for the next part of our unit test.
+			Let's take a look at the mirror cell again without the mirror and showing
+			only the inside and outside regions.
+		</p>
+		<img src="images/495.jpg">
+		<p>
+			We can ignore the "ignore region" and focus on the "inside" and
+			"outside" click regions.
+		</p>
+		<img src="images/496.jpg">
+		<p>
+			We can easily obtain the coordinates of the corners for each
+			click region.
+		</p>
+		<img src="images/497.jpg">
+		<img src="images/498.jpg"><br>
+		<img src="images/499.jpg">
+		<p>
+			Now we imagine a line dividing the regions into half.
+		</p>
+		<img src="images/500.jpg">
+		<p>
+			We can now describe several points of interest for testing.
+		</p>
+		<p>
+			<table>
+				<tbody>
+					<tr>
+						<td>
+							<img class="testImage" src="images/501.jpg">
+						</td>
+						<td>
+							<table>
+								<thead>
+									<tr>
+										<th>Label</th>
+										<th>Point</th>
+										<th>Rotate</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>A</td>
+										<td>10@10</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>B</td>
+										<td>20@10</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>C</td>
+										<td>10@15</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>D</td>
+										<td>20@15</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>E</td>
+										<td>10@20</td>
+										<td>Counter Clock Wise</td>
+									</tr>
+									<tr>
+										<td>F</td>
+										<td>20@20</td>
+										<td>Counter Clock Wise</td>
+									</tr>
+									<tr>
+										<td>G</td>
+										<td>4@4</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>H</td>
+										<td>26@4</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>I</td>
+										<td>4@15</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>J</td>
+										<td>26@15</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>K</td>
+										<td>4@26</td>
+										<td>Counter Clock Wise</td>
+									</tr>
+									<tr>
+										<td>L</td>
+										<td>26@26</td>
+										<td>Counter Clock Wise</td>
+									</tr>
+									<tr>
+										<td>M</td>
+										<td>6@10</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>N</td>
+										<td>22@13</td>
+										<td>Clock Wise</td>
+									</tr>
+									<tr>
+										<td>O</td>
+										<td>12@22</td>
+										<td>Counter Clock Wise</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</p>
+		<p>
+			We're treating points that fall on the dividing line as if they belong to
+			the upper half.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="103A.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

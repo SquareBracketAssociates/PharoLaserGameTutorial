@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 5</p>
+		<div id="content">
+		<p>
+			Perhaps there's more going on here than just a bad unit test.
+			We're failing at the test point 10@30 and instead of answering
+			a rotation region of CellClickRegionRotateCounterClockwise,
+			we're getting CellClickRegionRotateClockwise.
+		</p>
+		<p>
+			According to our previous design, when the pointer is in the outside region
+			and in the upper half, we should go clockwise.  In the lower half we go
+			counter-clockwise.
+			This test point is clearly in the lower half so something must
+			be incorrect because the code is answering clockwise.
+		</p>
+		<p>
+			If you use the debugger on the failing test you eventually
+			get to selection code that determines if the point under evaluation belongs
+			to the clockwise or counterclockwise region.  Here's the existing code
+			on the CellClickRegionRotateClockwise class.  This is the class
+			method #containsPoint:.
+		</p>
+		<p class="code">
+			<b>containsPoint: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^aPoint y <= (CellRenderer cellExtent y)
+		</p>
+		<p>
+			Here's the same class method in the CellClickRegionRotateCounterClockwise class.
+		</p>
+		<p class="code">
+			<b>containsPoint: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^aPoint y > (CellRenderer cellExtent y)
+		</p>
+		<p>
+			How was this ever working correctly?  There's no check for which half the test point is within.
+			In the #rotateRegionForPoint class method on the CellClickRegionOutside class,
+			this is how it made its decision.
+		</p>
+		<p class="code">
+			<b>rotateRegionForPoint: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^self subclasses detect: [:cls | cls containsPoint: aPoint]
+		</p>
+		<p>
+			We need to change the two #containsPoint: class methods.
+			Here's the new one for the
+			CellClickRegionRotateClockwise class.
+		</p>
+		<p class="code">
+			<b>containsPoint: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^aPoint y <= (CellRenderer cellExtent y // 2)
+		</p>
+		<p>
+			And the changed class method for the CellClickRegionRotateCounterClockwise class.
+		</p>
+		<p class="code">
+			<b>containsPoint: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^aPoint y > (CellRenderer cellExtent y // 2)
+		</p>
+		<p>
+			When we re-run the test now passes.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="178.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

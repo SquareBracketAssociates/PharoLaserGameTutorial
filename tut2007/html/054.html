@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 2</p>
+			<div id="content">
+		<p>
+			Do we have enough information to draw cell borders on our
+			form now?
+		</p>
+		<p>
+			Well there's still the trick of knowing where the cell is
+			on the form itself.  Each cell knows its grid location
+			but that needs to be translated into form-relative locations.
+			The CellRenderer has enough information to work this out.  It has
+			the cell (by way of lookup using the cell location), the
+			grid and the form.  The renderer can calculate these offsets
+			for us.
+		</p>
+		<p>
+			We can develop how this will work from a unit test.
+		</p>
+		<img src="images/208.jpg">
+		<p>
+			For us to do this we'll need a form and a grid for our test.
+			The GridTestCase has some nice code for creating
+			a grid we can use in our tests.  However we should not
+			mix up our unit test designs.  We could either cut-and-paste
+			the code that created the test grid and put it into our
+			test or maybe we could share that code.
+			An easy way to do this would be to either put the
+			test grid creation code into an abstract super class that the
+			tests could be moved under as subclasses, or the code could
+			be available somewhere else that both tests can reuse.
+		</p>
+		<p>
+			Here's something to consider.  When our LaserGame morph first
+			opens up for the user to play with it will need a grid layout.
+			Sure we will want a randomizer and can use that whenever the
+			game runs.  But what if we created a grid generator that could
+			answer random populated grids
+			<i>and a fixed populated grid we
+				could use in our tests?
+			</i>
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="055.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

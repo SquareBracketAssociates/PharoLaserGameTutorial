@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 2</p>
+			<div id="content">
+		<h3>A Unit Test To Demonstrate A Bug</h3>
+		<p>
+			Back to the GridTestCase.  
+			First we will enhance our existing tests to check
+			for the correct state of the target cell.
+		</p>
+		<img src="images/313.jpg">
+		<img src="images/314.jpg">
+		<p>
+			If we run our unit tests we see that everything still passes.
+			In this situation we're trying to reproduce a bug in a unit test.
+			So that's not good enough.  We need a test that fails.
+		</p>
+		<img src="images/315.jpg">
+		<p>
+			The bug must be related to turning the laser beam on
+			and then back off.  Let's try this.
+		</p>
+		<img src="images/316.jpg">
+		<p>
+			When we run our test cases now, we get a failure.
+			That's good news.  We now have a unit test that
+			reproduces a bug we are seeing on our GUI.
+			This is also good because if we make an error
+			in our coding at a later time, the unit test will
+			catch this symptom.
+		</p>
+		<img src="images/317.jpg">
+		<p>
+			When we open up the debugger we learn something new.
+			The problem isn't specific to the target cell.
+			Even the starting cell is not getting cleared.
+		</p>
+		<img src="images/318.jpg">
+		<p>
+			A common technique is to use the debugger to "show us our bug".
+			Click "restart" to restart our method from the top and then "over"
+			a few times until we get to the code that's about to stop
+			the laser beam.
+		</p>
+		<img src="images/319.jpg">
+		<p>
+			Click "into" and "over" until we are about to execute the code that's supposed
+			to clear our cell states.
+		</p>
+		<img src="images/320.jpg">
+		<p>
+			Keep stepping into the code until you see the problem.
+		</p>
+		<img src="images/321.jpg">
+		<p>
+			The clear cells in path method works "as written".  We
+			build a correct path but then never clear the cells in it.
+			Let's remedy that problem.  Close the debugger.
+		</p>
+		<p>
+			The #activateCellsInPath method from our Grid class is our template for what we need
+			to do.
+		</p>
+		<img src="images/322.jpg">
+		<p>
+			Looks like we need a #clearCell method on our
+			LaserPathElement class.  Look at the #activateCell
+			method.
+		</p>
+		<img src="images/323.jpg">
+		<p>
+			This leads us to needing to write a #clearCell
+			method on Cell.  We can just use
+			the initialization technique to "reset" the cell segments.
+			For the Cell class...
+		</p>
+		<img src="images/324.jpg">
+		<p>
+			For the LaserPathElement class...
+		</p>
+		<img src="images/325.jpg">
+		<p>
+			And now the Grid class...
+		</p>
+		<img src="images/326.jpg">
+		<p>
+			Our unit tests now pass once again.
+			We should see expected results on our morph too.
+		</p>
+		<img src="images/327.jpg">
+		<img src="images/328.jpg">
+		<p>
+			Now would be a good time to save your Squeak image again.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="073A.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

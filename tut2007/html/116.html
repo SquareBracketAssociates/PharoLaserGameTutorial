@@ -1,0 +1,229 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 3</p>
+			<div id="content">
+		<h3>Clean Up Left-Over Hints</h3>
+		<p>
+			We have a problem to solve.  You've probably already noticed this if you've played
+			at all with the LaserGame morph in its current implementation.
+			There are "ghost" rotation arrows being left on cells.
+		</p>
+		<img src="images/566.jpg">
+		<p>
+			This is interesting because, at least in the playing around
+			that I've done so far, the push hint arrows are never left behind.
+			It seems to be only the rotation arrows.
+			We have a subtle bug somewhere.
+		</p>
+		<p>
+			Now I really do not know, as this is being written, what the real
+			bug is.  I wonder if it's a transition detection problem when the
+			cursor moves into the ignored region after having been inside the
+			outer click region?  The arrow in the diagram below shows where I am
+			thinking about.
+		</p>
+		<img src="images/567.jpg">
+		<p>
+			What's a good way to determine if this is the issue?  Here's the "show hint" code
+			in the mirror cell renderer.
+		</p>
+		<img src="images/568.jpg">
+		<p>
+			What if the "arrowAndOffset" object is nil because we are in a region that needs no arrow, but
+			we just left the outside click region?  Early in this method we perform a #redrawCell.
+			That should cause the cell to be repainted without any arrows.  Then if we get a non-nill
+			result for "arrowAndOffset" we draw the arrow.  If "arrowAndOffset" was nil we simply
+			don't draw the arrow.  The cell should be without any arrows at this point then.
+			So this doesn't seem to be the problem.
+		</p>
+		<p>
+			We could enable some diagnostics again and see what events we get while moving the
+			cursor rapidly between cells.  That will tell us a lot I'll bet.
+		</p>
+		<p>
+			We should do a little bit of refactoring to make the diagnostics easier to write.
+			There are 2 implementers of the #showPositionHintFromWithinBoardOffset: method.  One at
+			the CellRenderer superclass where it currently does nothing and another (shown) on
+			the MirrorCellRenderer.
+		</p>
+		<img src="images/569.jpg">
+		<p>
+			The temporary variable "cellPosn" is only used in the calculation for
+			"offsetWithinCell".  This will prove to be useful in the superclass.  Let's extract
+			that piece of code and put it on the superclass CellRenderer.
+		</p>
+		<img src="images/570.jpg">
+		<p>
+			We'll use that method in our #showPositionHintFromWithinBoardOffset: code in
+			the mirror renderer.
+		</p>
+		<img src="images/571.jpg">
+		<p>
+			Here's the diagnostic code for the superclass.
+		</p>
+		<img src="images/572.jpg">
+		<p>
+			And now for the mirror renderer class.
+		</p>
+		<img src="images/573.jpg">
+		<p>
+			Open up a Transcript window and close and re-open the LaserGame morph so
+			we get a "clean" one without any of those troubling ghost arrows.
+			Now move the cursor between cells and stop when you see the bug.
+		</p>
+		<p>
+			Here's what I found.
+		</p>
+		<img src="images/574.jpg">
+		<p>
+			I started with the cursor over the target cell and then moved swiftly
+			southwards.  Look at the Transcript diagnostics.  It begins at the
+			target cell at location 5@1.
+		</p>
+		<!-- Thanks to Has van der Krieken for catching typo in next section.  -->
+		<p>
+			Then when we received an event for the cell below it at 5@2 the
+			region reported was the ignore region.  That sounds correct.
+			As the cursor went further downwards it transitioned to the
+			outside click region for cell 5@2.
+		</p>
+		<p>
+			However the next entry in the log is a surprise.
+			It shows it went to cell 5@3 and on the inside click region.
+			That means we "skipped" quite a few places.
+		</p>
+		<p>
+			The event path expected, if we ignore repeats within the same cell,
+			should have been something like this:
+			<table>
+				<thead>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<table>
+								<caption class="captionSmaller">Expected Sequential Events</caption>
+								<thead>
+									<tr>
+										<th class="smaller">Cell</th>
+										<th class="smaller">Location</th>
+										<th class="smaller">Click Region</th>
+										<th class="smaller">Observed</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class="smaller">
+										<td>Non-Mirror</td>
+										<td>5@1</td>
+										<td>none</td>
+										<td>X</td>
+									</tr>
+									<tr class="smaller">
+										<td>Mirror</td>
+										<td>5@2</td>
+										<td>Ignore Click-Region</td>
+										<td>X</td>
+									</tr>
+									<tr class="smaller">
+										<td>Mirror</td>
+										<td>5@2</td>
+										<td>Outside Click-Region</td>
+										<td>X</td>
+									</tr>
+									<tr class="smaller">
+										<td>Mirror</td>
+										<td>5@2</td>
+										<td>Inside Click-Region</td>
+										<td></td>
+									</tr>
+									<tr class="smaller">
+										<td>Mirror</td>
+										<td>5@2</td>
+										<td>Outside Click-Region</td>
+										<td></td>
+									</tr>
+									<tr class="smaller">
+										<td>Mirror</td>
+										<td>5@2</td>
+										<td>Ignore Click-Region</td>
+										<td></td>
+									</tr>
+									<tr class="smaller">
+										<td>Mirror</td>
+										<td>5@3</td>
+										<td>Ignore Click-Region</td>
+										<td></td>
+									</tr>
+									<tr class="smaller">
+										<td>Mirror</td>
+										<td>5@3</td>
+										<td>Outside Click-Region</td>
+										<td></td>
+									</tr>
+									<tr class="smaller">
+										<td>Mirror</td>
+										<td>5@3</td>
+										<td>Inside Click-Region</td>
+										<td>X</td>
+									</tr>
+									<tr class="smaller">
+										<td>Mirror</td>
+										<td>5@3</td>
+										<td>Outside Click-Region</td>
+										<td></td>
+									</tr>
+									<tr class="smaller">
+										<td>Mirror</td>
+										<td>5@3</td>
+										<td>Ignore Click-Region</td>
+										<td></td>
+									</tr>
+									<tr class="smaller">
+										<td>Non-Mirror</td>
+										<td>5@4</td>
+										<td>none</td>
+										<td>X</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+						<td>
+							<img src="images/575.jpg">
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</p>
+		<p>
+			Examination of this sequence of events reveals something obvious
+			we should have thought about before.  The operating system must "sample"
+			mouse events at some given, and probably very fast, rate.  Squeak then
+			must process the events it is given.  It's easy to believe that there is
+			no "promise" that every intermediate event would be generated.
+			We need to account for the fact that mouse move events can be pretty far apart
+			when the cursor is traveling quickly.  As we see here, the cell regions can
+			be skipped over.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="117.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

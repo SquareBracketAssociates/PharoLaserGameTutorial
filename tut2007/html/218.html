@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 6</p>
+			<div id="content">
+		<h3>Better Lock-Down Steps</h3>
+		<p>
+			The deployed image still has an operational World Menu.
+			We need to lock that down.
+			This was not addressed prior to now but it easy to fix.
+			The "eToys" system for Squeak has the ability to disable the World Menu.
+			All we need to do is set the appropriate Preference when we perform our
+			"prepare application" step.
+		</p>
+		<p>
+			For the class LaserGame, modify the #disableFeatures class method
+			to include these new lines.
+		</p>
+		<p class="code">
+			<b>disableFeatures</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Preferences disable: #warnIfNoSourcesFile.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Preferences disable: #warnIfNoChangesFile.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Preferences disable: #cmdDotEnabled.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Preferences enable: #eToyFriendly.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Preferences enable: #noviceMode.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Preferences compileHardCodedPref: #cmdGesturesEnabled enable: false.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Preferences compileHardCodedPref: #cmdKeysInText enable: false.
+		</p>
+		<p>
+			By enabling "eToyFriendly" the saved deployed image will have the World
+			Menu turned off from clicking on the desktop.  "noviceMode" is supposed to
+			disable the control menu.
+		</p>
+		<p>
+			We still need to turn off the halos.  Change the method one more time.
+		</p>
+		<p class="code">
+			<b>disableFeatures</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Preferences disable: #warnIfNoSourcesFile.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Preferences disable: #warnIfNoChangesFile.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Preferences disable: #cmdDotEnabled.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Preferences enable: #eToyFriendly.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Preferences enable: #noviceMode.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Preferences compileHardCodedPref: #cmdGesturesEnabled enable: false.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;Preferences compileHardCodedPref: #cmdKeysInText enable: false.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;HaloMorph compileSilently: 'addCircleHandles' classified: 'disable'.
+		</p>
+		<p>
+			As long as we never execute this #disableFeatures except for when we want to make a deployed image,
+			this is safe code.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="219.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

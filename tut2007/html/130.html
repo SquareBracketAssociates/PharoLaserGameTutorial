@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 4</p>
+			<div id="content">
+		<h3>Communicate With Arrow Colors</h3>
+		<p>
+			We have a working LaserGame.  There are a number of enhancements to consider.
+			The first one I want to try is change the hint arrows so they show
+			a move is restricted by using color.
+			For the existing code we are painting grey arrows.  What if we made
+			the color of the arrows dependent on whether the choice was valid or not?
+		</p>
+		<p>
+			The first thing we would need to do is provide 2 arrow color methods
+			in our LaserGameColors class.
+			Write 2 new class methods that answer an appropriate color.
+		</p>
+		<p class="code">
+			<b>allowActionArrowColor</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^Color green
+		</p>
+		<p class="code">
+			<b>denyActionArrowColor</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^Color red
+		</p>
+		<p>
+			We can begin with those 2 primary colors (red and green).  After we get
+			things working we'll probably regret these color choices since they will
+			likely look very bright and harsh over our game cells.  But we'll worry about
+			that later.
+		</p>
+		<p>
+			The next step is to figure out to use these new colors.
+			We will need a way to check permission for the action the
+			user could take.  For the rotate action, it's easy.  There's no
+			restriction.  For the push action we've already written the code
+			that prohibits the actual push to take place.  We need to figure out
+			how to reuse that pattern for a new permission check.
+		</p>
+		<p>
+			Back on the Grid class we wrote an instance method that
+			handled the push of a cell.  It checked if the push was possible
+			and if not it answered back the same cell.  Otherwise it answered a
+			cell for swapping in the push.  Here's that method.  We're not
+			going to change it, just review it for what we would do if
+			we were calculation permission to push instead.
+		</p>
+		<p class="code">
+			<b>pushCell: aGridDirection fromLocation: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| cell vector swapLoc swapCell |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := self at: aPoint.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell class = MirrorCell ifFalse: [^cell].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;vector := aGridDirection vector.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;swapLoc := aPoint + vector.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;swapCell := self at: swapLoc.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;swapCell isNil ifTrue: [^cell].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;swapCell class = BlankCell ifFalse: [^cell].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self clearCellsInPath.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self swapCell: cell with: swapCell.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self laserIsActive ifTrue: [self activateCellsInPath].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^swapCell
+		</p>
+		<p>
+			Here is a new instance method that takes the same idea and calulates
+			a Boolean (true/false) if the action can be validly performed.
+		</p>
+		<p class="code">
+			<b>canPushCell: aGridDirection fromLocation: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| cell vector swapLoc swapCell |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := self at: aPoint.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell class = MirrorCell ifFalse: [^false].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;vector := aGridDirection vector.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;swapLoc := aPoint + vector.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;swapCell := self at: swapLoc.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;swapCell isNil ifTrue: [^false].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;swapCell class = BlankCell ifFalse: [^false].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^true
+		</p>
+		<p>
+			There's probably some refactoring we can do in here but I'm going to press onward.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="131.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

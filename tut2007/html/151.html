@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 4</p>
+			<div id="content">
+		<p>
+			We hand-crafted this form.  We need to be able to store this form in our code.
+			We could save it as an external file and then load it for our game.  However
+			it's a simpler matter, for now, to retain the form content somehow in our code.
+			Fortunately Forms have the ability to generate themseleves to method code.
+			With the drawing still open and not occluded, open up a fresh Transcript window.
+			Ensure the Transcript window is empty.  Then paste this code into the panel rectangle
+			inspector.
+		</p>
+		<p class="code">
+			(Form fromDisplay: (self bounds insetBy: 6))<br>
+			storeOn: Transcript.<br>
+			Transcript show: ''; cr
+		</p>
+		<p>
+			Note we are not working with the scaled version of the form here but rather
+			the full sized one.  When you execute this, the contents of the form writes itself
+			onto the Transcript as Squeak code.  It's a pretty big chunk of code.
+		</p>
+		<p class="code">
+			(Form<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;extent: 368@196<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;depth: 32<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;fromArray: #( 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 <br>
+			4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295<br> 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 <br>4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 <br>4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 <br>4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 <br>4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 <br>4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 <br>4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 <br>4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 <br>4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 <br>4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 <br>4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 <br>4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 <br>4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 <br>4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 <br>4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 <br>4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 <br>4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 <br>4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;....<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...<br>
+			4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 <br>4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;offset: 0@0)
+		</p>
+		<p class="note">
+			The entire contents was not reproduced here.
+		</p>
+		<p>
+			Select all of the contents of the Transcript window and copy it to your paste buffer (clipboard).
+			Now open up a class hierarchy browser on the LaserGameForms class and create a new class method called
+			#drawLaserBeamForm.  Paste the contents of your clipboard into this method.  Be sure to add the "^"
+			where the form is created so that this method will answer it properly.  When you save the method it
+			will take a few seconds for Squeak to compile.
+		</p>
+		<img src="images/695.jpg">
+		<p>
+			We need to be sure this method correctly captured our form.  Let's open up a workspace window and
+			try to draw our new form on the screen.
+		</p>
+		<img src="images/696.jpg">
+		<p>
+			We need to complete the work to include this form in our form caching system.
+			Here's the modified #initializeCachedForms class method.
+		</p>
+		<p class="code">
+			<b>initializeCachedForms</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;"LaserGameForms initializeCachedForms"<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| form |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;CachedForms := Dictionary new.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;form := self arrowFormFromPointsArray: self northArrowPoints.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;CachedForms at: #north put: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;form := self arrowFormFromPointsArray: self eastArrowPoints.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;CachedForms at: #east put: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;form := self arrowFormFromPointsArray: self southArrowPoints.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;CachedForms at: #south put: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;form := self arrowFormFromPointsArray: self westArrowPoints.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;CachedForms at: #west put: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;form := self drawCounterClockwiseArrow.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;CachedForms at: #counterClockwise put: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;form := self drawClockwiseArrow.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;CachedForms at: #clockwise put: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;form := self drawCrossHair.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;CachedForms at: #crossHair put: form.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;form := self drawLaserBeamForm.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;CachedForms at: #laserBeam put: form.
+		</p>
+		<p class="note">
+			Again, when we introduce a new form into out cache, for our running Squeak
+			image, we need to run that "LaserGameForms initializeCachedForms".
+		</p>
+		<p>
+			As a last step to form cache creation, add this class method.
+		</p>
+		<p class="code">
+			<b>laserBeam</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;CachedForms isNil ifTrue: [self initializeCachedForms].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^CachedForms at: #laserBeam
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="152.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 5</p>
+		<div id="content">
+		<h3>A Less Brittle Unit Test Design</h3>
+		<p>
+			I remain unsatisfied with the hints and click action mapping in
+			our application.  While playing with the Laser Game for quite a bit
+			I noticed annoying behavior problems with what a cell did when I
+			sometimes clicked on it to push.  Sometimes
+			the mirror cell just didn't move the way I expected.
+		</p>
+		<p>
+			So it's likely we'll be making some fining tuning changes to the constants
+			that are used by the mouse position and region mapping code.
+			Just like we had to do when we make the cells larger, the unit test
+			proved to be very brittle.
+			Before we do anything else to the dimension of click-regions and hint arrow positions,
+			I want to fix the unit test we have so that it's less sensitive to these sometimes
+			necessary changes in our code.
+		</p>
+		<p>
+			You may remember that there are two test case classes that have this problem:
+			CellClickOutsideRegionRotateTestCase &amp; CellClickInsideRegionPushTestCase.
+		</p>
+		<p>
+			Let's look at CellClickInsideRegionPushTestCase first.
+			You remember the diagram and table used as the basis for this test method.
+			Here's the
+			existing test case code next to both.
+		</p>
+		<p>
+			<table>
+				<tbody>
+					<tr>
+						<td>
+							<img class="tight" src="images/727.jpg">
+						</td>
+						<td>
+							<table>
+								<thead>
+									<tr>
+										<th>Label</th>
+										<th>Point</th>
+										<th>Push</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>A</td>
+										<td>10@10</td>
+										<td>East</td>
+									</tr>
+									<tr>
+										<td>B</td>
+										<td>30@10</td>
+										<td>West</td>
+									</tr>
+									<tr>
+										<td>C</td>
+										<td>20@20</td>
+										<td>North</td>
+									</tr>
+									<tr>
+										<td>D</td>
+										<td>10@30</td>
+										<td>North</td>
+									</tr>
+									<tr>
+										<td>E</td>
+										<td>30@30</td>
+										<td>North</td>
+									</tr>
+									<tr>
+										<td>F</td>
+										<td>11@13</td>
+										<td>East</td>
+									</tr>
+									<tr>
+										<td>G</td>
+										<td>19@21</td>
+										<td>North</td>
+									</tr>
+									<tr>
+										<td>H</td>
+										<td>29@27</td>
+										<td>West</td>
+									</tr>
+									<tr>
+										<td>I</td>
+										<td>20@1</td>
+										<td>South</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+						<td>
+							<p class="code">
+								<b>testClicksInPushRegions</b><br>
+								&nbsp;&nbsp;&nbsp;&nbsp;| pt regionClass pushRegion testTable cls |<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;pt := 11@11.<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;regionClass := CellClickRegion clickRegionForPoint: pt.<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;self should: [regionClass = CellClickRegionInside].<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;testTable := {<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10@10->CellClickRegionPushEast.<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;30@10->CellClickRegionPushWest.<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;20@20->CellClickRegionPushNorth.<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10@30->CellClickRegionPushNorth.<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;30@30->CellClickRegionPushNorth.<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11@13->CellClickRegionPushEast.<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;19@21->CellClickRegionPushNorth.<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;29@27->CellClickRegionPushWest.<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;20@1->CellClickRegionPushSouth<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}.<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;testTable do: [:assoc |<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pt := assoc key.<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cls := assoc value.<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pushRegion := regionClass pushRegionForPoint: pt.<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self should: [pushRegion = cls]]
+							</p>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</p>
+		<p>
+			The values for the data points on the graphic could be expressed as more "relative" locations.
+			For example the points A, B, D and E are meant to be the exact corners of the inside region.
+			And the positions of those corners are derived directly from the CellClickRegionInside #regionRectangle method.
+			The unit test isn't checking that the #regionRectangle is specified correctly.  It's trying to figure
+			out if the click points A through I are decoded into push actions correctly.
+		</p>
+		<p>
+			And if you look carefully at the diagram and the method we have another bug here.  The method reflects exactly
+			what's specified in the little table.  But look at point "I" on the table.  That's not right.
+			The table gives the positon of point "I" as 20@1.  But the diagram shows that can't be it.
+			It was obviously a typo but it also makes the test incorrect.
+		</p>
+		<p>
+			If assume that we can easily obtain and use the Rectangle the represents the CellClickRegionInside
+			we can express the test points more meaningfully.  Lets use "rect" to represent that rectangle and
+			make another pass at the table.
+		</p>
+		<p>
+			<table>
+				<tbody>
+					<tr>
+						<td>
+							<table>
+								<thead>
+									<tr>
+										<th>Label</th>
+										<th>Point</th>
+										<th>Push</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>A</td>
+										<td>rect topLeft</td>
+										<td>East</td>
+									</tr>
+									<tr>
+										<td>B</td>
+										<td>rect topRight</td>
+										<td>West</td>
+									</tr>
+									<tr>
+										<td>C</td>
+										<td>rect center</td>
+										<td>North</td>
+									</tr>
+									<tr>
+										<td>D</td>
+										<td>rect bottomLeft</td>
+										<td>North</td>
+									</tr>
+									<tr>
+										<td>E</td>
+										<td>rect bottomRight</td>
+										<td>North</td>
+									</tr>
+									<tr>
+										<td>F</td>
+										<td>rect topLeft + (1@3)</td>
+										<td>East</td>
+									</tr>
+									<tr>
+										<td>G</td>
+										<td>rect center + (-1@1)</td>
+										<td>North</td>
+									</tr>
+									<tr>
+										<td>H</td>
+										<td>rect bottomRight + (-1@-3)</td>
+										<td>West</td>
+									</tr>
+									<tr>
+										<td>I</td>
+										<td>rect topCenter + (0@1)</td>
+										<td>South</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+						<td>
+							<p style="padding-top: 100px; width: 250px">
+								This is much easier to understand.  You can read this table and know exactly
+								what this test is trying to accomplish.
+							</p>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</p>
+		<p>
+			Let's change this unit test method to use our new technique.  <i>And while we're at it we should
+				fix it
+			</i>.
+		</p>
+		<p class="code">
+			<b>testClicksInPushRegions</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| pt regionClass pushRegion testTable cls rect |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;rect := CellClickRegionInside regionRectangle.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pt := rect topLeft + (1@1).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;regionClass := CellClickRegion clickRegionForPoint: pt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [regionClass = CellClickRegionInside].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;testTable := {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(rect topLeft)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->&nbsp;&nbsp;&nbsp;&nbsp;CellClickRegionPushEast.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(rect topRight)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->&nbsp;&nbsp;&nbsp;&nbsp;CellClickRegionPushWest.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(rect center)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->&nbsp;&nbsp;&nbsp;&nbsp;CellClickRegionPushNorth.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(rect bottomLeft)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->&nbsp;&nbsp;&nbsp;&nbsp;CellClickRegionPushNorth.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(rect bottomRight)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->&nbsp;&nbsp;&nbsp;&nbsp;CellClickRegionPushNorth.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(rect topLeft + (1@3))&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->&nbsp;&nbsp;&nbsp;&nbsp;CellClickRegionPushEast.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(rect center + (-1@1))&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->&nbsp;&nbsp;&nbsp;&nbsp;CellClickRegionPushNorth.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(rect bottomRight + (-1@-3))&nbsp;&nbsp;->&nbsp;&nbsp;&nbsp;&nbsp;CellClickRegionPushWest.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(rect topCenter + (0@1))&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;->&nbsp;&nbsp;&nbsp;&nbsp;CellClickRegionPushSouth<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;testTable do: [:assoc |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pt := assoc key.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cls := assoc value.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pushRegion := regionClass pushRegionForPoint: pt.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self should: [pushRegion = cls]]
+		</p>
+		<p>
+			That initial calculated point at the beginning of the method
+			was also changed to be specified  relative
+			to the region's top left corner.  I also changed the formatting a little for improved readability.
+			Re-run our unit test to ensure we haven't broken anything.  Everything should pass.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="191.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

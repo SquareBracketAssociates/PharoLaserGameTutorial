@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 2</p>
+			<div id="content">
+		<p>
+			We have some kind of behavior that tells us the code goes into
+			a loop but examination so far shows everything looks good.  However,
+			it is suprising we are only on the first cell encountered by
+			the laser beam.  Perhaps that's also a good clue.
+		</p>
+		<p>
+			Let's drop into the code and single-step our way
+			through this algorithm with the debugger.
+			Doing this step-by-step in this tutorial will seem
+			a bit tedious but we should not need to endure much longer before
+			we find our elusive bug.
+		</p>
+		<p>
+			Click "restart" in the debugger.  Press the "over" button in
+			the debugger a few times until we get to this condition of
+			execution.
+		</p>
+		<img src="images/175.jpg">
+		<p>
+			If we examine the instance variables for "loc", "dirSym",
+			"direction", "vector", "newLoc" and "nextCell",
+			everything looks correct.  We expect the next cell to be
+			at location 2@5 and that it's a blank cell.
+			Our dirSym value (the direction our laser is now traveling)
+			looks correct.
+		</p>
+		<p>
+			Okay, it looks like our next step of execution will
+			create a new LaserPathElement object.  Single-step with the
+			debugger using the "over" button until we're about to create
+			the new object.
+		</p>
+		<img src="images/176.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="045.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

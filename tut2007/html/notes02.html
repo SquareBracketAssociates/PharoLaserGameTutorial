@@ -1,0 +1,382 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Notes</p>
+			<div id="content">
+				<h3>Notes</h3>
+				<h3>Tutorial Edit History</h3>
+				<p>
+					<table class="history">
+						<thead>
+							<tr>
+								<th>Date</th>
+								<th>Pages</th>
+								<th>Edit/Comment</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="date">18-Oct-2009</td>
+								<td class="pages"></td>
+								<td>Added a <a href="017.html#clarification">clarifying note</a> 
+								so the student doesn't worry about how to create the up-arrow character.
+								Also added <a href="038.html">new details</a> on how to create 
+								the grid direction class hierarchy
+								and use the Squeal hierarchy browser.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">06-Aug-2009</td>
+								<td class="pages"></td>
+								<td>A line of code was missing from 
+								an instance method.  I added some explanation,
+								and the change needed on
+								<a href="097.html">this page</a>.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">05-Aug-2009</td>
+								<td class="pages"></td>
+								<td>Added a <a href="096.html#clarification">clarifying note</a> 
+								so the student doesn't worry about what to do next.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">18-Jun-2009</td>
+								<td class="pages"></td>
+								<td>Added the important <a href="028.html#importantWarning">note</a> 
+								ensuring that the student
+								has really just created a Class method.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">09-May-2009</td>
+								<td class="pages"></td>
+								<td>Changed my e-mail address from swessels@cox.net to
+								stevewessels@me.com.  This changed every page since the
+								e-mail address is in the footer.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">19-Mar-2009</td>
+								<td class="pages"></td>
+								<td>Added a <a href="034.html#importantWarning">note</a> to make it really obvious to
+								new students that a Class method is being
+								created.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">08-Mar-2009</td>
+								<td class="pages"></td>
+								<td>Added a compressed file containing the Change Sets
+								for this tutorial's source kit.  This can be used instead
+								of Monticello to install the software.
+								<a href="notes01.html">Notes</a> on how to install these
+								Change Sets are provided.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">02-Mar-2009</td>
+								<td class="pages"></td>
+								<td>Changed references to my e-mail address to no longer send
+								to my mobile phone address.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">24-Jan-2009</td>
+								<td class="pages"><a href="017.html">017</a></td>
+								<td>I was looking over some pages casually and
+								spotted a typo.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">20-Aug-2007</td>
+								<td class="pages"></td>
+								<td>Fixed many typos, missing sections of instruction
+								and added "inventory" pages showing all code that the
+								reader should have installed.  Completed first pass at
+								"scrub" through sections 1 through 3.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">31-Jul-2007</td>
+								<td class="pages"></td>
+								<td>Changed all e-mail references to use my Yahoo mail address.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">31-Jul-2007</td>
+								<td class="pages"><a href="103A.html">103A</a></td>
+								<td>Added a page to include some missing methods related to the
+								rotate click region selection.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">30-Jul-2007</td>
+								<td class="pages"><a href="092.html">92</a></td>
+								<td>A method was documented incorrectly on this page.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">24-Jul-2007</td>
+								<td class="pages"><a href="073A.html">73A</a></td>
+								<td>Added a page of classes and methods inventory for review
+									at the end of section 2.  A Change Set of work up through
+									the end of Section 2 is available from a link
+									on that page.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">23-Jul-2007</td>
+								<td class="pages"><a href="138.html">138</a></td>
+								<td>Fixed a problem with the source code shown
+									in the #insideRegionExtent method.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">23-Jul-2007</td>
+								<td class="pages"><a href="notes04.html">Notes 04</a></td>
+								<td>Just for fun I added a snap-shot of the longest path
+									solution I've been able to work out so far.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">23-Jul-2007</td>
+								<td class="pages"><a href="035A.html">35A</a></td>
+								<td>Added a page of classes and methods inventory for review
+									at the end of section 1.  A Change Set of work up through
+									the end of Section 1 is available from a link
+									on that page.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">23-Jul-2007</td>
+								<td class="pages"><a href="077.html">77</a></td>
+								<td>Wrong source code in last segment.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">21-Jul-2007</td>
+								<td class="pages">&nbsp;</td>
+								<td>Added section headings everywhere.  General layout
+									of all pages changed.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">20-Jul-2007</td>
+								<td class="pages"><a href="053.html">53</a>, <a href="065.html">65</a></td>
+								<td>The instructions for creation of the LaserGame morph
+									was not very explicit on page 53.  The later situation on page
+									65 where the morph is opened now has a note describing
+									that the reader may have made an error back on page 53 if they
+									didn't see LaserGame in the morphs menu.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">19-Jul-2007</td>
+								<td class="pages"><a href="056.html"> 56 </a></td>
+								<td>One of the browser snap-shots on this page was incorrect.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">16-Jul-2007</td>
+								<td class="pages"><a href="218.html"> 218 </a></td>
+								<td>Fixed problems with World menu and halos access in
+									deployed image.  Added a blank initial grid condition and
+									unit test.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">14-Jul-2007</td>
+								<td class="pages"><a href="notes01.html"> Notes Source Page </a></td>
+								<td>Just to show what is possible, I created the stand-alone
+									Mac OS X version of this game with a custom icon
+									and menu and posted it for download.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">13-Jul-2007</td>
+								<td class="pages"><a href="214.html"> 214 </a></td>
+								<td>Show the developer how to create a stand-alone application in OS X
+									for our Laser Game written in Squeak.  This section is Mac OS X specific.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">12-Jul-2007</td>
+								<td class="pages"><a href="208.html"> 208 </a></td>
+								<td>Completed the first pass at a deliverable application.
+									It's still comprised of a Squeak VM and dedicated image file, and
+									not enough of the development environment features are disabled yet, but
+									it's a good start.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">12-Jul-2007</td>
+								<td class="pages"><a href="018.html"> 18 </a></td>
+								<td>Added another note to advise the reader if they are
+									unable to find their test case in the Test Runner window.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">10-Jul-2007</td>
+								<td class="pages"><a href="000.html">Introduction</a><a href="015A.html"> 15A </a></td>
+								<td>
+									<p class="description">There's some new text in the Introduction section explaining how
+										the tutorial begins with more browser screen-shots and why I'm doing that.
+									</p>
+									<p class="description">
+										I've received a number of e-mails from programmers new to Smalltalk and/or
+										Squeak that have made the mistake of creating their first test case class as
+										a subclass of Object instead of TestCase.  To help the reader not make that mistake
+										I added a note to the page to ensure they did this step correctly.  On that same
+										page I also added more description and a visual for how the new method category is
+										created.
+									</p>
+								</td>
+							</tr>
+							<tr>
+								<td class="date">06-Jul-2007</td>
+								<td class="pages"><a href="205.html"> 205 - 207 </a></td>
+								<td>Wrote some preliminary code to
+									support stand-alone application delivery.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">07-Jul-2007</td>
+								<td class="pages"><a href="notes.html"> Notes </a></td>
+								<td>
+									<p class="description">
+										Changed the Workspace description for launching LaserGame morph now
+										that version 20 was released.
+									</p>
+									<p class="description">
+										Also changed the links for the packages
+										to always point to a gerneric named package.  The Mac OS X Unix scripts
+										I'm using to backup and publish this tutorial now create these to avoid
+										problems where I forget to update the file names for
+										latest release packages.
+									</p>
+									<p class="description">
+										Changed layout of "Notes" within the tutorial
+										to be separate sections for each category (Packages, History, Comments).
+									</p>
+								</td>
+							</tr>
+							<tr>
+								<td class="date">06-Jul-2007</td>
+								<td class="pages"><a href="056.html"> 56 </a></td>
+								<td>Forgot to include the source for the #offsetWithinGridForm
+									on the CellRenderer class.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">06-Jul-2007</td>
+								<td class="pages"><a href="015.html"> 15,  </a><a href="200.html">200 - 204</a></td>
+								<td>
+									<p class="description">
+										Corrections of typos and other errors, based upon user feedback.
+										(NOTE:  I'm placing comments in the HTML as possible to identify
+										anyone who helps).
+									</p>
+									<p class="description">
+										Also reworked the minor enhancements into a group of pages
+										and added another enhancement for default LaserGame morph size.
+									</p>
+								</td>
+							</tr>
+							<tr>
+								<td class="date">06-Jul-2007</td>
+								<td class="pages"><a href="index.html"> index </a></td>
+								<td>Tweaked the colors of the Index page to tone it down a bit.</td>
+							</tr>
+							<tr>
+								<td class="date">05-Jul-2007</td>
+								<td class="pages"><a href="200.html"> 200 </a></td>
+								<td>Made some minor cosmetic tweaks.  Added a larger
+									margin around the edges for easier grabbing and moving.
+									Added a tiny divider bar on the control panel.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">04-Jul-2007</td>
+								<td class="pages"><a href="index.html"> Index </a></td>
+								<td>Format and presentation tweaks to index page.</td>
+							</tr>
+							<tr>
+								<td class="date">03-Jul-2007</td>
+								<td class="pages"><a href="197.html"> 197 </a></td>
+								<td>Fixed the alignment of the hint arrows within the mirror cells.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">03-Jul-2007</td>
+								<td class="pages">&nbsp;</td>
+								<td>Corrected the links to the source code packages.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">02-Jul-2007</td>
+								<td class="pages"><a href="190.html"> 190 </a> - <a href="195.html"> 195 </a></td>
+								<td>Removed some brittlesness from unit tests and changed the overall
+									size of cells.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">02-Jul-2007</td>
+								<td class="pages"><a href="095.html"> 95 </a></td>
+								<td>Changed some of the history information for Halt Once.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">02-Jul-2007</td>
+								<td class="pages"><a href="index.html"> index </a>, <a href="notes.html"> notes </a></td>
+								<td>Changed organization of index page, source code, and added
+									this edit history to the Notes page.
+								</td>
+							</tr>
+							<tr>
+								<td class="date">01-Jul-2007</td>
+								<td class="pages"><a href="188.html"> 188 </a>, <a href="189.html"> 189 </a></td>
+								<td>Added Reset capability and showing laser beam home visually.</td>
+							</tr>
+							<tr>
+								<td class="date">30-Jun-2007</td>
+								<td class="pages"><a href="183.html"> 183 </a></td>
+								<td>Added Undo capability.</td>
+							</tr>
+							<tr>
+								<td class="date">30-Jun-2007</td>
+								<td class="pages">&nbsp;</td>
+								<td>Initial publication to World Wide Web.</td>
+							</tr>
+							<tr>
+								<td class="date">08-May-2007</td>
+								<td class="pages">&nbsp;</td>
+								<td>Initial writing begun.</td>
+							</tr>
+						</tbody>
+					</table>
+				</p>
+			</div>
+			<div id="paging">
+				<a class="index" href="index.html">Index Page</a>
+				<a class="forward" href="notes.html">Notes Page</a>
+				<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a>
+				</p>
+			</div>
+		</div>
+	</body>
+</html>

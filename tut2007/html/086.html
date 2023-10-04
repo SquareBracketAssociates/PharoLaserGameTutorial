@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 3</p>
+			<div id="content">
+				<h3>Determine Push Regions</h3>
+				<p>
+					We will begin with writing a new unit test to validate
+					push direction selection within the inside click-region.
+					If you open up a workspace and inspect the results
+					of sending the #regionRectangle
+					message to our CellClickRegionInside class you
+					can see its current dimensions.
+				</p>
+				<img src="images/405.jpg">
+				<p>
+					Within our cell, the subdivided inside-click-region looks
+					like this (with the current sized coordinates shown).
+				</p>
+				<img src="images/406.jpg">
+				<p>
+					Note that when we describe graphics operations in Squeak
+					the coordinate system has increasing values of "x" as you
+					move to the right and increasing values of "y" as you travel
+					downwards on the screen.
+				</p>
+				<p>
+					When the user hovers the mouse over the subdivided click region
+					shown the "push east" arrow should appear.
+				</p>
+				<img src="images/407.jpg">
+				<p>
+					We can now describe several points of interest for testing.
+				</p>
+				<p>
+					<table>
+						<tbody>
+							<tr>
+								<td>
+									<img class="testImage" src="images/408.jpg">
+								</td>
+								<td>
+									<table>
+										<thead>
+											<tr>
+												<th>Label</th>
+												<th>Point</th>
+												<th>Push</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>A</td>
+												<td>10@10</td>
+												<td>East</td>
+											</tr>
+											<tr>
+												<td>B</td>
+												<td>20@10</td>
+												<td>South</td>
+											</tr>
+											<tr>
+												<td>C</td>
+												<td>15@15</td>
+												<td>East</td>
+											</tr>
+											<tr>
+												<td>D</td>
+												<td>10@20</td>
+												<td>East</td>
+											</tr>
+											<tr>
+												<td>E</td>
+												<td>20@20</td>
+												<td>North</td>
+											</tr>
+											<tr>
+												<td>F</td>
+												<td>11@13</td>
+												<td>East</td>
+											</tr>
+											<tr>
+												<td>G</td>
+												<td>14@16</td>
+												<td>North</td>
+											</tr>
+											<tr>
+												<td>H</td>
+												<td>19@17</td>
+												<td>West</td>
+											</tr>
+											<tr>
+												<td>I</td>
+												<td>15@1</td>
+												<td>South</td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</p>
+				<p>
+					We make some arbitrary decision about push intent when the dots were on
+					the exact corners and on the lines.
+					Here is the new unit test case.  We don't expect this to work yet
+					since we haven't written any push detection code.
+				</p>
+				<p>
+					The new test case class is CellClickInsideRegionPushTestCase.
+				</p>
+				<img src="images/409.jpg">
+			</div>
+			<div id="paging">
+				<a class="index" href="index.html">Index Page</a>
+				<a class="forward" href="087.html">Next Page</a>
+				<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a>
+				</p>
+			</div>
+		</div>
+	</body>
+</html>

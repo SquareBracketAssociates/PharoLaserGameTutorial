@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 3</p>
+			<div id="content">
+		<p>
+			Take a look at the #showPositionHintFromWithinBoardOffset: instance method in the
+			MirrorCellRenderer class.
+		</p>
+		<img src="images/506.jpg">
+		<p>
+			There are some opportunities to refactor and clean-up in here.
+			The code that creates the temporary variable "pushRegionClass"
+			is a little confusing since it's no longer just for "push" regions
+			and now answers "rotate" regions too.  But that's just an issue with its name.
+			After we create that variable we first check if it was nil and if it was not,
+			we fetch the arrow.  Then right after we get the arrow we scale it and calculate
+			and offset to locate the arrow properly within the cell.
+		</p>
+		<p>
+			Another approach would be to get the arrow, already scaled, directly from the region class.
+			And since the offset is likely to also be related to which arrow we get, we could also
+			ask the region for the correct offset value too.
+			The method #showPositionHintFromWithinCell: seems to be mis-named since that's
+			not what it's doing.
+		</p>
+		<p>
+			We could pass back both the scaled arrow form and the correct offset by putting
+			them together in a simple object like an Association.  Let's try it.
+		</p>
+		<p>
+			If we look for implementors of #showPositionHintFromWithinCell: we find it in three places.
+			It's defined in the common superclass and again on each of the "inside" and "outside"
+			click region classes.  All 3 implementors are class methods.
+		</p>
+		<img src="images/507.jpg">
+		<p>
+			We begin by writing a new method on the superclass.  It answers nil.
+		</p>
+		<img src="images/508.jpg">
+		<p>
+			For the inside click region we implement the method using pieces from the old
+			hints code.  We will answer an Association where the key is the arrow offset and the
+			value is the scaled arrow form.
+		</p>
+		<img src="images/509.jpg">
+		<p>
+			Here's the new similar implementation for the outside click region.
+		</p>
+		<img src="images/510.jpg">
+		<p>
+			We know we will come back and probably adjust the offset later.  Now we get
+			to use our new method.
+		</p>
+		<img src="images/511.jpg">
+		<p>
+			Delete the old #showPositionHintFromWithinCell: class method from the 3 places where
+			it's defined.  We no longer need this method.
+			Now we go back and tweak the scale and offset for the rotation arrows.
+		</p>
+		<img src="images/512.jpg">
+		<p>
+			When you move the cursor around over the mirror cells the rotate arrows look
+			better now.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="107.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 1</p>
+			<div id="content">
+		<p>
+			That was a lot of code moving around between 2 classes.
+			It's possible we may have made mistakes.  Run the unit
+			tests again to see if we are still good.
+		</p>
+		<img src="images/086.jpg">
+		<p>
+			The MirrorCell class still needs to be moved under our new
+			Cell abstract class.
+			So does the TargetCell class.
+		</p>
+		<img src="images/087.jpg">
+		<img src="images/088.jpg">
+		<h4>MirrorCell</h4>
+		<p>
+			When we left off coding the MirrorCell we realized that there
+			were a lot of similarities with BlankCell and a few differences.
+			We know we will have to set the orientation for the mirror both
+			when the cell is first instantiated as well as on-the-fly if the
+			user decides to rotate the cell.  Therefore we need methods
+			to handle those requests.
+		</p>
+		<img src="images/089.jpg">
+		<img src="images/090.jpg">
+		<p>
+			The initialize method should be modified to use one
+			of these new methods for setting default behavior.
+		</p>
+		<img src="images/091.jpg">
+		<img src="images/092.jpg">
+		<p>
+			The #exitSideFor: method on BlankCell is suitable for our cell too and can
+			be moved up to the super class.  The #isOff and #isOn methods should
+			also be moved.  Finally, the #isSegmentOnFor: and #laserEntersFrom:
+			can be moved up as well.
+		</p>
+		<p>
+			The only code left on BlankCell is initialize code.  If we run our unit tests
+			again we verify that everything still works.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="027.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

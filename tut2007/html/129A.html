@@ -1,0 +1,2146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<div id="content">
+				<p>
+					Congratulations, you've finished Section 3.  To make it easy to verify your
+					progress I've included here an "inventory" of the classes and methods
+					related to this Laser Game development that
+					you should have in your Squeak image at this point.
+				</p>
+				<table class="inventory">
+					<thead>
+						<tr>
+							<th>System Category</th>
+							<th>Class Name</th>
+							<th>Defined</th>
+							<th>Instance Methods</th>
+							<th>Class Methods</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Kernel-Objects</td>
+							<td>Object</td>
+							<td class="defined">&nbsp;</td>
+							<td>revisit:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>BlankCellRenderer</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>BlankCellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>modelClass</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegion</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegion</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>clickRegionForPoint:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegion</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>mouseUpWithinCellAtPoint:cell:withinGrid:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegion</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>scaledHintArrowAndOffsetFromWithinCell:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegion</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>sortedSubclasses</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionIgnore</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionIgnore</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>regionRectangle</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionIgnore</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>sortIndex</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionInside</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionInside</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>mouseUpWithinCellAtPoint:cell:withinGrid:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionInside</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>pointIsUnderHeadingDownLine:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionInside</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>pointIsUnderHeadingUpLine:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionInside</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>pushRegionForPoint:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionInside</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>regionRectangle</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionInside</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>scaledHintArrowAndOffsetFromWithinCell:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionInside</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>sortIndex</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionInside</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>yForHeadingDownLineWith:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionInside</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>yForHeadingUpLineWith:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionOutside</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionOutside</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>mouseUpWithinCellAtPoint:cell:withinGrid:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionOutside</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>regionRectangle</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionOutside</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>rotateRegionForPoint:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionOutside</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>scaledHintArrowAndOffsetFromWithinCell:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionOutside</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>sortIndex</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionPushEast</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionPushEast</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>arrowForm</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionPushEast</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>containsPoint:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionPushEast</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>mouseUpForCell:withinGrid:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionPushNorth</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionPushNorth</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>arrowForm</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionPushNorth</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>containsPoint:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionPushNorth</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>mouseUpForCell:withinGrid:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionPushSouth</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionPushSouth</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>arrowForm</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionPushSouth</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>containsPoint:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionPushSouth</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>mouseUpForCell:withinGrid:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionPushWest</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionPushWest</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>arrowForm</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionPushWest</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>containsPoint:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionPushWest</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>mouseUpForCell:withinGrid:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionRotateClockwise</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionRotateClockwise</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>arrowForm</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionRotateClockwise</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>containsPoint:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionRotateClockwise</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>mouseUpForCell:withinGrid:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionRotateCounterClockwise</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionRotateCounterClockwise</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>arrowForm</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionRotateCounterClockwise</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>containsPoint:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellClickRegionRotateCounterClockwise</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>mouseUpForCell:withinGrid:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellRenderer</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>cell</td>
+							<td>cellExtent</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>cellLocation</td>
+							<td>ignoreRegionOffset</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>cellLocation:</td>
+							<td>insideRegionExtent</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>grid</td>
+							<td>outsideRegionExtent</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>grid:</td>
+							<td>rendererFor:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>mouseUpWithinBoardOffset:</td>
+							<td>rendererFor:grid:form:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>offsetWithinCellFrom:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>offsetWithinGridForm</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>redrawCell</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>render</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>renderBorder</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>renderBorderBottom</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>renderBorderLeft</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>renderBorderRight</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>renderBorderTop</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>renderContents</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>showPositionHintFromWithinBoardOffset:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>targetForm</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>CellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>targetForm:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>activeCellLocation</td>
+							<td>boardExtentFor:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>activeCellLocation:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>boardForm</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>boardForm:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>boardRelativePositionFor:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>calculatedExtent</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>cellForEvent:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>cellPositionForEvent:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>dirty</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>dirty:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>drawGameBoard</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>eventDiagnosticFor:tag:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>findFireButton</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>fireButtonLabel</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>fireLaser</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>grid</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>grid:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>handleListenEvent:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>initialize</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>isDirty:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>laserActive</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>makeButton:action:state:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>makeControlPanelMorph</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>makeFireLaserButton</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>makeGameBoardMorph</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>makeQuitGameButton</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>mouseDown:forMorph:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>mouseEnter:forMorph:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>mouseLeave:forMorph:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>mouseMoveWhileButtonDown:forMorph:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>mouseMoveWhileButtonUp:forMorph:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>mouseUp:forMorph:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>mouseUp:forMorph:cell:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>panelWidth</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>quitGame</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>redrawCell:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>setClean:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>setDirty:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>setExtent</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>setupMorphs</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>sweepDirtyCells</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGame</td>
+							<td class="defined">&nbsp;</td>
+							<td>updateFireButtonLabel</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameColors</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameColors</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>cellBorderColor</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameColors</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>gameBoardBackgroundColor</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameColors</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>mirrorColor</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameColors</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>targetCenterColor</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameColors</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>targetCenterColorActive</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameColors</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>targetCenterColorIdle</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameForms</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameForms</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>arrowFormFromPointsArray:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameForms</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>clockwiseArrow</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameForms</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>counterClockwiseArrow</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameForms</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>drawClockwiseArrow</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameForms</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>drawCounterClockwiseArcsOn:withPen:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameForms</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>drawCounterClockwiseArrow</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameForms</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>drawCounterClockwiseArrowHeadOn:withPen:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameForms</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>eastArrow</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameForms</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>eastArrowPoints</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameForms</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>initializeCachedForms</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameForms</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>northArrow</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameForms</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>northArrowPoints</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameForms</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>southArrow</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameForms</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>southArrowPoints</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameForms</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>westArrow</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>LaserGameForms</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>westArrowPoints</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>MirrorCellRenderer</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>MirrorCellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>cornerInset</td>
+							<td>modelClass</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>MirrorCellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>mouseUpWithinBoardOffset:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>MirrorCellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>renderContents</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>MirrorCellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>renderContentsLeanLeft</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>MirrorCellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>renderContentsLeanRight</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>MirrorCellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>showPositionHintFromWithinBoardOffset:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>TargetCellRenderer</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>TargetCellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>drawCircleOutline</td>
+							<td>modelClass</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>TargetCellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>drawCrossHairsOutlines</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>TargetCellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>drawTargetOutlines</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>TargetCellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>renderContents</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>TargetCellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>renderContentsOff</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>TargetCellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>renderContentsOn</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Graphics</td>
+							<td>TargetCellRenderer</td>
+							<td class="defined">&nbsp;</td>
+							<td>renderInnerCircleColor:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>BlankCell</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>BlankCell</td>
+							<td class="defined">&nbsp;</td>
+							<td>initialize</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>BlankCell</td>
+							<td class="defined">&nbsp;</td>
+							<td>initializeExitSides</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Cell</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Cell</td>
+							<td class="defined">&nbsp;</td>
+							<td>activeSegments</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Cell</td>
+							<td class="defined">&nbsp;</td>
+							<td>activeSegments:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Cell</td>
+							<td class="defined">&nbsp;</td>
+							<td>clearCell</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Cell</td>
+							<td class="defined">&nbsp;</td>
+							<td>exitSideFor:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Cell</td>
+							<td class="defined">&nbsp;</td>
+							<td>exitSides</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Cell</td>
+							<td class="defined">&nbsp;</td>
+							<td>exitSides:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Cell</td>
+							<td class="defined">&nbsp;</td>
+							<td>gridLocation</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Cell</td>
+							<td class="defined">&nbsp;</td>
+							<td>gridLocation:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Cell</td>
+							<td class="defined">&nbsp;</td>
+							<td>initialize</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Cell</td>
+							<td class="defined">&nbsp;</td>
+							<td>initializeActiveSegments</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Cell</td>
+							<td class="defined">&nbsp;</td>
+							<td>isOff</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Cell</td>
+							<td class="defined">&nbsp;</td>
+							<td>isOn</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Cell</td>
+							<td class="defined">&nbsp;</td>
+							<td>isSegmentOnFor:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Cell</td>
+							<td class="defined">&nbsp;</td>
+							<td>laserEntersFrom:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Cell</td>
+							<td class="defined">&nbsp;</td>
+							<td>printOn:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Cell</td>
+							<td class="defined">&nbsp;</td>
+							<td>rotateClockwise</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Cell</td>
+							<td class="defined">&nbsp;</td>
+							<td>rotateCounterClockwise</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>activateCellsInPath</td>
+							<td>newOfSize:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>at:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>at:put:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>calculatePath</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>cells</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>cells:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>clearCellsInPath</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>fireLaser</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>initialize</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>initializeCells</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>laserBeamPath</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>laserBeamPath:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>laserIsActive</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>laserIsActive:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>numberOfColumns</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>numberOfColumns:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>numberOfRows</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>numberOfRows:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>pushCell:fromLocation:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>pushCellEastFromLocation:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>pushCellNorthFromLocation:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>pushCellSouthFromLocation:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>pushCellWestFromLocation:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>rotateCellClockwiseAt:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>rotateCellCounterClockwiseAt:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>startingCell</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>stopLaser</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>Grid</td>
+							<td class="defined">&nbsp;</td>
+							<td>swapCell:with:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>GridDirection</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>GridDirection</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>directionFor:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>GridDirectionEast</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>GridDirectionEast</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>adjacentInversionSymbol</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>GridDirectionEast</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>directionSymbol</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>GridDirectionEast</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>vector</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>GridDirectionNorth</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>GridDirectionNorth</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>adjacentInversionSymbol</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>GridDirectionNorth</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>directionSymbol</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>GridDirectionNorth</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>vector</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>GridDirectionSouth</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>GridDirectionSouth</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>adjacentInversionSymbol</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>GridDirectionSouth</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>directionSymbol</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>GridDirectionSouth</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>vector</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>GridDirectionWest</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>GridDirectionWest</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>adjacentInversionSymbol</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>GridDirectionWest</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>directionSymbol</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>GridDirectionWest</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>vector</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>GridFactory</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>GridFactory</td>
+							<td class="defined">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>demoGrid</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>LaserPathElement</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>LaserPathElement</td>
+							<td class="defined">&nbsp;</td>
+							<td>activateCell</td>
+							<td>cell:entrySide:</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>LaserPathElement</td>
+							<td class="defined">&nbsp;</td>
+							<td>cell</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>LaserPathElement</td>
+							<td class="defined">&nbsp;</td>
+							<td>cell:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>LaserPathElement</td>
+							<td class="defined">&nbsp;</td>
+							<td>clearCell</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>LaserPathElement</td>
+							<td class="defined">&nbsp;</td>
+							<td>entrySide</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>LaserPathElement</td>
+							<td class="defined">&nbsp;</td>
+							<td>entrySide:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>LaserPathElement</td>
+							<td class="defined">&nbsp;</td>
+							<td>nextElementIn:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>LaserPathElement</td>
+							<td class="defined">&nbsp;</td>
+							<td>printOn:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>MirrorCell</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>MirrorCell</td>
+							<td class="defined">&nbsp;</td>
+							<td>initialize</td>
+							<td>leanLeft</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>MirrorCell</td>
+							<td class="defined">&nbsp;</td>
+							<td>initializeExitSides</td>
+							<td>leanRight</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>MirrorCell</td>
+							<td class="defined">&nbsp;</td>
+							<td>isLeft</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>MirrorCell</td>
+							<td class="defined">&nbsp;</td>
+							<td>isRight</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>MirrorCell</td>
+							<td class="defined">&nbsp;</td>
+							<td>leanLeft</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>MirrorCell</td>
+							<td class="defined">&nbsp;</td>
+							<td>leanRight</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>MirrorCell</td>
+							<td class="defined">&nbsp;</td>
+							<td>leansLeft</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>MirrorCell</td>
+							<td class="defined">&nbsp;</td>
+							<td>leansLeft:</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>MirrorCell</td>
+							<td class="defined">&nbsp;</td>
+							<td>rotate</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>MirrorCell</td>
+							<td class="defined">&nbsp;</td>
+							<td>rotateClockwise</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>MirrorCell</td>
+							<td class="defined">&nbsp;</td>
+							<td>rotateCounterClockwise</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>TargetCell</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>TargetCell</td>
+							<td class="defined">&nbsp;</td>
+							<td>initialize</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Model</td>
+							<td>TargetCell</td>
+							<td class="defined">&nbsp;</td>
+							<td>initializeExitSides</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>BlankCellTestCase</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>BlankCellTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testCellExitSides</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>BlankCellTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testCellLaserActivity</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>BlankCellTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testCellOnState</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>BlankCellTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testCellSegmentsState</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>CellClickInsideRegionPushTestCase</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>CellClickInsideRegionPushTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testClicksInPushRegions</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>CellClickOutsideRegionRotateTestCase</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>CellClickOutsideRegionRotateTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testClicksInRotateRegions</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>CellClickRegionTestCase</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>CellClickRegionTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testClicksInIgnoreRegion</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>CellClickRegionTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testClicksInInsideRegion</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>CellClickRegionTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testClicksInOutsideRegion</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>CellRendererTestCase</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>CellRendererTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testCellOffsetCalculations</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>CellRendererTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testRenderSelection</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridDirectionTestCase</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridDirectionTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testDirectionSelection</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridTestCase</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>generateDemoGrid</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testCellInteractions</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testFireLaser</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testFireLaserAfterMirrorPush</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testFireLaserAfterMirrorRotation</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testFireLaserDuringMirrorPush</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testFireLaserDuringMirrorRotation</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testInitialConditions</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testNonDefaultGridSizeConditions</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testPushBlankCell</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testPushIsolatedMirrorCellEastCase1</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testPushIsolatedMirrorCellEastCase2</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testPushIsolatedMirrorCellNorthCase1</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testPushIsolatedMirrorCellNorthCase2</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testPushIsolatedMirrorCellSouth</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testPushIsolatedMirrorCellWest</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testPushTargetCell</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testStopLaser</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>GridTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testToggleLaser</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>MirrorCellTestCase</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>MirrorCellTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testCellExitSidesMirrorLeft</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>MirrorCellTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testCellExitSidesMirrorRight</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>MirrorCellTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testCellLaserActivityMirrorLeft</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>MirrorCellTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testCellLaserActivityMirrorRight</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>MirrorCellTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testCellOnState</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>MirrorCellTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testCellRotate</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>MirrorCellTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testCellSegmentsState</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>TargetCellTestCase</td>
+							<td class="defined">Yes</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>TargetCellTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testCellExitSides</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>TargetCellTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testCellLaserActivity</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>TargetCellTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testCellOnState</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Laser-Game-Tests</td>
+							<td>TargetCellTestCase</td>
+							<td class="defined">&nbsp;</td>
+							<td>testCellSegmentsState</td>
+							<td>&nbsp;</td>
+						</tr>
+					</tbody>
+				</table>
+				<p>
+					If you've been following along, you should also have a saved
+					Monticello package of your work.  Although a Change Set
+					exists we're going to make use of Monticello packages
+					from this point forward.
+					A link to the proper version of the Monticello package you
+					should have loaded can be found
+					<a href="sources/Laser-Game-sbw.1.mcz"> here </a>.
+					If you've been carefully following along, you do not
+					need to load this package.  If you think you have gotten
+					completely lost, you can download the package file, save it to
+					your hard drive some where and then use Squeak's File List
+					to install the Monticello package.  It will install the proper code.
+				</p>
+			</div>
+			<div id="paging">
+				<a class="index" href="index.html">Index Page</a>
+				<a class="forward" href="130.html">Next Page</a>
+				<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a>
+				</p>
+			</div>
+		</div>
+	</body>
+</html>

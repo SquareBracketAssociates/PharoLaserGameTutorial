@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 4</p>
+			<div id="content">
+		<h3>Add A Counter and Window Colors</h3>
+		<p>
+			It's time to add some really slick looking features.
+			I want to jazz-up the colors of the interface and add
+			an LED panel that shows how long the
+			laser beam path is while you are playing.
+			A little bit of "eye candy" is always a good thing when
+			creating a game.
+		</p>
+		<p class="note">
+			Close any LaserGame morphs you have open before beginning the next section.
+			We're going to change the layout and colors of a few essential components
+			and you could get confusing results if a "live" morph was trying to
+			repaint while we change this code.
+		</p>
+		<p>
+			The first thing I want to do is add a small margin all the
+			way around our game.  Make the rectangle that holds the control
+			panel and game board slightly larger with a margin, or border, all
+			the way around.
+			We will begin by adding code to the LaserGame class.
+			Here's the first new method.  Add this instance method to the LaserGame class.
+		</p>
+		<p class="code">
+			<b>gameMargin</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^4
+		</p>
+		<p>
+			Modify the #calculatedExtent method to account for this new margin around our morphs.
+		</p>
+		<p class="code">
+			<b>calculatedExtent</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| pt |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pt := self boardForm extent.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pt := pt + (self panelWidth@0).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;pt := pt + (2 * self gameMargin).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^pt
+		</p>
+		<p>
+			Since we're about to add some new control features, we should
+			perform some light refactoring.  Add this new instance method to
+			LaserGame class.
+		</p>
+		<p class="code">
+			<b>addButtonsToPanel: panel</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| buttonHeight vertOffsetTop vertOffsetBtm |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;buttonHeight := 26.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;vertOffsetTop := 10 + buttonHeight + 10 + buttonHeight.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;vertOffsetBtm := 10 + buttonHeight + 10.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;panel<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;addMorph: self makeFireLaserButton<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fullFrame: (LayoutFrame<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fractions: (0 @ 1 corner: 1 @ 1)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;offsets: (<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(20 @ (vertOffsetTop negated)) <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;corner: (-20 @ (vertOffsetBtm negated)))).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;vertOffsetTop := 10 + buttonHeight.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;vertOffsetBtm := 10.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;panel<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;addMorph: self makeQuitGameButton<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fullFrame: (LayoutFrame<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fractions: (0 @ 1 corner: 1 @ 1)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;offsets: (<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(20 @ (vertOffsetTop negated))<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; corner: (-20 @ (vertOffsetBtm negated)))).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^panel
+		</p>
+		<p>
+			We are pulling the code to add the buttons into a separate method.
+			Now we modify the #makeControlPanelMorph method.
+		</p>
+		<p class="code">
+			<b>makeControlPanelMorph</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| panel |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;panel := RectangleMorph new borderWidth: 0;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; color: Color white;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; layoutPolicy: ProportionalLayout new.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self addButtonsToPanel: panel.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^panel
+		</p>
+		<p>
+			Next we change #setupMorphs.  I want to move the control panel to be on the left side
+			and the game board on the right.  We also need to account for the "gameMargin" here.
+		</p>
+		<p class="code">
+			<b>setupMorphs</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self layoutPolicy: ProportionalLayout new.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;addMorph: self makeControlPanelMorph<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fullFrame: (LayoutFrame<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fractions: (0 @ 0 corner: 0 @ 1)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;offsets: (self gameMargin @ self gameMargin<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;corner: (self gameMargin + self panelWidth) @ self gameMargin negated)).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;addMorph: self makeGameBoardMorph<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fullFrame: (LayoutFrame<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fractions: (0 @ 0 corner: 1 @ 1)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;offsets: ((self gameMargin + self panelWidth) @ self gameMargin <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;corner: self gameMargin negated @ self gameMargin negated)).
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="140.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

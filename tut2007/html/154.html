@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 4</p>
+		<div id="content">
+		<p>
+			We can use these new mask forms for drawing our laser beam.
+			The masks will have to be saved.
+			We can use the same technique as before.
+		</p>
+		<p>
+			Before we destroy the contents of our workspace we
+			should probably save this.  It's pretty handy if we want to go
+			back and create the mask forms again in the future.
+			We didn't really create any sort of utility classes so far.
+			The GridFactory class is kind of a utility class but it's used
+			to create our random grids now.  I think we can just add a new
+			class method on the LaserGameForms class where we can safely put
+			this workspace code.
+			Don't close the workspace yet.
+			Open up a class hierarchy browser on the LaserGameForms and
+			save this new class method.
+		</p>
+		<p class="code">
+			<b>extractLaserBeamMaskForms</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;"LaserGameForms extractLaserBeamMaskForms"<br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| beamForm newExtent splatterForm centerForm color splatterMask centerMask |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self initializeCachedForms.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;beamForm := LaserGameForms laserBeam.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;newExtent := beamForm extent * (2@1).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;splatterForm := Form extent: newExtent depth: beamForm depth.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;centerForm := Form extent: newExtent depth: beamForm depth.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;beamForm displayOn: splatterForm at: 0@0.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;beamForm displayOn: centerForm at: 0@0.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;(beamForm flipBy: #horizontal centerAt: 0@0)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;displayOn: splatterForm at: (beamForm width@0);<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;displayOn: centerForm at: (beamForm width@0).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;color := splatterForm colorAt: 10@60.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;splatterForm replaceColor: color withColor: Color white.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;centerForm replaceColor: color withColor: Color white.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;splatterMask := (splatterForm makeBWForm: Color white) reverse.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;color := beamForm colorAt: 10@90.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;centerForm replaceColor: color withColor: Color black.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;centerMask := centerForm makeBWForm: Color black.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;splatterForm displayAt: 10@0.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;splatterMask displayAt: 10@200.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;centerMask displayAt: 10@400.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;color := beamForm colorAt: 10@80.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;splatterMask<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;displayOn: Display<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;at: 10@560<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clippingBox: Display boundingBox<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule: Form oldPaint<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fillColor: color.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;centerMask<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;displayOn: Display<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;at: 10@560<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clippingBox: Display boundingBox<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule: Form oldPaint<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fillColor: (Color r: 0.909 g: 1.0 b: 0.27)
+		</p>
+		<p>
+			Open up the Transcript window and make sure it's empty.  We'll modify
+			our workspace to dump the mask forms onto the Transcript.  Try this in
+			your workspace.
+		</p>
+		<p class="code">
+			LaserGameForms initializeCachedForms.<br>
+			beamForm := LaserGameForms laserBeam.<br>
+			newExtent := beamForm extent * (2@1).<br>
+			splatterForm := Form extent: newExtent depth: beamForm depth.<br>
+			centerForm := Form extent: newExtent depth: beamForm depth.<br>
+			beamForm displayOn: splatterForm at: 0@0.<br>
+			beamForm displayOn: centerForm at: 0@0.<br>
+			(beamForm flipBy: #horizontal centerAt: 0@0)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;displayOn: splatterForm at: (beamForm width@0);<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;displayOn: centerForm at: (beamForm width@0).<br>
+			color := splatterForm colorAt: 10@60.<br>
+			splatterForm replaceColor: color withColor: Color white.<br>
+			centerForm replaceColor: color withColor: Color white.<br>
+			splatterMask := (splatterForm makeBWForm: Color white) reverse.<br>
+			color := beamForm colorAt: 10@90.<br>
+			centerForm replaceColor: color withColor: Color black.<br>
+			centerMask := centerForm makeBWForm: Color black.<br>
+			Transcript<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;show: 'drawSplatterLaserBeamMask'; cr;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;show: '    ^'.<br>
+			splatterMask storeOn: Transcript.<br>
+			Transcript<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;show: ''; cr.
+		</p>
+		<p>
+			This is a <i>little different</i> from before.  We saved some work
+			by having the method code written <i>complete</i>
+			to the Transcript.  Select the code from the Transcript
+			window and paste in as a new class method on the LaserGameForms
+			class.
+		</p>
+		<p>
+			Clear the contents of the Transcript and try this in your workspace and execute it.
+		</p>
+		<p class="code">
+			LaserGameForms initializeCachedForms.<br>
+			beamForm := LaserGameForms laserBeam.<br>
+			newExtent := beamForm extent * (2@1).<br>
+			splatterForm := Form extent: newExtent depth: beamForm depth.<br>
+			centerForm := Form extent: newExtent depth: beamForm depth.<br>
+			beamForm displayOn: splatterForm at: 0@0.<br>
+			beamForm displayOn: centerForm at: 0@0.<br>
+			(beamForm flipBy: #horizontal centerAt: 0@0)<br>
+			displayOn: splatterForm at: (beamForm width@0);<br>
+			displayOn: centerForm at: (beamForm width@0).<br>
+			color := splatterForm colorAt: 10@60.<br>
+			splatterForm replaceColor: color withColor: Color white.<br>
+			centerForm replaceColor: color withColor: Color white.<br>
+			splatterMask := (splatterForm makeBWForm: Color white) reverse.<br>
+			color := beamForm colorAt: 10@90.<br>
+			centerForm replaceColor: color withColor: Color black.<br>
+			centerMask := centerForm makeBWForm: Color black.<br>
+			Transcript<br>
+			show: 'drawCenterLaserBeamMask'; cr;<br>
+			show: '    ^'.<br>
+			centerMask storeOn: Transcript.<br>
+			Transcript<br>
+			show: ''; cr.
+		</p>
+		<p>
+			Again, copy the contents of the Transcript window and paste them in as a new class
+			method on the LaserGameForms class.
+		</p>
+		<p>
+			We're done with the Transcript window and your workspace.  You can close them both.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="155.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

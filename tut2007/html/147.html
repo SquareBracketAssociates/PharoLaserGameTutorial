@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 4</p>
+		<div id="content">
+		<h3>A Bigger Game Board</h3>
+		<p>
+			Our next enhancement will deal with making the game board larger.  We're
+			going to be enhancing the GridFactory class mostly.
+			Begin with this new class method on the GridFactory class.
+		</p>
+		<p class="code">
+			<b>randomizedGridOfExtent: ext</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| grid |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;grid := Grid newOfSize: ext.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self randomizeGrid: grid targetAt: ((ext x)@1).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^grid
+		</p>
+		<p>
+			Now we should refactor the #initialize instance method on our LaserGame class.
+			We will begin by adding the following method to LaserGame.
+		</p>
+		<p class="code">
+			<b>initializeForGrid: aGrid</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;super initialize.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self moves: 0.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self grid: aGrid.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self boardForm: (Form extent: (self class boardExtentFor: self grid) depth: Display depth).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self boardForm fillColor: LaserGameColors gameBoardBackgroundColor.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self setExtent.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self setupMorphs.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self drawGameBoard.
+		</p>
+		<p>
+			The #initializeForGrid: method is a lot like the old #initialize method except it
+			assumes it's being handed a Grid.
+			Here's the change to our #initialize method to use this new <i>worker</i> method.
+		</p>
+		<p class="code">
+			<b>initialize</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self initializeForGrid: GridFactory demoGrid
+		</p>
+		<p>
+			Add the following new class method to LaserGame.
+		</p>
+		<p class="code">
+			<b>randomizedGridOfExtent: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| model grid |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;model := self basicNew.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;grid := GridFactory randomizedGridOfExtent: aPoint.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;model initializeForGrid: grid.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^model
+		</p>
+		<p>
+			We need to modify the #emptyRandomLocationsFor: class method on
+			GridFactory to ensure that the target cell is
+			now always located in the top-most row and corner of any sized game board.
+		</p>
+		<p class="code">
+			<b>emptyRandomLocationsFor: aGrid</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| dict |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;dict := Dictionary new.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;1 to: aGrid numberOfColumns do: [:x |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1 to: aGrid numberOfRows do: [:y |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| pt |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pt := x@y.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dict at: pt put: false]].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;dict at: (aGrid numberOfColumns)@1 put: true.  "Target Cell"<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^dict
+		</p>
+		<p>
+			Create a new class method in GridFactory.
+		</p>
+		<p class="code">
+			<b>randomizeGrid: aGrid targetAt: pt</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| emptyList loc howMany |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;emptyList := self emptyRandomLocationsFor: aGrid.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;aGrid at: pt put: TargetCell new.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;howMany := ((aGrid numberOfColumns * aGrid numberOfRows) / 2.5) rounded.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;howMany timesRepeat: [<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loc := self unusedRandomLocationIn: emptyList forGrid: aGrid.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aGrid at: loc put: self randomizedMirrorCell]
+		</p>
+		<p>
+			Note how we attempt to calculate a reasonable number of mirror cells based uponb
+			the size of the grid.  Now we modify the #randomizeGrid: class method on GridFactory
+			to use our new method.
+		</p>
+		<p class="code">
+			<b>randomizeGrid: aGrid</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self randomizeGrid: aGrid targetAt: (aGrid numberOfColumns@1)
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="148.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

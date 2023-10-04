@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 3</p>
+			<div id="content">
+				<p>
+					If we were to do the same thing for our mouse-up event, the LaserGame morph would determine
+					which renderer should have the request.  That renderer determines which click region handles the request
+					and then the actual mouse event activity is resolved.
+				</p>
+				<p>
+					We begin by writing a new mouse-up handling method on our LaserGame class.
+				</p>
+				<img src="images/555.jpg">
+				<p>
+					The method #mouseUpWithinBoardOffset: has not been defined yet.
+				</p>
+				<p>
+					Modify the #mouseUp:forMorph: method to use this instead of logging diagnostics.
+				</p>
+				<img src="images/556.jpg">
+				<p>
+					Obviously our renderer hierarchy needs to handle the #mouseUpWithinBoardOffset: method send.
+					The parent renderer superclass does nothing.  Only the mirror renderer will deal with this
+					request for now.
+				</p>
+				<img src="images/557.jpg">
+				<p>
+					Here is the code for our mirror cell renderer.  We're not done here yet.
+				</p>
+				<img src="images/558.jpg">
+				<p>
+					The temporary variable "regionClass" is defined but currently unused.
+				</p>
+				<p>
+					We're now at the point where we know which click-region is involved.
+					A mouse-up event in the outer region would produce a rotate action.
+					A mouse-up event in the inner region would produce a push action.
+					Also, the MirrorCellRenderer knows about the cell object.  The click-region classes
+					do not.  If we want to maintain polymorphism and delegate our click logic "down"
+					we will have to give the cell object information to the click-region in the message we
+					generate.
+				</p>
+				<p>
+					We begin implementing the handling of the event in the
+					CellClickRegion.  Note this is a <i>class</i> method.
+					This guy will do nothing.  All the work will happen in the subclasses.
+				</p>
+				<img src="images/559.jpg">
+				<p>
+					Here is the code for the handling within the outside click region.
+					Note the method #mouseUpForCell: still needs to be written.
+				</p>
+				<img src="images/560.jpg">
+				<p>
+					The method #mouseUpForCell: has not been written yet.
+				</p>
+				<p>
+					The inside region.  We'll leave off the sending of the #mouseUpForCell:
+					message here since we're not ready to deal with cell push just yet.
+				</p>
+				<img src="images/561.jpg">
+			</div>
+			<div id="paging">
+				<a class="index" href="index.html">Index Page</a>
+				<a class="forward" href="115.html">Next Page</a>
+				<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a>
+				</p>
+			</div>
+		</div>
+	</body>
+</html>

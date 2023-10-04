@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 2</p>
+			<div id="content">
+		<h3>The Smalltalk-Way To Do A Case Statement</h3>
+		<h4>Introduction</h4>
+		<p>
+			While working on the previous section of code a very useful design concept
+			may have gone unnoticed.  If you've been creating Object Oriented designs for
+			a while you may already be doing this sort of thing.  But since this is a
+			tutorial,
+			I want to go back and review why we did something the way we
+			did.
+		</p>
+		<h4>Traditional Approach</h4>
+		<p>
+			There was a place in the code where we had to be able to decide which
+			direction symbol
+			to use for an adjacent cell.  In a traditional programming style we could
+			have
+			expressed this as:
+		</p>
+		<p class="code">
+			Cell>>adjacentInversionSymbolToUseFor: ourDirectionSymbol<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;ourDirectionSymbol = #east ifTrue: [^#west].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;ourDirectionSymbol = #north ifTrue: [^#south].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;ourDirectionSymbol = #west ifTrue: [^#east].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;ourDirectionSymbol = #south ifTrue: [^#north].<br>
+		</p>
+		<p>
+			You may recognize this code as a <i>"switch"</i> or <i>"case"</i> statement.  I've even
+			seen
+			a Smalltalk developer once "enhance" his development environment by
+			providing
+			a "case" statement.
+		</p>
+		<h4>Applying A Class Hierarchy</h4>
+		<p>
+			There's another approach.  We created a hierarchy of classes that
+			represented the
+			four directions.  These classes will continue to be used and extended, based
+			upon
+			what we have done so far.  The hierarchy was written to look like this:
+		</p>
+		<p class="code">
+			Object<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;GridDirection<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GridDirectionEast<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GridDirectionNorth<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GridDirectionSouth<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GridDirectionWest<br>
+		</p>
+		<p>
+			When we used this hierarchy we did something like this:
+		</p>
+		<p class="code">
+			Cell>>adjacentInversionSymbolToUseFor: ourDirectionSymbol<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| direction |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;direction := GridDirection directionFor: ourDirectionSymbol.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^direction adjacentInversionSymbol<br>
+		</p>
+		<p>
+			We could have even written something more direct like:
+		</p>
+		<p class="code">
+			Cell>>adjacentInversionSymbolToUseFor: ourDirectionSymbol<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^GridDirection adjacentInversionSymbol: ourDirectionSymbol<br>
+		</p>
+		<h4>How Does It Work?</h4>
+		<p>
+			So how did that work?  We have a common abstract class to handle the
+			queries
+			that would select one of the directions for us.  The first thing we
+			did was assign a class method to each of the direction subclasses that
+			answered their unique direction symbol.
+		</p>
+		<p class="code">
+			GridDirectionEast class>>directionSymbol<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^#east<br>
+			<br>
+			GridDirectionNorth class>>directionSymbol<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^#north<br>
+			<br>
+			GridDirectionSouth class>>directionSymbol<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^#south<br>
+			<br>
+			GridDirectionWest class>>directionSymbol<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^#west<br>
+		</p>
+		<p>
+			Then we added a class method that made it easy to find the correct
+			direction class.
+		</p>
+		<p class="code">
+			GridDirection class>>directionFor: aSymbol<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^self subclasses detect: [:cls | cls directionSymbol = aSymbol]<br>
+		</p>
+		<p>
+			Now if each of the subclasses responds to the polymorphic request
+			#adjacentInversionSymbol...
+		</p>
+		<p class="code">
+			GridDirectionEast class>>adjacentInversionSymbol<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^#west<br>
+			<br>
+			GridDirectionNorth class>>adjacentInversionSymbol<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^#south<br>
+			<br>
+			GridDirectionSouth class>>adjacentInversionSymbol<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^#north<br>
+			<br>
+			GridDirectionWest class>>adjacentInversionSymbol<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^#east<br>
+		</p>
+		<p>
+			We could have added a single class method on GridDirection to do the
+			direct operation.
+		</p>
+		<p class="code">
+			GridDirection class>>adjacentInversionSymbol: aSymbol<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^(self directionFor: aSymbol) adjacentInversionSymbol<br>
+		</p>
+		<h4>Handling Default And Unmatched</h4>
+		<p>
+			What about the default or unmatched case that you often see in a switch
+			statement?
+			The unmatched case could be handled by GridDirection.
+			Now we enhance the #directionFor: code.
+		</p>
+		<p class="code">
+			GridDirection class>>directionFor: aSymbol<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^self subclasses detect: [:cls | cls directionSymbol = aSymbol]
+			ifNone: [self]<br>
+		</p>
+		<p>
+			This way if no one has a matching direction symbol (maybe we were sent #foo
+			as a direction to check)
+			the GridDirection itself will get the request.  Then we write whatever
+			default behavior
+			we want.
+		</p>
+		<p class="code">
+			GridDirection class>>adjacentInversionSymbol<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^#noneYouIdiot<br>
+		</p>
+		<p>
+			And for the default case?  That's easy too.  Again you could just let
+			GridDirection answer
+			for anyone if they didn't have an answer of their own.  For example, maybe
+			only north,
+			south should have their own unique answers.  Everyone else maybe should
+			default to #east.
+		</p>
+		<p>
+			Delete the #adjacentInversionSymbol class methods from GridDirectionEast
+			and GridDirectionWest.
+			Then provide a default answer on GridDirection.
+		</p>
+		<p class="code">
+			GridDirection class>>adjacentInversionSymbol<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^#north<br>
+		</p>
+		<p>
+			If you want both unmatched and defaults, add a class to handle one of them.
+		</p>
+		<p class="code">
+			Object<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;GridDirection<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GridDirectionEast<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GridDirectionNorth<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GridDirectionSouth<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GridDirectionWest<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GridDirectionUnmatched<br>
+		</p>
+		<p>
+			Change the #directionFor: code again.
+		</p>
+		<p class="code">
+			GridDirection class>>directionFor: aSymbol<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^self subclasses detect: [:cls | cls directionSymbol = aSymbol]
+			ifNone: [GridDirectionUnmatched]<br>
+		</p>
+		<p>
+			Now you can implement special behavior for unmatched answers and/or let
+			them fall back up to GridDirection
+			for a default if you want.
+		</p>
+		<h4>Back To The Tutorial</h4>
+		<p>
+			Okay, I just wanted to take a break here and share a bit about
+			how we used classes to handle (and avoid) a bunch of ifTrue/ifFalse situations.
+			Back to our project...
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="049.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

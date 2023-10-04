@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 3</p>
+			<div id="content">
+		<p>
+			Revisiting the push points diagram and truth-table for point 20@10...
+		</p>
+		<table>
+			<thead>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<img src="images/411.jpg">
+					</td>
+					<td>
+						<table>
+							<caption class="caption2">Truth-Table</caption>
+							<thead>
+								<tr>
+									<th>Line</th>
+									<th>Push North</th>
+									<th>Push East</th>
+									<th>Push South</th>
+									<th>Push West</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td><img class="embedded" src="images/heading-up-small.jpg"></td>
+									<td>Over</td>
+									<td>Over</td>
+									<td>Under</td>
+									<td>Under</td>
+								</tr>
+								<tr>
+									<td><img class="embedded" src="images/heading-down-small.jpg"></td>
+									<td>Over</td>
+									<td>Under</td>
+									<td>Under</td>
+									<td>Over</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			The point 20@10 clearly falls under the "heading-up" line.
+			So the question is does point 20@10 fall under or on the "heading down" line?
+			The code we wrote does a "&lt;" check to see if the point falls underneath.
+		</p>
+		<img src="images/424.jpg">
+		<p>
+			So a point on the line would not be under it.  Therefore, consulting our truth-table, the point
+			should result in a West push.  And that's exactly what the code did.
+		</p>
+		<img src="images/425.jpg">
+		<p>
+			The unit test is wrong.  Fix the error and other point errors you may get
+			when you re-run the unit tests.  In each case you should use the above
+			technique to validate if the code is wrong or the unit test is wrong.
+		</p>
+		<p>
+			After we correct several points in the unit test everything now passes.  Here's
+			the updated version of our test code.
+		</p>
+		<img src="images/426.jpg">
+		<img src="images/427.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="092.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

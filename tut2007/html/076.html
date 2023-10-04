@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 3</p>
+			<div id="content">
+		<p>
+			Write the following method for all three click region classes.
+		</p>
+		<img src="images/339.jpg">
+		<img src="images/340.jpg">
+		<img src="images/341.jpg">
+		<p>
+			Now that we have rectangle defined for each click region class,
+			it should be easy to write the method that finds the correct one.
+		</p>
+		<img src="images/342.jpg">
+		<p>
+			There's a pretty good chance that solution will not work
+			for every case.  It's easy to see that the inside region, outside
+			region and ignore region will all say they "own" a test point
+			sufficiently close to the center.
+		</p>
+		<p>
+			The solution is to control the prioritization of the click region subclasses
+			as they claim a point within the cell.
+			The inside-most click-region should be first in order, the ignore region last.
+			We can implement methods that provide this prioritization as follows.
+		</p>
+		<img src="images/398.jpg"><br>
+		<img src="images/399.jpg"><br>
+		<img src="images/400.jpg">
+		<p>
+			The methods to answer the sorted priority-ordered click-region classes
+			and the new code to use the priorities looks like this:
+		</p>
+		<img src="images/401.jpg"><br>
+		<img src="images/402.jpg">
+		<p>
+			The unit test work we have yet to do will draw this design detail out.
+			Let's run what we have so far.
+		</p>
+		<img src="images/343.jpg">
+		<p>
+			So far, the easy case worked.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="077.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

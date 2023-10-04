@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 3</p>
+			<div id="content">
+		<p>
+			Open the debugger from the unit test runner window.
+		</p>
+		<img src="images/591.jpg">
+		<p>
+			Restart that method, stepping over intermediate methods with the "Over"
+			button until we get to #rotateClockwise method.
+		</p>
+		<img src="images/592.jpg">
+		<p>
+			Step "Into" that method.  We need to see what's happening when a mirror is rotated
+			while the laser is active.
+		</p>
+		<p>
+			As you start stepping through the #rotate code you'll realize that all it does it
+			rotate the mirror.  There's nothing about the laser's path getting recalculated
+			because the mirror changed state.
+		</p>
+		<p>
+			The design of a Cell doesn't include any awareness of the Grid.  We need to implement
+			cell rotation methods on the grid and have the grid rotate the cell and deal with
+			the consequences of that action.  We'll have to write some new methods and do a little
+			refactoring.  When we are done all the unit tests should pass.  Here's the first new
+			method for our Grid class.
+		</p>
+		<img src="images/593.jpg">
+		<p>
+			The counter-clockwise method is similar.
+		</p>
+		<p class="code">
+			<b>rotateCellCounterClockwiseAt: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;(self at: aPoint) rotateCounterClockwise
+		</p>
+		<p>
+			This does cause us to re-visit the rotate methods we wrote.  At this time
+			they only exist on the mirror cells.  We can leave those there because they
+			in-fact will be rotated.  Since the other cells do not rotate we can implement
+			a simple stub method that does nothing on the generic Cell superclass.
+		</p>
+		<img src="images/594.jpg">
+		<p>
+			And the counter-clockwise example...
+		</p>
+		<img src="images/595.jpg">
+		<p>
+			We'll change the two Unit Tests that perform rotation checks of a cell within a grid to
+			that these methods use the new protocol.  However, we still need to address the side-effects
+			issues for the grid's other cells before the unit tests are expected to work.
+		</p>
+		<img src="images/596.jpg">
+		<p>
+			Here's the change to the other test method.
+		</p>
+		<p class="code">
+			<b>testFireLaserDuringMirrorRotation</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| grid cell |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;grid := self generateDemoGrid.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;grid fireLaser.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [grid laserIsActive].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid startingCell.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOn].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid at: 5@1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOn].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid at: 4@1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;grid rotateCellCounterClockwiseAt: cell gridLocation.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOn].<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;cell := grid at: 5@1.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self should: [cell isOff].
+		</p>
+		<p>
+			Note that we changed this second test a little by sending the rotate
+			counter-clockwise message instead.  This should not change the state of the
+			unit test but does cause us to have unit tests for both rotation methods.
+		</p>
+		<p>
+			Now we go back to our new rotation methods on grid and handle changes to other cells
+			because of the possible state of the laser.
+		</p>
+		<p class="code">
+			<b>rotateCellClockwiseAt: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self clearCellsInPath.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;(self at: aPoint) rotateClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self laserIsActive ifTrue: [self activateCellsInPath]<br>
+			<br>
+			<br>
+			<b>rotateCellCounterClockwiseAt: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self clearCellsInPath.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;(self at: aPoint) rotateCounterClockwise.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self laserIsActive ifTrue: [self activateCellsInPath]
+		</p>
+		<p>
+			Now when you run the unit tests, everything passes.  The next step is to use this same new
+			protocol in the LaserGame morph when we rotate cells.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="121.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

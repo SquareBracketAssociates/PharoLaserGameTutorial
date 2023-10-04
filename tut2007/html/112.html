@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 3</p>
+			<div id="content">
+		<p>
+			Change the class definition for the LaserGame.  We will add a new instance variable
+			to the identifying the location of the active cell.  This behavior does not belong
+			on the model.  It's part of the GUI behavior and belongs on the morph.
+		</p>
+		<img src="images/548.jpg">
+		<p>
+			We can get rid of the mouse-down-while-moving log.  Then add some accessors
+			for our new instance variable.
+		</p>
+		<img src="images/549.jpg"><br>
+		<img src="images/550.jpg"><br>
+		<img src="images/551.jpg">
+		<p>
+			Now change the mouse-down method to detect which cell it is and then
+			save away the location.
+		</p>
+		<img src="images/552.jpg">
+		<p>
+			Now we can use this new information to see if the mouse-up event is
+			on the same cell.
+		</p>
+		<img src="images/553.jpg">
+		<p>
+			Experiment with your LaserGame morph and watch the Transcript.
+			We are correctly detecting the mouse-up event and know when it's the cell
+			we started with.
+		</p>
+		<img src="images/554.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="113.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

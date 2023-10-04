@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 4</p>
+			<div id="content">
+		<p>
+			We also need to change the #boardRelativePositionFor to account for how we moved the
+			control panel and the new margins.
+		</p>
+		<p class="code">
+			<b>boardRelativePositionFor: evt</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| evtPosn |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;evtPosn := evt hand position.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^evtPosn - self position - ((self gameMargin + self panelWidth) @ self gameMargin)
+		</p>
+		<p>
+		Now we're going to modify colors.  Let's start with the easy one.
+		I want the cells to be drawn with a white border.
+		Modify the #cellBorderColor class method on the
+		LaserGameColors class as follows.
+		<p class="code">
+			<b>cellBorderColor</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^Color white
+		</p>
+		<p>
+			Now we go back to the LaserGame class and modify how the game looks.
+			Add these new instance methods.
+		</p>
+		<p class="code">
+			<b>windowColorRamp</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^ {0.0 -> (Color r: 0.3 g: 0.8 b: 0.9).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.0 -> (Color r: 0.2 g: 0.1 b: 0.7)}
+		</p>
+		<p class="code">
+			<b>setWindowColors</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self color: (Color<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;r: 0.369<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g: 0.369<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b: 0.505).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self fillWithRamp: self windowColorRamp oriented: 0.3@0.8
+		</p>
+		<p>
+			Now we modify the #xxx instance method on the LaserGame class to use these new
+			color setup methods.
+		</p>
+		<p class="code">
+			<b>setupMorphs</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self layoutPolicy: ProportionalLayout new.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self setWindowColors.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;addMorph: self makeControlPanelMorph<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fullFrame: (LayoutFrame<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fractions: (0 @ 0 corner: 0 @ 1)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;offsets: (self gameMargin @ self gameMargin<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;corner: (self gameMargin + self panelWidth) @ self gameMargin negated)).<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;addMorph: self makeGameBoardMorph<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fullFrame: (LayoutFrame<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fractions: (0 @ 0 corner: 1 @ 1)<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;offsets: ((self gameMargin + self panelWidth) @ self gameMargin <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;corner: self gameMargin negated @ self gameMargin negated)).
+		</p>
+		<p>
+			One last step for changes to the colors of the game morph.
+			Modify the #makeControlPanelMorph method so that it is no longer white.
+		</p>
+		<p class="code">
+			<b>makeControlPanelMorph</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;| panel |<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;panel := RectangleMorph new borderWidth: 0;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; color: Color transparent;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; layoutPolicy: ProportionalLayout new.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;self addButtonsToPanel: panel.<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^panel
+		</p>
+		<p>
+			Okay.  Open up a new LaserGame morph and let's have a look.
+		</p>
+		<img src="images/673.jpg">
+		<p>
+			We're not done.  Close the morph before continuing.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="141.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

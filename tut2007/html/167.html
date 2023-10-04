@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 4</p>
+			<div id="content">
+				<p>
+					Check the results.
+				</p>
+				<img src="images/713.jpg">
+				<img src="images/714.jpg">
+				<p>
+					Note that I made the magnifaction morph a lot larger to be able to see
+					the entire contents of a mirror cell at once.
+				</p>
+				<p>
+					I like a couple of things I see here.  The laser beam drawings end
+					exactly half-way through the border surrounding our cells.  That's great.
+					It also looks like we will have to change how we draw the center beams
+					so that they are both drawn last, but before the mirror is redrawn.
+				</p>
+				<p>
+					Try this simple change in our MirrorCellRenderer and observe the results.
+				</p>
+				<p class="code">
+					<b>renderLaser</b><br>
+					&nbsp;&nbsp;&nbsp;&nbsp;self cell isOff ifTrue: [^self].<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;self renderLaserVertical.<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;self renderLaserHorizontal.<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;self renderLaserVerticalCenter.<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;self renderMirror.
+				</p>
+				<img src="images/715.jpg">
+				<img src="images/716.jpg">
+				<p>
+					The enlarged view confirms that our laser beams are not properly centered
+					in the cells.
+				</p>
+			</div>
+			<div id="paging">
+				<a class="index" 168="index.html">Index Page</a>
+				<a class="forward" href="168.html">Next Page</a>
+				<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a>
+				</p>
+			</div>
+		</div>
+	</body>
+</html>

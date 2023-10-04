@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 3</p>
+		<div id="content">
+		<h3>Detecting Mirror Cell Click Regions</h3>
+		<p>
+			Back to work.
+			Where we last left off we had just detected when a mouse was over
+			cells on the game board.  Let's do some more work with the mouse-over
+			code.
+		</p>
+		<img src="images/368.jpg">
+		<p>
+			That #showPositionHintFromWithinBoardOffset: hasn't been written yet.
+			It would be useful for the user if we could draw a "hint" about what can
+			happen when the user clicks over various positions.  The "hint" will
+			eventually be visual.
+		</p>
+		<p>
+			Note that we're using polymorphism here.  The message will
+			be sent to every cell renderer.  Individual renderers can decide what
+			to do when they receive the message.  The Mirror Cells,
+			the renderers actually, are the only ones we expect to care about
+			this message for now.
+		</p>
+		<p>
+			We should implement this on the CellRenderer superclass and then
+			let any interested subclasses apply code as needed.
+		</p>
+		<img src="images/369.jpg">
+		<p>
+			Here's what the Mirror Cell Renderer will do with this message.
+		</p>
+		<img src="images/370.jpg">
+		<p>
+			For the moment, let's log on the Transcript two things
+			each time we get one of these events/messages.
+			Log the relative position within the cell itself and
+			show which click-region claims the point.
+			Make sure you have a Transcript window and our LaserGame morph open
+			and try this out.  Hover the mouse around several cells and carefully
+			move within the cell to see the regions respond.
+		</p>
+		<img src="images/371.jpg">
+		<p>
+			This looks promising.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="081.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

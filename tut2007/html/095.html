@@ -1,0 +1,64 @@
+<!-- Localized -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 3</p>
+		<div id="content">
+		<h3>Using "Halt Once"</h3>
+		<p>
+			My concern here, as we saw when logging to the Transcript earlier, is that
+			we will receive many "hint" messages in a row.  Until we are sure this works, we
+			really only want to draw the tiny arrow once.  So we need to write a little
+			"trap" into our code so that we only draw the hint arrow the first time.
+		</p>
+		<p>
+			When I began to write Graphical User Interface code with Digitalk's much loved
+			Smalltalk/V back in the late 1980's, I wrote a troubleshooting enhancement
+			called "Halt Once".  In 2004 I published it for
+			the Squeak community.  The original enhancement code for Squeak can still be found
+			<a href="../../index.html">here</a>.  However you do not need to install it.
+			It's now built-in to Squeak 3.9.  We're going to use it.
+		</p>
+		<p>
+			Instead of adding "self halt" to the code, we add "self haltOnce".  Like this.
+		</p>
+		<img src="images/448.jpg">
+		<p>
+			To turn it on we "enable" it from the debug menu.
+		</p>
+		<img src="images/449.jpg">
+		<img src="images/450.jpg">
+		<p>
+			When the code executes it will halt the first time it hits this statement.  It then
+			immediately disables the Halt Once switch and allows later passes through the code
+			to resume without stopping.  Hence, we'll get to see the state of things the first time
+			an arrow is called-up.
+		</p>
+		<p>
+			By the way,
+			you can always see the state of the Halt Once flag by examining the debug menu.
+			If the trigger is set the menu will show the option to turn it off.
+		</p>
+		<img src="images/451.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="096.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

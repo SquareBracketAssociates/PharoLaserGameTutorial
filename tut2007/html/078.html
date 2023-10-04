@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 3</p>
+		<div id="content">
+		<h3>Handle Mouse Events</h3>
+		<p>
+			To send mouse clicks to the cells we will need to
+			intercept certain mouse actions in our LaserGame morph
+			while the cursor is over the game board.  We can register
+			several interesting events for our game board SketchMorph
+			and handle them within our LaserGame morph.
+			We can intercept and process:
+		</p>
+		<ul>
+			<li>mouse down</li>
+			<li>mouse up</li>
+			<li>mouse enter</li>
+			<li>mouse leave</li>
+			<li>mouse move while button down</li>
+			<li>mouse move while button up</li>
+		</ul>
+		<p>
+			Modify the method we use to make the game board
+			in our LaserGame morph so that we register an
+			interest in some events.  We also
+			give the morph a name we can use for later submorph
+			searching.
+		</p>
+		<img src="images/354.jpg">
+		<p>
+			We have to write all of those receiver methods too.
+		</p>
+		<img src="images/355.jpg"><br>
+		<img src="images/356.jpg">
+		<img src="images/357.jpg">
+		<p>
+			Note that we register an interest with the hand morph that we
+			want to receive events from it while it is over the board.
+			We also want to tell it when we are done listening.
+		</p>
+		<img src="images/358.jpg">
+		<p>
+			The mouse down events are different.  Ordinarily we
+			only receive mouse move events when the mouse button is down.
+			Hence, the funny name for our method.
+		</p>
+		<img src="images/359.jpg">
+		<p>
+			By registering with the hand morph when it came over on top
+			of our board morph, we will now be receiving messages from it
+			too.  We need to write support for that.
+		</p>
+		<img src="images/360.jpg">
+		<p>
+			This one is a little trickier since we will have to figure out if it's really
+			over our board morph and then resend the event to the board morph.
+		</p>
+		<img src="images/361.jpg">
+		<p>
+			This method is the most interesting for us to watch, once we have it working
+			properly.  For now we will write out which cell we find to the Transcript window.
+			Don't try to do this with the new LaserGame morph just yet.  Just fill-in
+			the code pieces as we go.  When we have enough in place we can try this one out.
+		</p>
+		<p>
+			There some pieces we still need.
+		</p>
+		<img src="images/362.jpg">
+		<img src="images/363.jpg">
+		<img src="images/364.jpg">
+		<p>
+			Open up a Transcript window and a new LaserGame morph to try this out.  When you move the mouse
+			over the game board, the Transcript should report which cell you are over.
+		</p>
+		<img src="images/365.jpg">
+		<p>
+			Once you have verified this is working as expected, remove the Transcript code and save your
+			image.  This is a good breaking point.
+		</p>
+		<img src="images/366.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="079.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

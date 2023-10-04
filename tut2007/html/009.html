@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 1</p>
+		<div id="content">
+		<h3>Discovery of Objects</h3>
+		<p>
+			When we look over the game drawings and think about what objects
+			our game may need, a few come immediately to mind.  There must be
+			some kind of Grid and several Cells.  There are different kinds of
+			Cells too.
+		</p>
+		<p>
+			Cells and a Grid are obvious objects of the game and we'll probably discover other objects
+			as we explore a little. It's perfectly fine to explore and then throw code away if we
+			later learn we're not heading in the right direction.
+		</p>
+		<p>
+			Exploring with objects is easy to
+			do with Smalltalk and Squeak. I very much enjoy spending time thinking about designs
+			but I've also learned you need to "dive in" sometimes to better understand the objects
+			needed in your design.
+		</p>
+		<p>
+			As I once heard someone say,
+			<i>"You can read about swimming all you want.
+				But, you'll never learn about swimming until you actually dive in the water."
+			</i>
+		</p>
+		<p>
+			Of course we believe the water here is safe. The worst we could do is write some code
+			and throw it away. And that's nothing to worry about. You have a backup copy and can easily
+			begin again if needed.  Smalltalk development encourages experimentation and quick idea exploration.
+		</p>
+		<h4>Grid</h4>
+		<p>
+			The Grid holds our Cells.  It also contains the source of
+			our laser beam.  Let's go with the idea that the user will
+			"ask" the Grid to fire our laser beam.
+		</p>
+		<h4>Cells</h4>
+		<p>
+			There are 3 kinds of Cells.
+			<ol>
+				<li>Blank, or empty</li>
+				<li>Target</li>
+				<li>Mirror</li>
+			</ol>
+		</p>
+		<p>
+			The basic responsibility of a Cell concerns what happens to the laser
+			beam when it enters the Cell.  Also, the Mirror Cells need to know
+			something about their orientation.  A Mirror Cells can be thought
+			of as leaning "left" or leaning "right".
+		</p>
+		<p>
+			If we dig a little deeper into our understanding of these Cells we
+			can imagine that each Cell has 4 internal line-segments.  Something
+			like an LED clock.  We'll use these segments to indicate the path
+			of the laser beam.  Let's explore how that would work with our different
+			Cell types.
+		</p>
+		<h4>The Blank Cell</h4>
+		<img src="images/028.jpg">
+		<p>
+			We label the 4 segments #north, #east, #south, and #west.  If the laser beam
+			enters the #west segment then we know the #east segment will light-up.
+			If the laser beam enters #south then the #north segment would also light-up.
+		</p>
+		<h4>The Mirror Cell</h4>
+		<img src="images/029.jpg">
+		<img src="images/030.jpg">
+		<p>
+			Depending on the orientation of the mirror we can also determine the
+			path of the laser beam through the Cell.  We identify the corresponding
+			segments using the same technique.
+		</p>
+		<p>
+			For the "left" leaning Mirror Cell, if the laser beam enters the #west segment
+			we know the #south segment will also light-up.  If the laser beam enters the
+			"right" leaning Mirror Cell from the #west it will exit by the #north segment.
+		</p>
+		<h4>The Target Cell</h4>
+		<img src="images/031.jpg">
+		<p>
+			In the case of the Target Cell no other segment will light-up.  The laser beam
+			ends its path here.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="010.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

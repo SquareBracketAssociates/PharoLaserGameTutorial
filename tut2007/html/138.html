@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 4</p>
+			<div id="content">
+		<p>
+			The cells look good after we scaled-up our cell extent.
+			However the arrow hints appear to be trigger based upon old
+			cell sizes.
+		</p>
+		<img src="images/670.jpg">
+		<p>
+			We need to change 1 class method on CellRenderer.  Here is the changed code.
+		</p>
+		<p class="code">
+			<b>insideRegionExtent</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^self cellExtent - 20
+		</p>
+		<p>
+			Instead of the hard-coded offset to determine the size of the inside region we
+			calculate a result based upon the cell size.
+		</p>
+		<p>
+			The rotate hint arrow calculations are broken with the larger scaled cell.
+			Here is the modified CellClickRegionRotateClockwise #containsPoint: class method.
+		</p>
+		<p class="code">
+			<b>containsPoint: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^aPoint y <= (CellRenderer cellExtent y)
+		</p>
+		<p>
+			The CellClickRegionRotateCounterClockwise #containsPoint: class method also needs
+			to be modified.
+		</p>
+		<p class="code">
+			<b>containsPoint: aPoint</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^aPoint y > (CellRenderer cellExtent y)
+		</p>
+		<p>
+			The #yForHeadingDownLineWith class method on the CellClickRegionInside class also needs
+			to be modified to account for the change in cell size.
+		</p>
+		<p class="code">
+			<b>yForHeadingDownLineWith: x</b><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;^CellRenderer cellExtent x - x
+		</p>
+		<p>
+			With this change you can move your mouse around inside the cell
+			and the arrow hint detection seems to be better.
+		</p>
+		<img src="images/671.jpg">
+		<p>
+			The arrows themselves don't seem as nicely positioned as we would like.  However
+			I'm not going to address that now.  The problem is likely related to how we
+			draw the arrows on the arrow forms.  We'll make improvements to the appearance
+			of our arrows later.
+		</p>
+		<p>
+			Save a new version in Monticello again and save your image at this breaking point.
+		</p>
+		<img src="images/672.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="139.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 2</p>
+			<div id="content">
+		<p>
+			Click once on the "into" debugger button so that we step into
+			the method.
+		</p>
+		<img src="images/177.jpg">
+		<img src="images/178.jpg">
+		<p>
+			Wait a second here.  This method will create the
+			path element that includes the next cell in the laser's
+			path.  The value of the "cell" argument makes sense
+			but the value of entry side is #east.  That's the wrong direction.
+			We're building a new element here with the correct cell
+			but we think we are entering it from the wrong side.
+			That's a problem.
+		</p>
+		<p>
+			If we click on the previous method from the debugger call
+			stack we can see the problem originates in the
+			#nextElementIn: method.
+		</p>
+		<img src="images/176.jpg">
+		<p>
+			The value we give for entrySide, when creating the new
+			element, is incorrect.  The temporary variable "direction"
+			is holding the object we can use to work out direction related
+			queries.  We need to add some code to GridDirectionEast and the
+			other direction classes to supply an inverted direction for
+			adjacent cells.  Here are the new methods we will need.
+		</p>
+		<img src="images/179.jpg">
+		<img src="images/180.jpg">
+		<img src="images/181.jpg">
+		<img src="images/182.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="046.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

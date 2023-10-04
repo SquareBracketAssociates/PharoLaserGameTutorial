@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+				<p class="section">Section 2</p>
+		<div id="content">
+		<p>
+			Let's make the buttons do something.  The "Quit" button
+			called the #quitGame method.
+			The easiest thing to do is send #delete to ourselves
+			when we want to exit.
+		</p>
+		<img src="images/286.jpg">
+		<p>
+			Now when we click on "Quit",
+			the morph closes.
+		</p>
+		<p>
+			The Laser Fire button needs some additional behavior.
+			The label on the button should reflect the action the user
+			will cause to happen when they click the button.
+			Therefore, when the laser beam is off it should say "Fire".
+			When the beam is on is should say "Stop".
+			A few things need to change to make this possible with our
+			current code.
+		</p>
+		<p>
+			We need to be sure the laser status can be determined and set
+			for the Grid.  We also need methods that determine the proper
+			button label depending on that state.
+			And lastly, we will need to be able to change our button's
+			label when the state changes.
+		</p>
+		<p>
+			For the grid class we wrote a method that answers the laser status.
+		</p>
+		<img src="images/287.jpg">
+		<p>
+			If we click on the "senders" button we can see where this is being used.
+		</p>
+		<img src="images/288.jpg">
+		<p>
+			Look at both senders.  It looks like the only place we test
+			the state is when we ensure it's off.
+			How about senders of the #laserIsActive: method?
+		</p>
+		<img src="images/289.jpg">
+		<p>
+			The variable is only set when it is initialized.
+			Let's create 2 new methods on Grid to turn the laser on
+			and off.  First we write our unit tests.
+		</p>
+		<img src="images/290.jpg">
+		<p>
+			The #fireLaser isn't written yet so we have to tell Squeak
+			the method name is okay.  Here's the stop laser test.  #stopLaser
+			needs to be written too.
+		</p>
+		<img src="images/291.jpg">
+		<p>
+			These are the new #fireLaser and #stopLaser methods on Grid.
+		</p>
+		<img src="images/292.jpg">
+		<img src="images/293.jpg">
+		<p>
+			That #activateCellsInPath doesn't look correct for the #stopLaser action.
+			We need a method to clear cells when we turn it off.  The #activateCellsInPath
+			method shows we will also need a way to clear laser path elements in our new method.
+		</p>
+		<img src="images/294.jpg">
+		<p>
+			The behavior should be simple.  We calculate the path but then avoid
+			activating any of its elements.
+			We can fix the stop laser code now.
+		</p>
+		<img src="images/295.jpg">
+		<p>
+			Running our unit test we see the new code works.
+		</p>
+		<img src="images/296.jpg">
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="070.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>

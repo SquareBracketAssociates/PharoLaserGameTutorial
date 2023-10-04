@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+	<head>
+		<meta name=Title content=" Squeak Development 2007 Example ">
+		<meta name=Keywords content="Squeak, Tutorial, Example">
+		<meta name=Author content="Stephan B. Wessels">
+		<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+		<title>
+			Squeak Development Example for Squeak 3.9 (2007)
+		</title>
+		<style type="text/css" media="all">
+			@import "css/tutorial2007.css";
+		</style>
+	</head>
+	<body class="main">
+		<div id="main">
+			<p class="section">Section 2</p>
+			<div id="content">
+		<h3>Rendering The Cells</h3>
+		<p>
+			What do we want these new renderer classes to do?
+			We'll begin with the blank cell.  If we supply
+			a grid for our cell and a target form, we can draw
+			the basics of our blank cell.
+		</p>
+		<p>
+			When it comes to graphics and user interfaces,
+			my own style of work is to get something visual
+			quickly and then explore what is right and what doesn't
+			work directly by changing the code.
+			Squeak is an excellent environment for trying out
+			graphics ideas as we will see.
+			It's normal during this activity to throw code away as
+			we learn.
+		</p>
+		<p>
+			Open up a new workspace and use it for experimenting
+			with our new graphics.  We know we will need a grid
+			and a form to draw on.  Fortunately the default grid is
+			full of blank cells so we can begin by drawing those,
+			without too much effort.
+		</p>
+		<img src="images/199.jpg">
+		<p>
+			Choose an arbitrary cell location from the grid and
+			get the renderer we will use.
+		</p>
+		<img src="images/200.jpg">
+		<p>
+			If we send the #render message to our rendering object we want
+			it to draw onto the target form.
+			Of course we have not implemented this yet.
+			We'll tell Squeak to display the form at a location near
+			the upper left corner of our World.
+			Move the Workspace window down about half way so we can
+			draw without disturbing our workspace contents.
+		</p>
+		<img src="images/201.jpg">
+		<p>
+			Of course we cannot execute this workspace code yet.  Let's
+			write the #render method.
+		</p>
+		</div>
+<div id="paging">
+<a class="index" href="index.html">Index Page</a>
+		<a class="forward" href="052.html">Next Page</a>
+		<p class="foot">Copyright &copy; 2007, 2008, 2009 Stephan B Wessels&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:stevewessels@me.com?subject=squeak tutorial 2007">stevewessels@me.com</a></p>
+			</div>
+		</div>
+	</body>
+</html>
