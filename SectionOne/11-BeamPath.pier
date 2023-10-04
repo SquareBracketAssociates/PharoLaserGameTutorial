@@ -185,10 +185,10 @@ Grid>startingCell
 
 !! Adding Location to Cell
 
-To be able to compute from a cell and a direction its neighbouring cell we will enhance the cells. Each cell should store its own grid location. This will make navigation and position calculations easier. Without the stored location, we can still find specific cell locations within the grid by scanning through all the cells until we find the identical one we are looking for, then we would answer that cell's key (a position) in the cell dictionary. Holding the location within the cell is easier and much faster. 
+To be able to compute from a cell and a direction its neighbouring cell we need to enhance the cells. Each cell should store its own grid location. This will make navigation and position calculations easier. Without the stored location, we can still find specific cell locations within the grid by scanning through all the cells until we find the identical one we are looking for, then we would answer that cell's key (a position) in the cell dictionary. Holding the location within the cell is easier and much faster. 
 
 
-Add the ==gridLocation== instance variable and its accessors.
+Add the ==gridLocation== instance variable and its accessors to the class ==Cell==.
 
 [[[
 Object subclass: #Cell

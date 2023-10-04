@@ -28,9 +28,7 @@
 \setcounter{page}{1}
 \pagestyle{headings}
 %=================================================================
-\author{
-        Steven Wessels (for the original version) \quad \\
-        St\'ephane Ducasse (for the Pharo adaptation)}
+\author{Ben Coman \and Damien Cassou \and St\'ephane Ducasse \and Steven Wessels}
 \title{\Huge\bf Laser Game Tutorial: A Development Example for Pharo}
 \isodate
 \date{\emph{Version of \today}}
