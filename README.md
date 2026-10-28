@@ -1,5 +1,14 @@
 # How to Contribute
 
+Get The source
+
+```smalltalk
+Metacello new
+	baseline: 'LaserGame';
+	repository: 'github://rvillemeur/PharoLaserGameTutorial/src';
+	onConflictUseIncoming;
+	load
+```
 ## Your first compile 
 
 1. After you fork the authoritive repository https://github.com/SquareBracketAssociates/PharoLaserGameTutorial and clone it to your local machine, run the script that installs Pharo and Pillar.  

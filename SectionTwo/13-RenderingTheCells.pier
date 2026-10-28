@@ -1,0 +1,153 @@
+% Original tutorial pages:
+% http://squeak.preeminent.org/tut2007/html/051.html
+% http://squeak.preeminent.org/tut2007/html/052.html
+
+! Rendering The Cells
+
+What do we want these new renderer classes to do? Draw a cell. We begin with the blank cell, because it is the one with nothing inside it: if we can draw a blank cell we have the background and the border, and every other cell is that plus its own contents.
+
+When it comes to graphics, my own style of work is to get something visual quickly and then find out what is right and what is wrong by changing the code and looking again. Pharo is an excellent environment for that, and it is normal to throw code away as we learn.
+
+!! Something on the screen first
+
+The original tutorial opened a workspace, made a grid and a ''Form'', and displayed that form near the corner of the World. There is no World on the new stack, and no form. The equivalent is a ''BlSpace'': a window with a root element we can add children to.
+
+We put the experiment in a method rather than a workspace, so that it stays with the code and keeps working:
+
+[[[
+CellRenderer class >> openExample
+	"Open one blank cell in a space of its own, to look at it and change it.
+	This is the Bloc equivalent of the workspace experiment of the original tutorial.
+	CellRenderer openExample"
+
+	| grid renderer space |
+	grid := Grid new.
+	renderer := self rendererFor: (grid at: 1 @ 1) grid: grid.
+	space := BlSpace new.
+	space extent: self cellExtent * 3.
+	space title: 'Laser Game cell'.
+	space root addChild: renderer newElement.
+	space show.
+	^ space
+]]]
+
+The default grid is full of blank cells, so an arbitrary location gives us a blank cell to draw without any setup. The space is three cells wide and three cells tall, so that the single cell we draw sits inside it with room around it and we can see its edges.
+
+Evaluate ''CellRenderer openExample''. It fails, because ''newElement'' does not exist yet. Let us write it.
+
+!! One element per cell
+
+Every cell has a background and a border, and every cell kind has its own contents. That is exactly the split the original tutorial made, and we keep it: the abstract class draws what all cells share, and each subclass draws its own contents.
+
+[[[
+CellRenderer >> newElement
+	"Answer a new element rendering my cell. The element is square, carries the cell
+	background and border, and holds whatever my subclass draws as children."
+
+	| element |
+	element := BlElement new.
+	element size: self class cellExtent.
+	element geometry: BlRectangleGeometry new.
+	self renderBackgroundOn: element.
+	self renderBorderOn: element.
+	self renderContentsOn: element.
+	^ element
+]]]
+
+A cell is a square, so the geometry is a rectangle and the size is the cell extent. The three ''render...On:'' messages are the three things worth varying. The first two are the same for every cell:
+
+[[[
+CellRenderer >> renderBackgroundOn: anElement
+	"Paint the cell background. Every cell shares the game board background color."
+
+	anElement background: LaserGameColors gameBoardBackgroundColor
+]]]
+
+[[[
+CellRenderer >> renderBorderOn: anElement
+	"Draw the cell border. Bloc draws a border inside the bounds of the element, so the
+	border costs no space and the cells of a grid stay exactly cellExtent apart."
+
+	anElement border: (BlBorder
+			 paint: LaserGameColors cellBorderColor
+			 width: self class borderWidth)
+]]]
+
+The third does nothing here. A blank cell has nothing inside it, so the method that draws the contents is an empty hook that the other renderers override:
+
+[[[
+CellRenderer >> renderContentsOn: anElement
+	"Draw what is inside the cell, as children of anElement. A cell with nothing inside
+	draws nothing, so this is empty here and overridden by the subclasses that have
+	contents."
+]]]
+
+An empty method is a deliberate statement here, not an oversight: it says a blank cell is complete. Do not give ''BlankCellRenderer'' its own empty override — a method identical to the one it inherits is a defect the code critic will report, and rightly.
+
+Evaluate ''CellRenderer openExample'' again. A grey square with a thin border appears in a small window. That is the first cell of the game.
+
+!! Two decisions that came from the pixels
+
+The original tutorial reached this point and had to answer two questions. We have to answer them too, and the answers are different because the drawing is different.
+
+""How big is a cell?"" The original chose 30x30 pixels here, and raised it to 50x50 much later, in Section 5, once its unit tests had stopped depending on the number. We start at 50x50, because the code we inherited already carries that value and because it leaves room for the mirror, the target and the hint arrows to be legible. Nothing in the tests below depends on the number either — each one asks ''CellRenderer cellExtent'' rather than writing a size down:
+
+[[[
+CellRenderer class >> cellExtent
+	^ 50 @ 50
+]]]
+
+""Who pays for the border?"" In the original, the border was a pixel drawn along the inside edge of each cell, so that the borders did not add to the size of the board. We get that property from Bloc for free: a Bloc border is painted inside the bounds of its element. A one pixel border changes nothing about the size of the cell or the spacing of the grid.
+
+[[[
+CellRenderer class >> borderWidth
+	"Answer the width, in pixels, of the border drawn inside the edges of every cell."
+
+	^ 1
+]]]
+
+That is also the end of a whole computation the original needed. Its next step was a class method to work out how large the target form must be, from the cell size, the border width and the grid dimensions. We never allocate a bitmap for the board, so there is no size to compute: the board will be a Bloc layout holding one element per cell, and the layout works out its own extent. The page of the original tutorial that adds ''formExtentForGrid:'' has no counterpart on this stack.
+
+!! A test for a blank cell
+
+The experiment is a method, but it is not a test — it proves nothing without a pair of eyes. This does:
+
+[[[
+CellRendererTestCase >> testBlankCellElement
+	"A blank cell is a square of the board background with a border and nothing inside.
+	The element is checked before any layout pass, so the size is read from the layout
+	constraints rather than from the extent, which stays zero until the element is laid out."
+
+	| grid element |
+	grid := Grid new.
+	element := (CellRenderer rendererFor: (grid at: 1 @ 1) grid: grid)
+		           newElement.
+	self
+		assert: element constraints horizontal resizer size
+		equals: CellRenderer cellExtent x.
+	self
+		assert: element constraints vertical resizer size
+		equals: CellRenderer cellExtent y.
+	self assert: element geometry class equals: BlRectangleGeometry.
+	self
+		assert: element background paint color
+		equals: LaserGameColors gameBoardBackgroundColor.
+	self assert: element border width equals: CellRenderer borderWidth.
+	self
+		assert: element border paint color
+		equals: LaserGameColors cellBorderColor.
+	"A blank cell draws nothing inside its border."
+	self assertEmpty: element children
+]]]
+
+The comment at the top of that test is worth expanding on, because it is the first Bloc trap we walk into. ''element size: 50@50'' does not set the extent of the element. It sets a layout constraint, and the extent stays ''0@0'' until a layout pass runs. Asking a fresh element for its extent answers zero, which makes for a confusing failure.
+
+There are three ways out, and only one of them is right here.
+
+- Send ''forceLayout''. It works on an unattached element, and it is forbidden: Bloc ships a code critic rule, ''ReBlocDoNotSendForceLayoutRule'', that reports it. Laying out by hand is how Bloc code ends up fighting the space it lives in.
+- Put the element in a space and settle the space. That is the sanctioned way to get a laid out element, and it is what we do when we check the rendering by hand. In a unit test it is a heavy way to find out whether we typed ''50@50''.
+- Read the constraint we set, which is what the test above does. No layout, no space, and the assertion is about the thing the method under test actually decided.
+
+Run the tests. All green, and the code critic on the new methods is quiet.
+
+The next chapter gives the blank cells a board to sit on.

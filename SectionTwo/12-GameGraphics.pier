@@ -1,0 +1,138 @@
+% Original tutorial pages:
+% http://squeak.preeminent.org/tut2007/html/049.html
+% http://squeak.preeminent.org/tut2007/html/050.html
+
+! Game Graphics
+
+A lot of our basic model is coded, so we can take a crack at the graphics now. To keep things simple we focus on the two dimensional graphics for the game grid and its cells. User interaction comes later.
+
+A good place to start is working out how we draw a cell. What do we know about it? It is square. We have not decided on its size yet. It has a border, and a background color we can pick freely.
+
+!! A decision the original tutorial made differently
+
+The original tutorial was written for Squeak 3.9 and used Morphic. It considered two designs. The first was one graphical object for the board and one for each cell. The second was a single ''SketchMorph'' for the whole board, holding one ''Form'' — a bitmap — with every cell drawing its borders and contents directly into that shared bitmap at a computed offset. The tutorial chose the second design.
+
+We take the first one, and we use Bloc instead of Morphic.
+
+The reason is not fashion. A cell that owns its own element gets three things for free that the shared bitmap design has to compute by hand:
+
+- ""Hit testing."" Bloc delivers a click to the element under the pointer. With one bitmap for the whole board, every click has to be turned into a board offset and then into a cell location by arithmetic. Section 3 of the original tutorial spends several pages on that arithmetic.
+- ""Redrawing."" Changing one cell means marking one element as dirty. In the bitmap design the cell has to redraw itself into the board form, and the board has to be told it changed.
+- ""Overlays."" The hint arrows of Section 3 become child elements that are added and removed. In the bitmap design they are pixels that have to be painted, remembered and painted over again.
+
+Bloc draws with Alexandrie, a vector engine. That has a second consequence we will use repeatedly: shapes are described by geometry, not by pixels. The mirror is a line, the target is a circle, the hint arrows are polygons. None of them needs a bitmap, and none of them needs the flood fill the original tutorial used to make its arrow masks — which is just as well, since ''Form>>floodFill:at:'' no longer exists in Pharo.
+
+!! The rendering class
+
+What we keep from the original is the idea of a renderer: an object that knows how to represent one cell. It holds the location of the cell inside the grid, and the grid itself, so it can always ask the model for the cell it represents.
+
+[[[
+Object << #CellRenderer
+	slots: { #cellLocation . #grid };
+	tag: 'Graphics';
+	package: 'Laser-Game'
+]]]
+
+Note what is ''not'' there: the original had a third instance variable for the board form. We do not need it. A renderer will answer its own element, and the board will hold those elements as children.
+
+@@note Porting note: if you are reading the code of this project rather than typing it yourself, the class still carries a third instance variable ''targetForm'' and the ''Form'' based drawing methods of the 2007 version. They are dead ends on the new stack and they disappear chapter by chapter, as each one gets its Bloc replacement. Nothing new uses them.
+
+Create the accessors for the two instance variables before continuing. The cell itself is not stored, it is read from the model:
+
+[[[
+CellRenderer >> cell
+	^ self grid at: self cellLocation
+]]]
+
+!! A rendering hierarchy
+
+Just as we did with the grid direction hierarchy, each subclass says how it is selected. Create three subclasses of ''CellRenderer'': ''BlankCellRenderer'', ''MirrorCellRenderer'' and ''TargetCellRenderer''. Each one answers the model class it renders:
+
+[[[
+BlankCellRenderer class >> modelClass
+	^ BlankCell
+]]]
+
+The mirror and target renderers do the same thing with their own model class. On the superclass side, the method is left to the subclasses:
+
+[[[
+CellRenderer class >> modelClass
+	"Answer the Cell subclass I render. Each concrete renderer answers exactly one."
+
+	^ self subclassResponsibility
+]]]
+
+!! Finding the right renderer
+
+The technique for finding the renderer of a cell is the one we met in the previous chapter: no case statement, just ask the subclasses.
+
+[[[
+CellRenderer class >> rendererFor: aCell
+	"Answer the renderer class that renders aCell."
+
+	^ self subclasses
+		  detect: [ :each | each modelClass = aCell class ]
+		  ifNone: [ self error: 'No renderer for ' , aCell class name ]
+]]]
+
+And a renderer is created for a cell within its grid:
+
+[[[
+CellRenderer class >> rendererFor: aCell grid: aGrid
+	"Answer a renderer for aCell positioned within aGrid."
+
+	| renderer |
+	renderer := (self rendererFor: aCell) new.
+	renderer
+		cellLocation: aCell gridLocation;
+		grid: aGrid.
+	^ renderer
+]]]
+
+!! Unit tests
+
+We can write tests to validate that renderer selection works as we expect. The first is the test from the original tutorial:
+
+[[[
+CellRendererTestCase >> testRendererSelection
+
+	| renderer cell |
+	cell := BlankCell new.
+	renderer := CellRenderer rendererFor: cell.
+	self assert: renderer equals: BlankCellRenderer.
+
+	cell := MirrorCell new.
+	renderer := CellRenderer rendererFor: cell.
+	self assert: renderer equals: MirrorCellRenderer.
+
+	cell := TargetCell new.
+	renderer := CellRenderer rendererFor: cell.
+	self assert: renderer equals: TargetCellRenderer
+]]]
+
+That test names the three pairs by hand, so it stops telling the truth the day we add a fourth cell kind and forget its renderer. This one does not:
+
+[[[
+CellRendererTestCase >> testEveryCellClassHasExactlyOneRenderer
+
+	Cell allSubclasses do: [ :cellClass |
+		| renderers |
+		renderers := CellRenderer allSubclasses select: [ :each |
+			             each modelClass = cellClass ].
+		self
+			assert: renderers size = 1
+			description: cellClass name , ' must have exactly one renderer, found '
+				, renderers size printString ]
+]]]
+
+And selection has to fail loudly for anything that is not a cell, rather than answering some arbitrary renderer:
+
+[[[
+CellRendererTestCase >> testRendererForUnsupportedModelIsAnError
+
+	self should: [ CellRenderer rendererFor: 42 ] raise: Error
+]]]
+
+Run the unit tests and check the results. Make sure the new test case is included in the tests you run. Everything should be green before going on.
+
+We have the hierarchy and the selection. What a renderer actually draws is the subject of the next chapter.
