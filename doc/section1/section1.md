@@ -1,4 +1,4 @@
-# Introduction
+## Introduction
 
 This book builds a game, one test at a time.
 This first chapter says who the book is for, where the game comes from, what it leaves to other books, how to read the code in it, and where to get the finished code if you want to look ahead.
@@ -7,7 +7,7 @@ The game is a puzzle.
 A laser fires into a grid of cells, bounces off mirrors the player can turn and push around, and should end up hitting a target.
 The player's job is to get the beam to the target by the longest route they can find.
 
-![The game, finished](figures/031.jpg)
+![The game, finished. SD: Wrong file. ](figures/031.jpg)
 
 Building it is an excuse to practise three things, and those three things are what this book is really about.
 
@@ -24,19 +24,18 @@ These chapters are the ones kept most carefully, because watching someone find a
 The graphics are built with **Bloc**, which is how you build a user interface in Pharo today.
 No previous experience with it is assumed.
 
-## Who this book is for
+### Who this book is for
 
 Someone who is new to Pharo.
 Possibly new to programming altogether.
 
-You do not need to know Smalltalk.
 Vocabulary is explained the first time it appears, and the first chapters go slowly.
 You do need a Pharo 13 image, and the patience to type the code rather than copy it — the typing is where the learning happens.
 
 The pace is deliberate.
 Every step is shown, including the wrong ones, because a tutorial where nothing goes wrong teaches you nothing about what to do when something does.
 
-## Where the game comes from
+### Where the game comes from
 
 In 2007 Stephan Wessels wrote the Laser Game as a tutorial for Squeak, and it became one of the best-loved teaching projects in that community.
 Pharo is a descendant of Squeak, and the game has been rebuilt here in modern Pharo: the model is much as he designed it, and the teaching order is his.
@@ -46,17 +45,16 @@ Stéphane Ducasse made an earlier Pharo adaptation, which this book also draws o
 
 Thanks are owed to both of them.
 
-## What this book does not cover
+### What this book does not cover
 
 The Pharo community has good books on these already, and this one points at them rather than repeating them:
 
-- installing Pharo and setting up an image — see the **Pharo by Example** book at
-  <https://books.pharo.org>;
-- saving your code with Git, from inside Pharo — see the booklet **Managing Your Code with
-  Iceberg**, at <https://books.pharo.org>;
-- packaging an application for someone else to run.
+- Installing Pharo and setting up an image — see the **Pharo by Example** book at https://books.pharo.org;
+- Saving your code with Git, from inside Pharo — see the booklet **Managing Your Code with
+  Iceberg**, at https://books.pharo.org;
+- Packaging an application for someone else to run.
 
-## Conventions used in this book
+### Conventions used in this book
 
 A class name or a method name in the narrative looks like `Grid` and `rotateClockwise`.
 
@@ -107,7 +105,7 @@ A view never changes the object it looks at.
 The chapters write all three, each at the point the game asks for it, and say why it is written there.
 The cycle that puts them in that order is written down on its own, free of this game, in `DEV-CYCLE.md` in the repository.
 
-## Getting the finished code
+### Getting the finished code
 
 You can write every line of the game yourself, which is the point of the book.
 If you would rather read the finished version alongside it, this loads it into a Pharo 13 image:
@@ -122,10 +120,11 @@ Metacello new
 
 Then evaluate `LaserGameElement openExample` to play.
 
-## License
+### License
 
 Copyright 2007 Stephan Wessels.
 Copyright 2014 Stephan Wessels and Stéphane Ducasse.
+Copyright 2026 Renaud de Villemeur, Stéphane Ducasse and Stephan Wessels.
 
 This book is available under the Creative Commons Attribution-ShareAlike 3.0 Unported license.
 
@@ -146,7 +145,7 @@ Any of these conditions can be waived with permission from the copyright holder,
 
 ![Creative Commons BY-SA](figures/CreativeCommons-BY-SA.png)
 
-# Game overview
+## Game overview
 
 Before writing any code, let us be clear about what the game does.
 Not precisely — the design will change several times as we go, and watching it change is part of the point — but clearly enough to start.
@@ -198,7 +197,7 @@ As we build it we will add things that let the player see what is happening: a c
 
 Now let us find the objects.
 
-# Discovery of objects
+## Discovery of objects
 
 When we look over the game drawings and think about what objects our game may need, a few come immediately to mind.
 There must be some kind of grid and several cells.
@@ -217,13 +216,13 @@ The water here is safe.
 The worst we could do is write some code and throw it away, and that is nothing to worry about: Pharo keeps a version history of every method, so you can review what you had before and put it back in a couple of clicks.
 Development in Pharo encourages experimentation and quick idea exploration.
 
-## The grid
+### The grid
 
 The grid holds our cells.
 It also contains the source of our laser beam.
 Let us go with the idea that the player asks the grid to fire the laser beam.
 
-## The cells
+### The cells
 
 We identify three kinds of cell.
 
@@ -238,7 +237,7 @@ If we dig a little deeper into our understanding of these cells we can imagine t
 We use these segments to show the path of the laser beam.
 Let us explore how that works for each cell type.
 
-### The blank cell
+#### The blank cell
 
 ![028](figures/028.jpg)
 
@@ -246,7 +245,7 @@ We label the four segments `#north`, `#east`, `#south` and `#west`.
 If the laser beam enters by the `#west` segment then we know the `#east` segment lights up.
 If it enters by `#south` then `#north` lights up.
 
-### The mirror cell
+#### The mirror cell
 
 ![029](figures/029.jpg)
 
@@ -258,14 +257,14 @@ We identify the corresponding segments using the same technique.
 For the left leaning mirror cell, a beam entering by the `#west` segment leaves by the `#south` one.
 For the right leaning mirror cell, a beam entering by the `#west` segment leaves by the `#north` one.
 
-### The target cell
+#### The target cell
 
 ![031](figures/031.jpg)
 
 In the case of the target cell no other segment lights up.
 The laser beam ends its path here.
 
-## Identifying the classes
+### Identifying the classes
 
 Visually, each of the three cell types renders differently.
 So they have some things in common and some things that are unique to each.
@@ -284,7 +283,7 @@ Instances of `BlankCell` are the default condition in our grid.
 `MirrorCell` instances are not as frequent and are also contained in the grid.
 There is one `TargetCell` instance in the grid.
 
-## A package for the model
+### A package for the model
 
 First we should define a package to hold our classes.
 Classes that work together belong together, and a package is what you load, save, and commit as a whole.
@@ -299,7 +298,7 @@ This book uses one package, `Laser-Game`, with the tags `Model` and `Graphics`, 
 
 > **Note.** Until that split, which is the subject of the chapter *Tests in their own package*, everything lives in `Laser-Game`.
 
-## Creating the model classes
+### Creating the model classes
 
 With `Laser-Game` selected, the browser shows a class creation template in its bottom pane.
 Fill it out and accept it with the context menu or with `Cmd-S` / `Alt-S`.
@@ -350,7 +349,7 @@ Object << #TargetCell
 Before implementing the behavior of our model we define tests that specify that behavior.
 The tests help us make sure our implementation is correct, and they document the behavior in a way that can be checked automatically.
 
-# Test driven development
+## Test driven development
 
 We use the SUnit testing framework to implement the game model.
 We will most likely not write unit tests for the behavior of the user interface, which is tedious to do; but there is plenty we can accomplish by driving the development of the game model from unit tests.
@@ -370,7 +369,7 @@ What matters is what unit tests accomplish:
 Good unit tests capture your requirements and help you as you implement a design.
 Often, when you write a unit test, you are forced to think about your design as if it were finished.
 
-## A package for the tests
+### A package for the tests
 
 The `BlankCell` is an excellent place to begin.
 We want a package to hold our test classes, which in turn hold the methods defining our test cases.
@@ -391,7 +390,7 @@ TestCase << #BlankCellTestCase
 > A test class must be a subclass of `TestCase`, and it is easy to overlook.
 > If you got it wrong, go back, correct it, and accept the definition again.
 
-## The first test
+### The first test
 
 Within a class, methods are sorted into *protocols*, shown in the third pane of the browser.
 Our tests go in a protocol named `tests`.
@@ -444,7 +443,7 @@ While you type, the top right corner of the code pane is tinged with orange: the
 Accepting the method compiles it and the tinge goes away.
 Each time you edit an existing method and accept it, the old body is replaced by the new one.
 
-## Running the test
+### Running the test
 
 Even though we know `isOn` and `isOff` are wrong, we should run `testCellOnState`.
 Enough code has been written that we want to be sure `BlankCell` objects are created correctly and that the test produces the wrong result we are expecting.
@@ -463,7 +462,7 @@ Next to the name of a test method is a small circle that shows the result of the
 Click it and that one test runs.
 There is a similar circle next to the test class, and clicking it runs every test of the class.
 
-## Getting to the error
+### Getting to the error
 
 The Test Runner reports one failure and lists the method that failed.
 Click the failed test and a debugger opens on it.
@@ -473,7 +472,7 @@ You can inspect any of them from their context menu, and you can select any piec
 
 Later we show that you can also change the method and carry on from where you were.
 
-## The checkpoint at the end of a feature
+### The checkpoint at the end of a feature
 
 Red, green, refactor is the inner loop, and it runs once per method.
 There is an outer loop that runs once per *feature*, when the behaviour you set out to add works and its tests pass, and it is four questions long.
@@ -489,7 +488,7 @@ The usual answer to all four is no, and the checkpoint costs you the few seconds
 The chapters ahead run it in the open: each example and each view in this book arrives at the checkpoint of the feature that earned it, and the text says which of the four questions it answers.
 The order inside the checkpoint never varies — the code first, then the example, then the view — because a view is laid out against a real object or not at all.
 
-# Getting our first test to pass
+## Getting our first test to pass
 
 Our first test is currently this one.
 To make it green, `BlankCell` needs somewhere to keep the state of its four segments, an `initialize` that fills it, and the two methods the test calls.
@@ -507,7 +506,7 @@ BlankCellTestCase >> testCellOnState
 We knew it would fail before we ran it, because we have not really defined `isOff` or `isOn`.
 Following the LED clock analogy, to know whether a cell is on we have to look at its four internal line segments: if any of them is lit, the cell is on.
 
-## Holding the segments
+### Holding the segments
 
 Before we can finish `isOn` and `isOff` we need somewhere to keep the segments.
 We add an instance variable holding a dictionary that maps each side to whether it is lit.
@@ -536,7 +535,7 @@ That changes nothing for the compiler; it is documentation.
 > Different schools propose different practices with different trade-offs.
 > We write them here for uniformity throughout the book.
 
-## Initializing instances
+### Initializing instances
 
 The new variable has to be initialized.
 Add an `initialization` protocol to `BlankCell` and define the method that fills the dictionary; every side starts off.
@@ -567,7 +566,7 @@ In Pharo, `new` sends `initialize` to the newly created instance, so overriding 
 The first thing our `initialize` does is `super initialize`.
 That is a good habit: since we are overriding a method, it is conceivable that we are hiding an important initialization somewhere up the hierarchy, and calling `super` first gives every superclass the chance to do its part.
 
-### An alternative: lazy initialization
+#### An alternative: lazy initialization
 
 Another approach initializes the variable the first time it is read.
 The getter checks whether the variable is still `nil` and fills it if it is, and the other methods of the class go through the getter instead of touching the variable.
@@ -586,7 +585,7 @@ Which approach wins depends on the application, and that is a question for a pro
 > The cells initialize eagerly, as above.
 > the game window's `grid` method, written much later in *A default board worth playing on*, is lazy, so that a game built with no board deals itself the standard one the first time it is asked for it.
 
-## Getting the test green
+### Getting the test green
 
 Now we can write `isOn` for real.
 `activeSegments` answers a dictionary whose values say which segments are lit; as soon as one of them is true the cell is on.
@@ -609,7 +608,7 @@ It passes.
 
 > **Note.** Both methods are quoted from the image in *Enhancing MirrorCell*, where they live on `Cell`.
 
-## Adding a class comment
+### Adding a class comment
 
 It is not good practice to leave classes undocumented, and the browser says so with a mark against the class name until you write a comment.
 Select `BlankCell`, press the *Comment* button and write what the class is for.
@@ -622,7 +621,7 @@ I add no state to `Cell`. All I do is fill `exitSides` in `initializeExitSides`,
 
 Accept it and the mark is gone.
 
-# Saving your work
+## Saving your work
 
 Your code lives in the image, and an image is an easy thing to lose.
 Saving means putting your packages somewhere outside it, so that you can load them into a fresh image or go back to an earlier state of the project.
@@ -640,7 +639,7 @@ One habit matters more than the tool, and this book follows it from here on:
 
 **Commit when the tests are green.** Then every state you can go back to is a state in which the game worked.
 
-# Coding in the debugger
+## Coding in the debugger
 
 Some developers write the test first, let it fail, and then define the methods it needs from inside the debugger.
 Why?
@@ -649,7 +648,7 @@ You write code, execute it against those objects, save it and carry on from wher
 
 In this chapter we break `isOn` and `isOff` on purpose, run the test, and repair both of them from inside the debugger without ever going back to the browser.
 
-## Setting up the context
+### Setting up the context
 
 Temporarily redefine `isOn` and `isOff` on `BlankCell` so that they stop instead of answering.
 
@@ -668,7 +667,7 @@ isOn
 `self halt` is the normal way to set a breakpoint: when it runs, a debugger opens.
 Here we are only using it to produce something to fix on the fly.
 
-## Coding in the debugger
+### Coding in the debugger
 
 Run `testCellOnState`.
 The debugger opens on the halt.
@@ -696,19 +695,19 @@ Press *Proceed* and the test finishes green.
 > When execution reaches a message no object understands, the debugger offers to create the method for you: it asks which class it belongs to and which protocol to file it under, then steps into the new method with a `shouldBeImplemented` body waiting to be replaced.
 > We use that in the next chapter.
 
-## Conclusion
+### Conclusion
 
 We do not repeat this process in the rest of the tutorial, but we use it daily.
 It is one of the things Pharo does that is hard to explain and hard to give up, and we can only encourage you to try it.
 
-# Improving our model
+## Improving our model
 
 Now that the first test is green we can add behavior, and we do it test first.
 Three tests and three methods in this chapter: `isSegmentOnFor:`, which answers whether one segment is lit, `exitSideFor:`, which says where a beam leaves, and `laserEntersFrom:`, which lights the segments a beam crosses.
 
 Along the way the debugger writes a method for us, and we note what using symbols for directions will cost us later.
 
-## Asking whether one segment is on
+### Asking whether one segment is on
 
 We want to ask a cell whether the segment of a given side is lit.
 A new cell has all of them off, so the test is simple.
@@ -742,7 +741,7 @@ isSegmentOnFor: aSymbol
 > **Note.** This method ends up on `Cell`, where it is quoted from the image in the next chapter.
 > The test above, on the other hand, is quoted from the image as it stands.
 
-## Where the beam leaves
+### Where the beam leaves
 
 We know how to look at one segment.
 Now we need to know which side a beam leaves by, given the side it came in from.
@@ -810,7 +809,7 @@ exitSideFor: aSymbol
 > **Note.** `initializeExitSides` and `initialize` are quoted from the image and stay on `BlankCell` for good: filling `exitSides` is exactly what a subclass of `Cell` is for.
 > `exitSideFor:` moves up to `Cell` in the next chapter.
 
-## Telling the cell the beam entered
+### Telling the cell the beam entered
 
 The last piece of behavior for now is to tell a cell that the laser beam has entered it from a given side.
 The cell should light the side the beam arrived by and the side it leaves by.
@@ -841,7 +840,7 @@ laserEntersFrom: aSymbol
 > **Note.** You could go one step further and hide the two dictionary writes behind methods named `setSegmentOnFor:` and `setSegmentOffFor:`, then write `laserEntersFrom:` in terms of those.
 > Nothing else in the game ever needs to light one segment on its own, so this book stops here — but the idea is worth keeping: a method reads better when it says *what* it does than when it shows *how* it stores things.
 
-## A word about directions
+### A word about directions
 
 The design we have proposed uses symbols to represent the sides.
 That is fine, but it has a weakness worth naming: symbols are carried around everywhere and nothing checks them.
@@ -855,7 +854,7 @@ That is where this game ends up: *Push a cell* introduces a `GridDirection` hier
 
 It removes the last case statement from the beam path, and it is a good example of what you get for making a value into an object.
 
-## The checkpoint, and why it adds nothing here
+### The checkpoint, and why it adds nothing here
 
 The feature is done, so run the four questions of the checkpoint.
 
@@ -870,7 +869,7 @@ The remaining two questions follow from the first two, since there is no new exa
 So the chapter ends with three methods, three tests and nothing else, which is the usual outcome.
 The next chapter is where the answers change.
 
-# Enhancing MirrorCell
+## Enhancing MirrorCell
 
 A `MirrorCell` differs from a `BlankCell` in that it carries a mirror, and the mirror can be oriented to send the laser beam in different directions.
 
@@ -889,7 +888,7 @@ I am a `Cell` with a mirror on one of its diagonals. `leansLeft` says which one.
 > **Note.** That is the comment the class ends up with.
 > `rotate` and the two rotate messages do not exist yet — they arrive later in this chapter — so write the first paragraph now and come back for the rest.
 
-## Capturing the orientation
+### Capturing the orientation
 
 We need a way to hold the orientation of the mirror.
 The default is that the mirror leans left unless something says otherwise, and we need to be able to ask which way it leans.
@@ -915,7 +914,7 @@ MirrorCell >> isRight
 	^self isLeft not
 ```
 
-## Introducing a common ancestor
+### Introducing a common ancestor
 
 That much was straightforward.
 But what about the behavior a mirror shares with a blank cell?
@@ -955,7 +954,7 @@ A refactoring is a behavior preserving transformation, which is to say that the 
 
 Smalltalk had the first working refactoring engine of any language, and moving code around a hierarchy is what it is best at.
 
-### Inheriting from Cell
+#### Inheriting from Cell
 
 Change the definitions of `BlankCell` and `MirrorCell` so that both subclass `Cell`.
 The browser then indents them under it.
@@ -975,7 +974,7 @@ Cell << #BlankCell
 	package: 'Laser-Game'
 ```
 
-### Moving the instance variables up
+#### Moving the instance variables up
 
 Both cells manage which segments are on and how a beam crosses them, so `activeSegments` and `exitSides` belong to the superclass.
 Bring up the context menu on `BlankCell`, choose *Refactoring > Instance variables > Pull up* and pick `activeSegments`, then do the same for `exitSides`.
@@ -992,7 +991,7 @@ Object << #Cell
 What is nice about using the refactorings rather than editing by hand is that they eliminate a class of mistakes.
 A subclass could already have an instance variable of that name, for instance, and the tool notices.
 
-### Moving the methods up
+#### Moving the methods up
 
 The accessors and the behavior follow the instance variables.
 Select, in `BlankCell`, the accessors `activeSegments`, `activeSegments:`, `exitSides` and `exitSides:`, the testing methods `isOn`, `isOff` and `isSegmentOnFor:`, and the operations `laserEntersFrom:` and `exitSideFor:`, then choose *Refactoring > Push up* from the selection.
@@ -1056,7 +1055,7 @@ Cell >> laserEntersFrom: aSymbol
 
 Your tests should still pass.
 
-### Splitting the initialization
+#### Splitting the initialization
 
 That leaves the initialization methods.
 `initializeActiveSegments` works for any cell, since every cell has four segments that all start off, so it belongs on the superclass.
@@ -1103,7 +1102,7 @@ Cell >> initializeExitSides
 Run the tests.
 They pass.
 
-## Tests for MirrorCell
+### Tests for MirrorCell
 
 Now we can write the tests for the mirror.
 By convention they go in their own class.
@@ -1136,7 +1135,7 @@ MirrorCellTestCase >> testCellSegmentState
 	self shouldnt: [ cell isSegmentOnFor: #west ]
 ```
 
-### Handling the orientation
+#### Handling the orientation
 
 We have to set the orientation when the cell is created, and again when the player rotates it.
 Before writing the methods, let us write the tests that say what we expect.
@@ -1253,7 +1252,7 @@ MirrorCell >> initialize
 Run your tests and they should pass.
 This is a good moment to save your work.
 
-## Instance creation methods
+### Instance creation methods
 
 As a practical matter a mirror always has an orientation, so every time we make one we have to take the extra step of orienting it.
 You have seen how that reads in the tests above:
@@ -1300,7 +1299,7 @@ MirrorCell class >> leanRight
 Check it from a Playground with `MirrorCell leanRight inspect`.
 The two tests `testCellLaserActivityMirrorLeft` and `testCellLaserActivityMirrorRight` above already use the new API.
 
-## The checkpoint, and the first example
+### The checkpoint, and the first example
 
 The feature is finished.
 A mirror holds its lean, each lean sets all four exit sides with it, four tests say what that means, and two class methods hand you a leaning mirror in one message.
@@ -1369,7 +1368,7 @@ Nothing deals cells yet, so a cell has no board to stand on and no location to k
 
 > **The lesson as a sentence.** A test says whether an object is right and an example says how to get one, and neither of them does the other's work.
 
-## A tab for the four sides
+### A tab for the four sides
 
 Run the example and look at what the inspector gives you.
 A `MirrorCell`, three instance variables — `activeSegments`, `exitSides` and `leansLeft` — and nothing that answers the question the last two chapters have been asking.
@@ -1437,7 +1436,7 @@ That is enough to catch the tab raising an error, which is the only way a tab re
 
 > **The lesson as a sentence.** A red test you cannot diagnose in a minute is telling you about a view you have not written.
 
-## A tab for the lean
+### A tab for the lean
 
 The chapter has already named the bug this game spends a later chapter hunting: a lean changed without its exit sides.
 The *Sides* tab shows the four exit sides, but it cannot tell you whether they are the right four, because nothing in it knows which way the mirror leans.
@@ -1517,7 +1516,7 @@ This view has no separate data method, so the test reaches the data through the 
 > A view is cheap to write and it is not free to read: ten tabs on one class are ten tabs nobody looks at.
 > If you find yourself wanting a third, ask first whether one of the other two was answering a question you no longer have.
 
-## Two gates for the example package
+### Two gates for the example package
 
 An example that stops working is worse than no example, because the browser still offers it.
 The same goes for a view that outlives the object it described.
@@ -1548,7 +1547,7 @@ Both gates grow as the game grows, and the finished versions — which have an o
 
 > **The lesson as a sentence.** Write the two generic gates when the example package is born, because retrofitting them means auditing every example you ever wrote.
 
-## About the design of MirrorCell
+### About the design of MirrorCell
 
 Instead of testing the state all the time with `isLeft` and `isRight`, a cleaner design defines two subclasses of `MirrorCell`, one per orientation, and puts the specific methods in each.
 
@@ -1558,7 +1557,7 @@ This game keeps the flag.
 A mirror has exactly two states and it flips between them on every click, so two classes would mean replacing the cell in the grid on every rotation rather than telling it to turn.
 It is worth knowing which trade you are making.
 
-# Enhancing TargetCell
+## Enhancing TargetCell
 
 The `TargetCell` is the last of our cells.
 It is unique in that it has no exit: once the laser beam enters a target cell it does not leave and does not propagate any further.
@@ -1573,7 +1572,7 @@ I am the `Cell` the beam is aimed at. Every side of me leaves by nothing, so a b
 Like `BlankCell` I add no state to `Cell`; `initializeExitSides` fills `exitSides` with nil for all four sides. `Grid` puts exactly one of me on the board.
 ```
 
-## Some tests
+### Some tests
 
 A new test class, as before.
 
@@ -1634,9 +1633,9 @@ TargetCellTestCase >> testCellExitSides
 		self assert: exit isNil ]
 ```
 
-## The behavior
+### The behavior
 
-### TargetCell is a Cell
+#### TargetCell is a Cell
 
 First make `TargetCell` inherit from `Cell`, the way the other two cells already do.
 
@@ -1650,7 +1649,7 @@ Cell << #TargetCell
 Run the tests.
 The two that are not about exit sides already pass, because everything they exercise now comes from `Cell`.
 
-### Handling the exits
+#### Handling the exits
 
 Now the exit sides.
 A target answers nothing for every side it can be entered from.
@@ -1673,7 +1672,7 @@ TargetCell >> initialize
 Run the tests again and the three cell test classes are green.
 This is a good moment to save your code.
 
-## The tab we already have
+### The tab we already have
 
 Run the checkpoint and it costs nothing this time, which is the point of showing it again.
 No snippet survived the chapter, no red test took a minute to diagnose, and there is no new view to pair.
@@ -1688,9 +1687,9 @@ The cells this book keeps as examples are the cells it reads off a board, and th
 
 > **The lesson as a sentence.** A view written on the superclass is a view you collect again on every subclass you add.
 
-## About the design
+### About the design
 
-### About our initialize methods
+#### About our initialize methods
 
 We have now written initialization methods three times, once per cell, and parts of them are identical.
 That duplication is a smell, and it is worth asking what to do about it before reading on.
@@ -1703,7 +1702,7 @@ This port does not take that road, for one reason: an abstract superclass that s
 Here, `Cell >> initializeExitSides` is `self subclassResponsibility` instead, so the third kind of cell someone adds to this game cannot forget to say how a beam crosses it.
 The cost is one line of dictionary creation repeated in three subclasses; the benefit is that the mistake is impossible.
 
-### About the target design
+#### About the target design
 
 Using `nil` to say that there is no exit is not ideal, because it makes every client check whether it got a side or nothing.
 A good object-oriented answer is an object that accepts the same messages and does nothing, which is the *null object* pattern.
@@ -1712,7 +1711,7 @@ It removes the `ifNil:` tests and follows the tell-do-not-ask style of really th
 We stay with `nil` here, and it turns out to be cheap: the beam path asks a cell for its exit side once and stops when there is none, so there is a single place in the whole game where the check happens.
 Keep the pattern in mind as a refactoring exercise all the same.
 
-# Grid
+## Grid
 
 The cells know how a beam crosses them.
 What is still missing is the thing that holds them.
@@ -1723,7 +1722,7 @@ It must let us put a particular cell at a particular place, it must let us ask w
 We build it in this chapter: `at:` and `at:put:` over a dictionary, a size, `initializeCells`, and `newOfSize:` for grids that are not five by five.
 A debugger opens on the way, and we end with a better way to build the board the tests work against.
 
-## A class comment
+### A class comment
 
 As with the cells, we say what the class is for before we say how it works.
 
@@ -1739,7 +1738,7 @@ Cells are moved with the `pushCell...FromLocation:` methods, each guarded by its
 > Everything after the first paragraph is about work still ahead of us: the beam path, the mouse pushes, the undo stack.
 > For now a single line says all there is to say — a grid holds a matrix of cells, gives access to them, and fires the laser.
 
-## The first test
+### The first test
 
 As usual we start with a test for the initial state.
 A new grid should have an inactive laser, and every location should hold a blank cell.
@@ -1766,7 +1765,7 @@ GridTestCase >> testInitialConditions
 > **Note.** `assert:equals:` is worth preferring to `assert:` whenever you are comparing two values.
 > When it fails it reports both of them — *expected 3, got 4* — where `assert: a = b` can only report that something was `false`.
 
-## The instance variables
+### The instance variables
 
 The test needs four things from a grid.
 `cells` holds a dictionary whose keys are locations inside the grid and whose values are the cells at those locations.
@@ -1810,7 +1809,7 @@ Object << #Grid
 	package: 'Laser-Game'
 ```
 
-## Encapsulating access to the cells
+### Encapsulating access to the cells
 
 We want to address cells inside the grid.
 Rather than hand out the dictionary and let every client know how cells are stored, we give the grid two accessors of its own, `at:` and `at:put:`.
@@ -1846,7 +1845,7 @@ It is a fine first pass all the same, and that is exactly the point of `at:` and
 > `at:` answers `nil` for a location the grid does not hold, because of the `ifAbsent: []` — we come back below to why that matters.
 > And `at:put:` tells the cell where it has been put, which needs the `gridLocation` instance variable that `Cell` gains in *The path the beam takes*, the next chapter, at the first method that reads it.
 
-## Initializing a grid
+### Initializing a grid
 
 Now we can fill a new grid with blank cells.
 
@@ -1905,7 +1904,7 @@ Read the instance variable directly and you get whatever it holds, which before 
 > **Note.** A grid nobody has sized is as small as a grid can be, 1 by 1.
 > Nothing ever plays on a default grid, so the value hardly matters, but it does make the point of a lazy getter sharply: the grid has a usable size from the moment it exists, without anyone having to remember to set one.
 
-## The bug the debugger finds
+### The bug the debugger finds
 
 Run the tests.
 We expected green and we do not get it.
@@ -1935,7 +1934,7 @@ Grid >> initializeCells
 Run the tests again and they pass.
 This is a good moment to save your work.
 
-## A word about the order in which we define methods
+### A word about the order in which we define methods
 
 The order in which methods are defined does not matter to the running program.
 It matters to us.
@@ -1949,7 +1948,7 @@ Running a test over it opens a debugger in the exact context where the missing m
 Both have their uses.
 Be aware that you have the choice, and pick the one that suits what you are doing.
 
-## More tests, and a grid that grows
+### More tests, and a grid that grows
 
 So far so good.
 Now let us think about a problem we might have.
@@ -1975,7 +1974,7 @@ Inspect the grid in the debugger and you can see it: the keys stop where the def
 > **Note.** Because our `at:` answers `nil` for a location the grid does not hold, this mistake arrives as an ordinary assertion failure on `nil class = BlankCell`.
 > Had `at:` sent `Dictionary >> at:` bare, the same mistake would have opened a debugger on *KeyNotFound: key 4@4 not found in Dictionary* instead — the same lesson, through a noisier door.
 
-## A better way to make a grid
+### A better way to make a grid
 
 We have been making grids by sending `new` to the class.
 `new` is a *class message*, a message sent to the class rather than to one of its instances, and what we want is a smarter one that takes the size at the same time.
@@ -2032,7 +2031,7 @@ Run the tests and this time they are green.
 > **Note.** `newOfSize:` takes one `Point` — `newOfSize: 4@4` — rather than two separate integers.
 > A point is the shape the rest of the game already uses for a size and for a location, so one argument is both shorter to write and harder to get the wrong way round.
 
-### Understanding `yourself`
+#### Understanding `yourself`
 
 The method works, but repeating `model` on every line is not the nicest thing to read.
 The alternative is a *cascade*, written with `;`, which sends several messages to the same object.
@@ -2066,7 +2065,7 @@ newOfSize: aPoint
 > **Note.** The image keeps the temporary variable and the explicit `^ model`, which is the same guarantee written the long way: whatever `initialize` answers is thrown away and the grid is returned.
 > `yourself` is worth knowing all the same — you will meet it constantly in Pharo code, and it is why `OrderedCollection new add: 1; add: 2; yourself` answers the collection rather than `2`.
 
-## A better context for the tests
+### A better context for the tests
 
 With the cells working and a minimal test for `Grid`, we can write a much deeper test, one that uses broader parts of the design.
 Remember the diagram we used to introduce the game?
@@ -2156,7 +2155,7 @@ testCellInteractions
 > **Note.** A test class with three or more uses of the board gets it in `setUp` like this one.
 > A class with one or two keeps `GridExample demoGrid` inline, where you can see what the test is working on without scrolling, and a test that needs two boards at once stays inline whatever the count.
 
-## Three cells worth keeping
+### Three cells worth keeping
 
 The board exists, so the cells we have been typing by hand can stop being typed by hand.
 Each of the three is the board plus one message, which is all a derived example should ever be.
@@ -2196,7 +2195,7 @@ Click `blankCell` in the browser and the *Sides* tab says `south` for a beam ent
 Click `targetCell` and the same tab says `nowhere` four times.
 Two chapters of behaviour, read off two clicks.
 
-## Looking at a whole board
+### Looking at a whole board
 
 Writing the board, it was easy to get confused about which half of `x@y` was the row and which the column.
 That is a tip-off: the names `at:` and `at:put:` are not saying enough, and we should go back and make them more intention-revealing.
@@ -2242,13 +2241,13 @@ The row of the table worth asserting on is a lit cell, and nothing lights a boar
 
 > **The lesson as a sentence.** A dictionary is the right way to store a board and the wrong way to read one, and that gap is exactly what an inspector view is for.
 
-## Conclusion
+### Conclusion
 
 All the structural pieces of the game are now in place and tested: three kinds of cell under a common superclass, and a grid that holds them and can be asked for any of them.
 
 What is left of the model is the interesting part — working out the path the beam takes through the board — and that is the next chapter.
 
-# The path the beam takes
+## The path the beam takes
 
 Every cell knows how a beam crosses it.
 The grid knows which cell sits where.
@@ -2261,7 +2260,7 @@ This chapter follows the beam from the laser, cell by cell, until it stops, and 
 It is the last part of the model, and it is the first part of this book where the code is long enough to get wrong in an interesting way.
 It did go wrong, which is what the next chapter is for.
 
-## One step of the beam is two facts
+### One step of the beam is two facts
 
 Start by asking what one step of the beam is.
 The obvious answer is a cell: the beam crosses the cell at `1@5`, then the one at `2@5`, and so on.
@@ -2302,7 +2301,7 @@ I am one step of the laser beam: a `Cell` and the side the beam enters it from. 
 `nextElementIn: aGrid` asks my cell which side the beam leaves by, steps one cell that way, and answers the element for the cell it lands on, or `nil` when there is none. `activateCell` and `clearCell` turn the light of my cell on and off for the side the beam enters from.
 ```
 
-## Making one
+### Making one
 
 An element is never useful half-built: a cell with no entry side cannot answer anything.
 So the class gets an instance creation method that takes both values at once.
@@ -2330,7 +2329,7 @@ Here we want the two values in place first, so the method does the two halves of
 > Both mistakes compile.
 > When a cascade is doing the work, give the object a name, as this method does.
 
-## The next step
+### The next step
 
 Now the heart of it.
 Given one element, which element comes next?
@@ -2391,7 +2390,7 @@ One step past the right-hand column is simply not in the dictionary, so the `ifA
 > **One `nil` for every way of ending.** Two different endings — the beam is swallowed, the beam leaves the board — both become `nil` from `nextElementIn:`, so the caller has one case to handle instead of two.
 > Each of the two `ifTrue: [ ^ nil ]` lines is a sentence about the game, and they are worth reading as such.
 
-## Where the beam comes in
+### Where the beam comes in
 
 The path has to start somewhere, and the game puts the laser at the bottom left of the board, pointing up.
 
@@ -2411,7 +2410,7 @@ On the five by five demo board that is `1@5`, and on a board of any other size t
 Note what the comment says about the side, because it is not obvious: the beam enters that cell from the *south*.
 The laser is below the board, so the light comes in through the bottom edge of the bottom left cell.
 
-## Walking the whole path
+### Walking the whole path
 
 With a first element and a way to get the next one, the walk is a loop.
 
@@ -2445,7 +2444,7 @@ next isNil ] whileFalse: [ element := next ]` reads: do the work, and if there i
 A fresh `OrderedCollection` on the first line means the method can be sent as often as you like and the path never grows stale.
 The path is a *result*, not a record of what has happened: nothing accumulates across calls.
 
-## Lighting what the beam crosses
+### Lighting what the beam crosses
 
 Calculating the path changes nothing a player can see.
 Lighting the cells is a second, separate step.
@@ -2473,7 +2472,7 @@ Had `calculatePath` lit the cells on its way through, anything wanting to look a
 
 > **A method that calculates and a method that changes the world are two methods.** The one that calculates can be called from anywhere, including a test, including a playground, as often as you like.
 
-## The test grows
+### The test grows
 
 Back in the last chapter `testCellInteractions` asserted one thing: the target of the demo board starts out dark.
 Now the board can be lit, so the test can say what the beam does to it.
@@ -2491,7 +2490,7 @@ testCellInteractions
 Off, then fire, then on.
 It is a small test and it goes through everything in this chapter: the starting cell, nine steps of `nextElementIn:`, both ways of ending a path, and `laserEntersFrom:` on every cell along the way.
 
-## Checking it
+### Checking it
 
 Run the test.
 Then open a playground and look at the path itself, because the one thing a passing test does not give you is a picture:
@@ -2532,7 +2531,7 @@ The inversion is doing its job.
 That is the model finished.
 It did not work the first time, though, and the mistakes were worth keeping: the next chapter is the four bugs that stood between this code and a green test, and how each one was found.
 
-# Chasing the beam
+## Chasing the beam
 
 The code of the last chapter is thirty lines, and on the way to those thirty lines there were four mistakes.
 None of them was a misunderstanding of the game.
@@ -2548,7 +2547,7 @@ Each one is written as what you see, how to get from there to the line at fault,
 The point is not the bugs — you will make different ones.
 The point is that each symptom has a tool that goes with it, and knowing which tool is most of the work.
 
-## A beam that never stops
+### A beam that never stops
 
 Run the test with the inversion forgotten, and nothing happens.
 No failure, no debugger, no result.
@@ -2611,7 +2610,7 @@ There is no guard in `calculatePath` against a path that never ends, and there d
 What the book does instead is pin the claim down with a test much later, in *A bigger game board*, where a full eighty-cell board asserts that its path is shorter than a thousand steps.
 If the inversion is ever broken again, that test says so in a second instead of freezing the image.
 
-## A cell that does not know where it is
+### A cell that does not know where it is
 
 The next one arrives as a debugger with a short, strange message:
 
@@ -2655,7 +2654,7 @@ The fix is to send the grid's own `at:put:` instead, and the reason to care is b
 > **When a bug is a `nil`, the method that reads the `nil` is rarely the method at fault.** Find the setter and look at its senders.
 > If there is one, your invariant has one place to live; if there are nine, you have found the real problem.
 
-## A test that fails with a message about a class the game does not have
+### A test that fails with a message about a class the game does not have
 
 Writing the assertions for the path, the first attempt was this:
 
@@ -2697,7 +2696,7 @@ It also prints both values when it fails — *Expected 2@5 but was 4@5* — wher
 
 > **An error naming a class your program does not use is almost always a precedence surprise.** And `assert:equals:` is worth preferring over `assert:` on both counts: it is immune to this, and it says more when it fails.
 
-## A beam that runs off the end of the board
+### A beam that runs off the end of the board
 
 The last of the four is the case that was simply not written.
 Both `ifTrue: [ ^ nil ]` lines in `nextElementIn:` were added after a debugger asked for them.
@@ -2728,7 +2727,7 @@ The stack in that debugger has both frames in it, which is why reading a stack p
 > **`nil` travels.** A method that accepts a `nil` it cannot use hands the error to whoever is unlucky enough to ask the next question.
 > Check for the missing thing where it is produced, which here means right after the send that can answer `nil`.
 
-## The test that pins the path down
+### The test that pins the path down
 
 With the four fixed, the test from the last chapter can say the whole truth instead of one cell's worth of it.
 This is the version in the image:
@@ -2774,7 +2773,7 @@ A test that walked `laserBeamPath` and checked the locations in it would pass ag
 
 > **Assert the effect on the world, not the intermediate structure that produced it.** The path is how the beam is worked out; the lit cells are what the game is about.
 
-## What this chapter is really teaching
+### What this chapter is really teaching
 
 The four tools, in the order the four bugs asked for them:
 
@@ -2791,7 +2790,7 @@ And one habit underneath all four: every one of those bugs was found by asking a
 Reading finds the bugs you can imagine.
 Asking finds the others.
 
-## The checkpoint the section leaves open
+### The checkpoint the section leaves open
 
 Two chapters of beam work leave two signals showing, and neither of them is collected here.
 
@@ -2807,7 +2806,7 @@ Both of them want the laser lit before there is anything to show, so they arrive
 
 > **The lesson as a sentence.** A signal you cannot collect yet is written down, not forgotten: the example or the view goes in at the first chapter that can quote it whole.
 
-## Checking it
+### Checking it
 
 Run the whole of `Laser-Game-Tests`.
 Everything is green, and the model is finished: three kinds of cell, a grid that holds them, a beam that crosses the board and lights what it touches, and a test that says where it goes.
